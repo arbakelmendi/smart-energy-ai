@@ -10,33 +10,271 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AboutRouteImport } from './routes/about'
+import { Route as ContactRouteImport } from './routes/contact'
+import { Route as DashboardRouteImport } from './routes/dashboard'
+import { Route as DataRouteImport } from './routes/data'
+import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
+import { Route as LoginRouteImport } from './routes/login'
+import { Route as OnboardingRouteImport } from './routes/onboarding'
+import { Route as PredictionsRouteImport } from './routes/predictions'
+import { Route as RecommendationsRouteImport } from './routes/recommendations'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
+import { Route as SettingsRouteImport } from './routes/settings'
+import { Route as SignupRouteImport } from './routes/signup'
+import { Route as VerifyEmailRouteImport } from './routes/verify-email'
+import { Route as AdminIndexRouteImport } from './routes/admin.index'
+import { Route as AdminBuildingsRouteImport } from './routes/admin.buildings'
+import { Route as AdminUsersRouteImport } from './routes/admin.users'
+import { Route as BuildingsIndexRouteImport } from './routes/buildings.index'
+import { Route as BuildingsIdRouteImport } from './routes/buildings.$id'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AboutRoute = AboutRouteImport.update({
+  id: '/about',
+  path: '/about',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContactRoute = ContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DashboardRoute = DashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DataRoute = DataRouteImport.update({
+  id: '/data',
+  path: '/data',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ForgotPasswordRoute = ForgotPasswordRouteImport.update({
+  id: '/forgot-password',
+  path: '/forgot-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OnboardingRoute = OnboardingRouteImport.update({
+  id: '/onboarding',
+  path: '/onboarding',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PredictionsRoute = PredictionsRouteImport.update({
+  id: '/predictions',
+  path: '/predictions',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RecommendationsRoute = RecommendationsRouteImport.update({
+  id: '/recommendations',
+  path: '/recommendations',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SettingsRoute = SettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SignupRoute = SignupRouteImport.update({
+  id: '/signup',
+  path: '/signup',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const VerifyEmailRoute = VerifyEmailRouteImport.update({
+  id: '/verify-email',
+  path: '/verify-email',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminIndexRoute = AdminIndexRouteImport.update({
+  id: '/admin/',
+  path: '/admin/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminBuildingsRoute = AdminBuildingsRouteImport.update({
+  id: '/admin/buildings',
+  path: '/admin/buildings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminUsersRoute = AdminUsersRouteImport.update({
+  id: '/admin/users',
+  path: '/admin/users',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BuildingsIndexRoute = BuildingsIndexRouteImport.update({
+  id: '/buildings/',
+  path: '/buildings/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BuildingsIdRoute = BuildingsIdRouteImport.update({
+  id: '/buildings/$id',
+  path: '/buildings/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/contact': typeof ContactRoute
+  '/dashboard': typeof DashboardRoute
+  '/data': typeof DataRoute
+  '/forgot-password': typeof ForgotPasswordRoute
+  '/login': typeof LoginRoute
+  '/onboarding': typeof OnboardingRoute
+  '/predictions': typeof PredictionsRoute
+  '/recommendations': typeof RecommendationsRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/settings': typeof SettingsRoute
+  '/signup': typeof SignupRoute
+  '/verify-email': typeof VerifyEmailRoute
+  '/admin/buildings': typeof AdminBuildingsRoute
+  '/admin/users': typeof AdminUsersRoute
+  '/buildings/$id': typeof BuildingsIdRoute
+  '/admin/': typeof AdminIndexRoute
+  '/buildings/': typeof BuildingsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/contact': typeof ContactRoute
+  '/dashboard': typeof DashboardRoute
+  '/data': typeof DataRoute
+  '/forgot-password': typeof ForgotPasswordRoute
+  '/login': typeof LoginRoute
+  '/onboarding': typeof OnboardingRoute
+  '/predictions': typeof PredictionsRoute
+  '/recommendations': typeof RecommendationsRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/settings': typeof SettingsRoute
+  '/signup': typeof SignupRoute
+  '/verify-email': typeof VerifyEmailRoute
+  '/admin/buildings': typeof AdminBuildingsRoute
+  '/admin/users': typeof AdminUsersRoute
+  '/buildings/$id': typeof BuildingsIdRoute
+  '/admin': typeof AdminIndexRoute
+  '/buildings': typeof BuildingsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/contact': typeof ContactRoute
+  '/dashboard': typeof DashboardRoute
+  '/data': typeof DataRoute
+  '/forgot-password': typeof ForgotPasswordRoute
+  '/login': typeof LoginRoute
+  '/onboarding': typeof OnboardingRoute
+  '/predictions': typeof PredictionsRoute
+  '/recommendations': typeof RecommendationsRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/settings': typeof SettingsRoute
+  '/signup': typeof SignupRoute
+  '/verify-email': typeof VerifyEmailRoute
+  '/admin/buildings': typeof AdminBuildingsRoute
+  '/admin/users': typeof AdminUsersRoute
+  '/buildings/$id': typeof BuildingsIdRoute
+  '/admin/': typeof AdminIndexRoute
+  '/buildings/': typeof BuildingsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/about'
+    | '/contact'
+    | '/dashboard'
+    | '/data'
+    | '/forgot-password'
+    | '/login'
+    | '/onboarding'
+    | '/predictions'
+    | '/recommendations'
+    | '/reset-password'
+    | '/settings'
+    | '/signup'
+    | '/verify-email'
+    | '/admin/buildings'
+    | '/admin/users'
+    | '/buildings/$id'
+    | '/admin/'
+    | '/buildings/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/about'
+    | '/contact'
+    | '/dashboard'
+    | '/data'
+    | '/forgot-password'
+    | '/login'
+    | '/onboarding'
+    | '/predictions'
+    | '/recommendations'
+    | '/reset-password'
+    | '/settings'
+    | '/signup'
+    | '/verify-email'
+    | '/admin/buildings'
+    | '/admin/users'
+    | '/buildings/$id'
+    | '/admin'
+    | '/buildings'
+  id:
+    | '__root__'
+    | '/'
+    | '/about'
+    | '/contact'
+    | '/dashboard'
+    | '/data'
+    | '/forgot-password'
+    | '/login'
+    | '/onboarding'
+    | '/predictions'
+    | '/recommendations'
+    | '/reset-password'
+    | '/settings'
+    | '/signup'
+    | '/verify-email'
+    | '/admin/buildings'
+    | '/admin/users'
+    | '/buildings/$id'
+    | '/admin/'
+    | '/buildings/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AboutRoute: typeof AboutRoute
+  ContactRoute: typeof ContactRoute
+  DashboardRoute: typeof DashboardRoute
+  DataRoute: typeof DataRoute
+  ForgotPasswordRoute: typeof ForgotPasswordRoute
+  LoginRoute: typeof LoginRoute
+  OnboardingRoute: typeof OnboardingRoute
+  PredictionsRoute: typeof PredictionsRoute
+  RecommendationsRoute: typeof RecommendationsRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
+  SettingsRoute: typeof SettingsRoute
+  SignupRoute: typeof SignupRoute
+  VerifyEmailRoute: typeof VerifyEmailRoute
+  AdminBuildingsRoute: typeof AdminBuildingsRoute
+  AdminUsersRoute: typeof AdminUsersRoute
+  BuildingsIdRoute: typeof BuildingsIdRoute
+  AdminIndexRoute: typeof AdminIndexRoute
+  BuildingsIndexRoute: typeof BuildingsIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,22 +286,156 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/about': {
+      id: '/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof AboutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contact': {
+      id: '/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard': {
+      id: '/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof DashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/data': {
+      id: '/data'
+      path: '/data'
+      fullPath: '/data'
+      preLoaderRoute: typeof DataRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/forgot-password': {
+      id: '/forgot-password'
+      path: '/forgot-password'
+      fullPath: '/forgot-password'
+      preLoaderRoute: typeof ForgotPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/onboarding': {
+      id: '/onboarding'
+      path: '/onboarding'
+      fullPath: '/onboarding'
+      preLoaderRoute: typeof OnboardingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/predictions': {
+      id: '/predictions'
+      path: '/predictions'
+      fullPath: '/predictions'
+      preLoaderRoute: typeof PredictionsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/recommendations': {
+      id: '/recommendations'
+      path: '/recommendations'
+      fullPath: '/recommendations'
+      preLoaderRoute: typeof RecommendationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/settings': {
+      id: '/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof SettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/signup': {
+      id: '/signup'
+      path: '/signup'
+      fullPath: '/signup'
+      preLoaderRoute: typeof SignupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/verify-email': {
+      id: '/verify-email'
+      path: '/verify-email'
+      fullPath: '/verify-email'
+      preLoaderRoute: typeof VerifyEmailRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/': {
+      id: '/admin/'
+      path: '/admin'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/buildings': {
+      id: '/admin/buildings'
+      path: '/admin/buildings'
+      fullPath: '/admin/buildings'
+      preLoaderRoute: typeof AdminBuildingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/users': {
+      id: '/admin/users'
+      path: '/admin/users'
+      fullPath: '/admin/users'
+      preLoaderRoute: typeof AdminUsersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/buildings/': {
+      id: '/buildings/'
+      path: '/buildings'
+      fullPath: '/buildings/'
+      preLoaderRoute: typeof BuildingsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/buildings/$id': {
+      id: '/buildings/$id'
+      path: '/buildings/$id'
+      fullPath: '/buildings/$id'
+      preLoaderRoute: typeof BuildingsIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AboutRoute: AboutRoute,
+  ContactRoute: ContactRoute,
+  DashboardRoute: DashboardRoute,
+  DataRoute: DataRoute,
+  ForgotPasswordRoute: ForgotPasswordRoute,
+  LoginRoute: LoginRoute,
+  OnboardingRoute: OnboardingRoute,
+  PredictionsRoute: PredictionsRoute,
+  RecommendationsRoute: RecommendationsRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
+  SettingsRoute: SettingsRoute,
+  SignupRoute: SignupRoute,
+  VerifyEmailRoute: VerifyEmailRoute,
+  AdminBuildingsRoute: AdminBuildingsRoute,
+  AdminUsersRoute: AdminUsersRoute,
+  BuildingsIdRoute: BuildingsIdRoute,
+  AdminIndexRoute: AdminIndexRoute,
+  BuildingsIndexRoute: BuildingsIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
