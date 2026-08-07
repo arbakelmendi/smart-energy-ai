@@ -20,8 +20,11 @@ import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as PredictionsRouteImport } from './routes/predictions'
 import { Route as RecommendationsRouteImport } from './routes/recommendations'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
+import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as SignupRouteImport } from './routes/signup'
 import { Route as VerifyEmailRouteImport } from './routes/verify-email'
+import { Route as BuildingsIndexRouteImport } from './routes/buildings.index'
+import { Route as BuildingsIdRouteImport } from './routes/buildings.$id'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -78,6 +81,11 @@ const ResetPasswordRoute = ResetPasswordRouteImport.update({
   path: '/reset-password',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SettingsRoute = SettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SignupRoute = SignupRouteImport.update({
   id: '/signup',
   path: '/signup',
@@ -86,6 +94,16 @@ const SignupRoute = SignupRouteImport.update({
 const VerifyEmailRoute = VerifyEmailRouteImport.update({
   id: '/verify-email',
   path: '/verify-email',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BuildingsIndexRoute = BuildingsIndexRouteImport.update({
+  id: '/buildings/',
+  path: '/buildings/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BuildingsIdRoute = BuildingsIdRouteImport.update({
+  id: '/buildings/$id',
+  path: '/buildings/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
 
@@ -101,8 +119,11 @@ export interface FileRoutesByFullPath {
   '/predictions': typeof PredictionsRoute
   '/recommendations': typeof RecommendationsRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/settings': typeof SettingsRoute
   '/signup': typeof SignupRoute
   '/verify-email': typeof VerifyEmailRoute
+  '/buildings/$id': typeof BuildingsIdRoute
+  '/buildings/': typeof BuildingsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -116,8 +137,11 @@ export interface FileRoutesByTo {
   '/predictions': typeof PredictionsRoute
   '/recommendations': typeof RecommendationsRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/settings': typeof SettingsRoute
   '/signup': typeof SignupRoute
   '/verify-email': typeof VerifyEmailRoute
+  '/buildings/$id': typeof BuildingsIdRoute
+  '/buildings': typeof BuildingsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -132,8 +156,11 @@ export interface FileRoutesById {
   '/predictions': typeof PredictionsRoute
   '/recommendations': typeof RecommendationsRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/settings': typeof SettingsRoute
   '/signup': typeof SignupRoute
   '/verify-email': typeof VerifyEmailRoute
+  '/buildings/$id': typeof BuildingsIdRoute
+  '/buildings/': typeof BuildingsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -149,8 +176,11 @@ export interface FileRouteTypes {
     | '/predictions'
     | '/recommendations'
     | '/reset-password'
+    | '/settings'
     | '/signup'
     | '/verify-email'
+    | '/buildings/$id'
+    | '/buildings/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -164,8 +194,11 @@ export interface FileRouteTypes {
     | '/predictions'
     | '/recommendations'
     | '/reset-password'
+    | '/settings'
     | '/signup'
     | '/verify-email'
+    | '/buildings/$id'
+    | '/buildings'
   id:
     | '__root__'
     | '/'
@@ -179,8 +212,11 @@ export interface FileRouteTypes {
     | '/predictions'
     | '/recommendations'
     | '/reset-password'
+    | '/settings'
     | '/signup'
     | '/verify-email'
+    | '/buildings/$id'
+    | '/buildings/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -195,8 +231,11 @@ export interface RootRouteChildren {
   PredictionsRoute: typeof PredictionsRoute
   RecommendationsRoute: typeof RecommendationsRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
+  SettingsRoute: typeof SettingsRoute
   SignupRoute: typeof SignupRoute
   VerifyEmailRoute: typeof VerifyEmailRoute
+  BuildingsIdRoute: typeof BuildingsIdRoute
+  BuildingsIndexRoute: typeof BuildingsIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -278,6 +317,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ResetPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/settings': {
+      id: '/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof SettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/signup': {
       id: '/signup'
       path: '/signup'
@@ -290,6 +336,20 @@ declare module '@tanstack/react-router' {
       path: '/verify-email'
       fullPath: '/verify-email'
       preLoaderRoute: typeof VerifyEmailRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/buildings/': {
+      id: '/buildings/'
+      path: '/buildings'
+      fullPath: '/buildings/'
+      preLoaderRoute: typeof BuildingsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/buildings/$id': {
+      id: '/buildings/$id'
+      path: '/buildings/$id'
+      fullPath: '/buildings/$id'
+      preLoaderRoute: typeof BuildingsIdRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -307,8 +367,11 @@ const rootRouteChildren: RootRouteChildren = {
   PredictionsRoute: PredictionsRoute,
   RecommendationsRoute: RecommendationsRoute,
   ResetPasswordRoute: ResetPasswordRoute,
+  SettingsRoute: SettingsRoute,
   SignupRoute: SignupRoute,
   VerifyEmailRoute: VerifyEmailRoute,
+  BuildingsIdRoute: BuildingsIdRoute,
+  BuildingsIndexRoute: BuildingsIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
