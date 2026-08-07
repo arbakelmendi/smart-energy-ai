@@ -106,12 +106,14 @@ export function ActualVsPredictedChart({
 /** Single-series gradient area chart. */
 export function TrendAreaChart({
   data,
+  xKey = "date",
   dataKey = "actual",
   tone = "chart-1",
   height = 260,
   unit = " kWh",
 }: {
   data: Array<Record<string, unknown>>;
+  xKey?: string;
   dataKey?: string;
   tone?: string;
   height?: number;
@@ -128,7 +130,7 @@ export function TrendAreaChart({
           </linearGradient>
         </defs>
         <CartesianGrid stroke="var(--grid-line)" strokeDasharray="3 6" vertical={false} />
-        <XAxis dataKey={Object.keys(data[0] ?? { date: "" })[0]} {...axis} minTickGap={20} />
+        <XAxis dataKey={xKey} {...axis} minTickGap={20} />
         <YAxis {...axis} width={56} unit={unit} />
         <Tooltip {...tooltipStyle()} />
         <Area
