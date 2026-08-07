@@ -435,7 +435,7 @@ export type ReadingRow = {
 
 export const readings: ReadingRow[] = Array.from({ length: 64 }, (_, i) => {
   const d = new Date(TODAY.getTime() - i * 3600000 * 6);
-  const b = buildings[i % buildings.length];
+  const b = buildings[i % buildings.length]!;
   const hour = d.getUTCHours();
   const weekend = d.getUTCDay() === 0 || d.getUTCDay() === 6;
   return {
