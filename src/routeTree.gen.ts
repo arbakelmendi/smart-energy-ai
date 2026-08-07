@@ -23,6 +23,9 @@ import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as SignupRouteImport } from './routes/signup'
 import { Route as VerifyEmailRouteImport } from './routes/verify-email'
+import { Route as AdminIndexRouteImport } from './routes/admin.index'
+import { Route as AdminBuildingsRouteImport } from './routes/admin.buildings'
+import { Route as AdminUsersRouteImport } from './routes/admin.users'
 import { Route as BuildingsIndexRouteImport } from './routes/buildings.index'
 import { Route as BuildingsIdRouteImport } from './routes/buildings.$id'
 
@@ -96,6 +99,21 @@ const VerifyEmailRoute = VerifyEmailRouteImport.update({
   path: '/verify-email',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminIndexRoute = AdminIndexRouteImport.update({
+  id: '/admin/',
+  path: '/admin/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminBuildingsRoute = AdminBuildingsRouteImport.update({
+  id: '/admin/buildings',
+  path: '/admin/buildings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminUsersRoute = AdminUsersRouteImport.update({
+  id: '/admin/users',
+  path: '/admin/users',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const BuildingsIndexRoute = BuildingsIndexRouteImport.update({
   id: '/buildings/',
   path: '/buildings/',
@@ -122,7 +140,10 @@ export interface FileRoutesByFullPath {
   '/settings': typeof SettingsRoute
   '/signup': typeof SignupRoute
   '/verify-email': typeof VerifyEmailRoute
+  '/admin/buildings': typeof AdminBuildingsRoute
+  '/admin/users': typeof AdminUsersRoute
   '/buildings/$id': typeof BuildingsIdRoute
+  '/admin/': typeof AdminIndexRoute
   '/buildings/': typeof BuildingsIndexRoute
 }
 export interface FileRoutesByTo {
@@ -140,7 +161,10 @@ export interface FileRoutesByTo {
   '/settings': typeof SettingsRoute
   '/signup': typeof SignupRoute
   '/verify-email': typeof VerifyEmailRoute
+  '/admin/buildings': typeof AdminBuildingsRoute
+  '/admin/users': typeof AdminUsersRoute
   '/buildings/$id': typeof BuildingsIdRoute
+  '/admin': typeof AdminIndexRoute
   '/buildings': typeof BuildingsIndexRoute
 }
 export interface FileRoutesById {
@@ -159,7 +183,10 @@ export interface FileRoutesById {
   '/settings': typeof SettingsRoute
   '/signup': typeof SignupRoute
   '/verify-email': typeof VerifyEmailRoute
+  '/admin/buildings': typeof AdminBuildingsRoute
+  '/admin/users': typeof AdminUsersRoute
   '/buildings/$id': typeof BuildingsIdRoute
+  '/admin/': typeof AdminIndexRoute
   '/buildings/': typeof BuildingsIndexRoute
 }
 export interface FileRouteTypes {
@@ -179,7 +206,10 @@ export interface FileRouteTypes {
     | '/settings'
     | '/signup'
     | '/verify-email'
+    | '/admin/buildings'
+    | '/admin/users'
     | '/buildings/$id'
+    | '/admin/'
     | '/buildings/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -197,7 +227,10 @@ export interface FileRouteTypes {
     | '/settings'
     | '/signup'
     | '/verify-email'
+    | '/admin/buildings'
+    | '/admin/users'
     | '/buildings/$id'
+    | '/admin'
     | '/buildings'
   id:
     | '__root__'
@@ -215,7 +248,10 @@ export interface FileRouteTypes {
     | '/settings'
     | '/signup'
     | '/verify-email'
+    | '/admin/buildings'
+    | '/admin/users'
     | '/buildings/$id'
+    | '/admin/'
     | '/buildings/'
   fileRoutesById: FileRoutesById
 }
@@ -234,7 +270,10 @@ export interface RootRouteChildren {
   SettingsRoute: typeof SettingsRoute
   SignupRoute: typeof SignupRoute
   VerifyEmailRoute: typeof VerifyEmailRoute
+  AdminBuildingsRoute: typeof AdminBuildingsRoute
+  AdminUsersRoute: typeof AdminUsersRoute
   BuildingsIdRoute: typeof BuildingsIdRoute
+  AdminIndexRoute: typeof AdminIndexRoute
   BuildingsIndexRoute: typeof BuildingsIndexRoute
 }
 
@@ -338,6 +377,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof VerifyEmailRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/': {
+      id: '/admin/'
+      path: '/admin'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/buildings': {
+      id: '/admin/buildings'
+      path: '/admin/buildings'
+      fullPath: '/admin/buildings'
+      preLoaderRoute: typeof AdminBuildingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/users': {
+      id: '/admin/users'
+      path: '/admin/users'
+      fullPath: '/admin/users'
+      preLoaderRoute: typeof AdminUsersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/buildings/': {
       id: '/buildings/'
       path: '/buildings'
@@ -370,7 +430,10 @@ const rootRouteChildren: RootRouteChildren = {
   SettingsRoute: SettingsRoute,
   SignupRoute: SignupRoute,
   VerifyEmailRoute: VerifyEmailRoute,
+  AdminBuildingsRoute: AdminBuildingsRoute,
+  AdminUsersRoute: AdminUsersRoute,
   BuildingsIdRoute: BuildingsIdRoute,
+  AdminIndexRoute: AdminIndexRoute,
   BuildingsIndexRoute: BuildingsIndexRoute,
 }
 export const routeTree = rootRouteImport
