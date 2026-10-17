@@ -30,3 +30,45 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Python virtual environments and caches
+.venv/
+venv/
+env/
+ENV/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Jupyter notebook checkpoints
+.ipynb_checkpoints/
+
+# Local datasets (keep directory documentation and placeholders)
+/data/raw/**
+!/data/raw/**/
+!/data/raw/**/README.md
+!/data/raw/**/.gitkeep
+/data/processed/**
+!/data/processed/**/
+!/data/processed/**/README.md
+!/data/processed/**/.gitkeep
+
+# Trained model artifacts, including JSON/UBJ files in the model directory
+/ml/models/**
+!/ml/models/**/
+!/ml/models/**/README.md
+!/ml/models/**/.gitkeep
+*.joblib
+*.pkl
+*.pickle
+*.ubj
+
+# Local environment files
+.env
+.env.*
+
+# Additional Vite / TypeScript generated files
+.vite/
+*.tsbuildinfo
