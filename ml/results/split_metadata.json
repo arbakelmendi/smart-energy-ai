@@ -1,0 +1,31 @@
+{
+  "boundary_checks": {
+    "train_before_validation": true,
+    "train_test_timestamps_disjoint": true,
+    "train_validation_timestamps_disjoint": true,
+    "validation_before_test": true,
+    "validation_test_timestamps_disjoint": true
+  },
+  "forecast_horizon_minutes": 10,
+  "source_feature_dataset_sha256": "f69480c282e32601920f0820cdf9d2530ecfc5b053c4cefa4de2d15c73c2077f",
+  "split_csv_sha256": {
+    "test": "227efb785588e32e297acdbbb7595102c210b25b30492e8acef5effddc520600",
+    "train": "b4e74536ad61bce5a75b044066f9012348a12cbd69095a0e5a801642fc7ebbe4",
+    "validation": "5b93ccdb622696544eb3abb7d59b59445bf37c5ff6dfe2f8449b4b1282e41533"
+  },
+  "split_method": "contiguous chronological partitions; no shuffle",
+  "target_column": "target_appliances_next",
+  "test_end": "2016-05-27 17:50:00",
+  "test_percentage": 15.000534,
+  "test_rows": 2809,
+  "test_start": "2016-05-08 05:50:00",
+  "total_supervised_rows": 18726,
+  "train_end": "2016-04-18 17:30:00",
+  "train_percentage": 69.998932,
+  "train_rows": 13108,
+  "train_start": "2016-01-18 17:00:00",
+  "validation_end": "2016-05-08 05:40:00",
+  "validation_percentage": 15.000534,
+  "validation_rows": 2809,
+  "validation_start": "2016-04-18 17:40:00"
+}
