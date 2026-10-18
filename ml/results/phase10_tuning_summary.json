@@ -1,0 +1,164 @@
+{
+  "best_validation_model_before_tuning": "Linear Regression",
+  "best_validation_model_changed_after_tuning": true,
+  "current_best_validation_model_by_rmse": "Tuned XGBoost",
+  "cv_fold_boundaries": [
+    {
+      "fit_end": "2016-02-02 21:30:00",
+      "fit_precedes_scoring": true,
+      "fit_rows": 2188,
+      "fit_start": "2016-01-18 17:00:00",
+      "fold": 1,
+      "scoring_end": "2016-02-18 01:30:00",
+      "scoring_rows": 2184,
+      "scoring_start": "2016-02-02 21:40:00"
+    },
+    {
+      "fit_end": "2016-02-18 01:30:00",
+      "fit_precedes_scoring": true,
+      "fit_rows": 4372,
+      "fit_start": "2016-01-18 17:00:00",
+      "fold": 2,
+      "scoring_end": "2016-03-04 05:30:00",
+      "scoring_rows": 2184,
+      "scoring_start": "2016-02-18 01:40:00"
+    },
+    {
+      "fit_end": "2016-03-04 05:30:00",
+      "fit_precedes_scoring": true,
+      "fit_rows": 6556,
+      "fit_start": "2016-01-18 17:00:00",
+      "fold": 3,
+      "scoring_end": "2016-03-19 09:30:00",
+      "scoring_rows": 2184,
+      "scoring_start": "2016-03-04 05:40:00"
+    },
+    {
+      "fit_end": "2016-03-19 09:30:00",
+      "fit_precedes_scoring": true,
+      "fit_rows": 8740,
+      "fit_start": "2016-01-18 17:00:00",
+      "fold": 4,
+      "scoring_end": "2016-04-03 13:30:00",
+      "scoring_rows": 2184,
+      "scoring_start": "2016-03-19 09:40:00"
+    },
+    {
+      "fit_end": "2016-04-03 13:30:00",
+      "fit_precedes_scoring": true,
+      "fit_rows": 10924,
+      "fit_start": "2016-01-18 17:00:00",
+      "fold": 5,
+      "scoring_end": "2016-04-18 17:30:00",
+      "scoring_rows": 2184,
+      "scoring_start": "2016-04-03 13:40:00"
+    }
+  ],
+  "cv_n_splits": 5,
+  "evaluation_methodology": "5-fold expanding TimeSeriesSplit on TRAIN; select each tree model by lowest mean CV RMSE, refit on all TRAIN, evaluate once on VALIDATION",
+  "feature_count": 42,
+  "linear_regression_validation_metrics": {
+    "mae": 27.02529387063962,
+    "r2": 0.5649559830358953,
+    "rmse": 59.346237268480074
+  },
+  "note": "Test set was not loaded or evaluated in Phase 10; no final model selected.",
+  "persistence_validation_metrics": {
+    "mae": 25.920256318974722,
+    "r2": 0.46527285610821445,
+    "rmse": 65.79497157144202
+  },
+  "primary_tuning_metric": "mean_cv_rmse",
+  "random_forest": {
+    "best_cv_rmse_std": 4.6830570796235245,
+    "best_mean_cv_rmse": 67.1738835992392,
+    "best_parameters": {
+      "max_depth": 10,
+      "max_features": 1.0,
+      "min_samples_leaf": 4,
+      "n_estimators": 300
+    },
+    "candidate_count": 36,
+    "random_state": 42,
+    "scaling_applied": false,
+    "tuned_validation_metrics": {
+      "mae": 33.03036877970391,
+      "r2": 0.4860585286448823,
+      "rmse": 64.50352076663437
+    },
+    "untuned_validation_metrics": {
+      "mae": 53.004521181915266,
+      "r2": -0.25552711394804195,
+      "rmse": 100.81836183251377
+    },
+    "validation_rmse_improvement_vs_untuned_percent": 36.02006658887005
+  },
+  "test_set_accessed": false,
+  "train_rows": 13108,
+  "validation_model_comparison": {
+    "Linear Regression": {
+      "mae": 27.02529387063962,
+      "r2": 0.5649559830358953,
+      "rmse": 59.346237268480074
+    },
+    "Persistence Baseline": {
+      "mae": 25.920256318974722,
+      "r2": 0.46527285610821445,
+      "rmse": 65.79497157144202
+    },
+    "Tuned Random Forest": {
+      "mae": 33.03036877970391,
+      "r2": 0.4860585286448823,
+      "rmse": 64.50352076663437
+    },
+    "Tuned XGBoost": {
+      "mae": 25.493202209472656,
+      "r2": 0.5898163318634033,
+      "rmse": 57.62563762187907
+    },
+    "Untuned Random Forest": {
+      "mae": 53.004521181915266,
+      "r2": -0.25552711394804195,
+      "rmse": 100.81836183251377
+    },
+    "Untuned XGBoost": {
+      "mae": 54.392578125,
+      "r2": -0.013411760330200195,
+      "rmse": 90.57733660386576
+    }
+  },
+  "validation_rows": 2809,
+  "xgboost": {
+    "base_parameters": {
+      "n_jobs": 1,
+      "objective": "reg:squarederror",
+      "random_state": 42,
+      "tree_method": "hist",
+      "verbosity": 0
+    },
+    "best_cv_rmse_std": 4.411266083235355,
+    "best_mean_cv_rmse": 65.79667816162109,
+    "best_parameters": {
+      "colsample_bytree": 1.0,
+      "learning_rate": 0.03,
+      "max_depth": 3,
+      "min_child_weight": 5,
+      "n_estimators": 100,
+      "subsample": 1.0
+    },
+    "candidate_count": 16,
+    "random_state": 42,
+    "scaling_applied": false,
+    "tuned_validation_metrics": {
+      "mae": 25.493202209472656,
+      "r2": 0.5898163318634033,
+      "rmse": 57.62563762187907
+    },
+    "untuned_validation_metrics": {
+      "mae": 54.392578125,
+      "r2": -0.013411760330200195,
+      "rmse": 90.57733660386576
+    },
+    "validation_rmse_improvement_vs_untuned_percent": 36.37962896402977
+  }
+}

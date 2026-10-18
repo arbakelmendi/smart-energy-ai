@@ -1,0 +1,1196 @@
+{
+  "feature_count": 42,
+  "folds": [
+    {
+      "fit_end": "2016-02-02 21:30:00",
+      "fit_precedes_scoring": true,
+      "fit_rows": 2188,
+      "fit_start": "2016-01-18 17:00:00",
+      "fold": 1,
+      "scoring_end": "2016-02-18 01:30:00",
+      "scoring_rows": 2184,
+      "scoring_start": "2016-02-02 21:40:00"
+    },
+    {
+      "fit_end": "2016-02-18 01:30:00",
+      "fit_precedes_scoring": true,
+      "fit_rows": 4372,
+      "fit_start": "2016-01-18 17:00:00",
+      "fold": 2,
+      "scoring_end": "2016-03-04 05:30:00",
+      "scoring_rows": 2184,
+      "scoring_start": "2016-02-18 01:40:00"
+    },
+    {
+      "fit_end": "2016-03-04 05:30:00",
+      "fit_precedes_scoring": true,
+      "fit_rows": 6556,
+      "fit_start": "2016-01-18 17:00:00",
+      "fold": 3,
+      "scoring_end": "2016-03-19 09:30:00",
+      "scoring_rows": 2184,
+      "scoring_start": "2016-03-04 05:40:00"
+    },
+    {
+      "fit_end": "2016-03-19 09:30:00",
+      "fit_precedes_scoring": true,
+      "fit_rows": 8740,
+      "fit_start": "2016-01-18 17:00:00",
+      "fold": 4,
+      "scoring_end": "2016-04-03 13:30:00",
+      "scoring_rows": 2184,
+      "scoring_start": "2016-03-19 09:40:00"
+    },
+    {
+      "fit_end": "2016-04-03 13:30:00",
+      "fit_precedes_scoring": true,
+      "fit_rows": 10924,
+      "fit_start": "2016-01-18 17:00:00",
+      "fold": 5,
+      "scoring_end": "2016-04-18 17:30:00",
+      "scoring_rows": 2184,
+      "scoring_start": "2016-04-03 13:40:00"
+    }
+  ],
+  "methodology": "TRAIN-only TimeSeriesSplit with expanding windows; no shuffle",
+  "n_splits": 5,
+  "primary_selection_metric": "mean_cv_rmse",
+  "random_forest": {
+    "candidate_count": 36,
+    "candidates": [
+      {
+        "candidate_id": 0,
+        "fold_rmse": [
+          81.82720265487721,
+          69.49690709775398,
+          84.54976762314729,
+          67.14295949742802,
+          113.63229991218752
+        ],
+        "mean_cv_rmse": 83.32982735707881,
+        "parameters": {
+          "max_depth": null,
+          "max_features": 1.0,
+          "min_samples_leaf": 1,
+          "n_estimators": 100
+        },
+        "std_cv_rmse": 16.585236520521455
+      },
+      {
+        "candidate_id": 1,
+        "fold_rmse": [
+          82.0349022968361,
+          68.52941954817722,
+          82.86115596641872,
+          65.59940767911733,
+          111.07770318654143
+        ],
+        "mean_cv_rmse": 82.02051773541817,
+        "parameters": {
+          "max_depth": null,
+          "max_features": 1.0,
+          "min_samples_leaf": 1,
+          "n_estimators": 300
+        },
+        "std_cv_rmse": 16.103971508115112
+      },
+      {
+        "candidate_id": 2,
+        "fold_rmse": [
+          74.18528125852568,
+          66.8008775825566,
+          74.9612654532274,
+          62.44171054639852,
+          83.59636699328827
+        ],
+        "mean_cv_rmse": 72.39710036679928,
+        "parameters": {
+          "max_depth": null,
+          "max_features": 1.0,
+          "min_samples_leaf": 2,
+          "n_estimators": 100
+        },
+        "std_cv_rmse": 7.288670693483119
+      },
+      {
+        "candidate_id": 3,
+        "fold_rmse": [
+          74.59343033073931,
+          66.59782469566152,
+          73.90797845988155,
+          62.07080367934289,
+          82.02860541689591
+        ],
+        "mean_cv_rmse": 71.83972851650424,
+        "parameters": {
+          "max_depth": null,
+          "max_features": 1.0,
+          "min_samples_leaf": 2,
+          "n_estimators": 300
+        },
+        "std_cv_rmse": 6.907723100159854
+      },
+      {
+        "candidate_id": 4,
+        "fold_rmse": [
+          71.1334068416522,
+          65.7743626929777,
+          69.46401893280233,
+          60.10681849318071,
+          72.96909807494261
+        ],
+        "mean_cv_rmse": 67.8895410071111,
+        "parameters": {
+          "max_depth": null,
+          "max_features": 1.0,
+          "min_samples_leaf": 4,
+          "n_estimators": 100
+        },
+        "std_cv_rmse": 4.557374141449618
+      },
+      {
+        "candidate_id": 5,
+        "fold_rmse": [
+          70.85927506609946,
+          65.37294644440527,
+          68.97688340573099,
+          59.8128052289099,
+          72.95400808922311
+        ],
+        "mean_cv_rmse": 67.59518364687375,
+        "parameters": {
+          "max_depth": null,
+          "max_features": 1.0,
+          "min_samples_leaf": 4,
+          "n_estimators": 300
+        },
+        "std_cv_rmse": 4.621344792266302
+      },
+      {
+        "candidate_id": 6,
+        "fold_rmse": [
+          92.58095880444415,
+          69.54191267895656,
+          73.24703925181898,
+          64.1479758230749,
+          81.96662634419623
+        ],
+        "mean_cv_rmse": 76.29690258049817,
+        "parameters": {
+          "max_depth": null,
+          "max_features": "sqrt",
+          "min_samples_leaf": 1,
+          "n_estimators": 100
+        },
+        "std_cv_rmse": 9.99844218778168
+      },
+      {
+        "candidate_id": 7,
+        "fold_rmse": [
+          88.26651603565676,
+          68.83182148144417,
+          73.03584487600685,
+          62.95880778264053,
+          81.46995295277263
+        ],
+        "mean_cv_rmse": 74.91258862570419,
+        "parameters": {
+          "max_depth": null,
+          "max_features": "sqrt",
+          "min_samples_leaf": 1,
+          "n_estimators": 300
+        },
+        "std_cv_rmse": 8.996856971153075
+      },
+      {
+        "candidate_id": 8,
+        "fold_rmse": [
+          82.4939261668934,
+          68.7211966208173,
+          71.04302439350923,
+          61.57563600789765,
+          75.76844026224673
+        ],
+        "mean_cv_rmse": 71.92044469027286,
+        "parameters": {
+          "max_depth": null,
+          "max_features": "sqrt",
+          "min_samples_leaf": 2,
+          "n_estimators": 100
+        },
+        "std_cv_rmse": 6.99465083789608
+      },
+      {
+        "candidate_id": 9,
+        "fold_rmse": [
+          80.69064213573473,
+          67.74753749372545,
+          70.85614560893453,
+          61.40334340600797,
+          75.65896696026313
+        ],
+        "mean_cv_rmse": 71.27132712093317,
+        "parameters": {
+          "max_depth": null,
+          "max_features": "sqrt",
+          "min_samples_leaf": 2,
+          "n_estimators": 300
+        },
+        "std_cv_rmse": 6.602142838965131
+      },
+      {
+        "candidate_id": 10,
+        "fold_rmse": [
+          74.15879417713839,
+          67.60319937305667,
+          69.85570193100926,
+          61.0073822769195,
+          74.7529283300258
+        ],
+        "mean_cv_rmse": 69.47560121762993,
+        "parameters": {
+          "max_depth": null,
+          "max_features": "sqrt",
+          "min_samples_leaf": 4,
+          "n_estimators": 100
+        },
+        "std_cv_rmse": 5.00287067581999
+      },
+      {
+        "candidate_id": 11,
+        "fold_rmse": [
+          74.46683696140222,
+          67.37887981876989,
+          70.15418770401985,
+          60.33465415305369,
+          74.3518879941659
+        ],
+        "mean_cv_rmse": 69.33728932628232,
+        "parameters": {
+          "max_depth": null,
+          "max_features": "sqrt",
+          "min_samples_leaf": 4,
+          "n_estimators": 300
+        },
+        "std_cv_rmse": 5.2346650238926005
+      },
+      {
+        "candidate_id": 12,
+        "fold_rmse": [
+          80.84903210450273,
+          68.39572815361015,
+          82.38575241384041,
+          60.91767812368216,
+          106.43712667464776
+        ],
+        "mean_cv_rmse": 79.79706349405663,
+        "parameters": {
+          "max_depth": 10,
+          "max_features": 1.0,
+          "min_samples_leaf": 1,
+          "n_estimators": 100
+        },
+        "std_cv_rmse": 15.517232704674411
+      },
+      {
+        "candidate_id": 13,
+        "fold_rmse": [
+          80.85571364183518,
+          67.7374196471884,
+          79.6665883700916,
+          60.4436430861775,
+          104.75558867836261
+        ],
+        "mean_cv_rmse": 78.69179068473106,
+        "parameters": {
+          "max_depth": 10,
+          "max_features": 1.0,
+          "min_samples_leaf": 1,
+          "n_estimators": 300
+        },
+        "std_cv_rmse": 15.086069697248835
+      },
+      {
+        "candidate_id": 14,
+        "fold_rmse": [
+          74.54147068439464,
+          66.3761731252789,
+          72.92274824554337,
+          60.11828755880906,
+          80.53042571827353
+        ],
+        "mean_cv_rmse": 70.8978210664599,
+        "parameters": {
+          "max_depth": 10,
+          "max_features": 1.0,
+          "min_samples_leaf": 2,
+          "n_estimators": 100
+        },
+        "std_cv_rmse": 7.025770103605188
+      },
+      {
+        "candidate_id": 15,
+        "fold_rmse": [
+          74.60310013182209,
+          66.16168631679662,
+          72.59361773882627,
+          59.76894456532144,
+          79.38782471037341
+        ],
+        "mean_cv_rmse": 70.50303469262796,
+        "parameters": {
+          "max_depth": 10,
+          "max_features": 1.0,
+          "min_samples_leaf": 2,
+          "n_estimators": 300
+        },
+        "std_cv_rmse": 6.843808359672673
+      },
+      {
+        "candidate_id": 16,
+        "fold_rmse": [
+          71.2190826532721,
+          65.56760927860176,
+          69.12142262814815,
+          58.9883829210528,
+          71.97127272380183
+        ],
+        "mean_cv_rmse": 67.37355404097532,
+        "parameters": {
+          "max_depth": 10,
+          "max_features": 1.0,
+          "min_samples_leaf": 4,
+          "n_estimators": 100
+        },
+        "std_cv_rmse": 4.744569173013663
+      },
+      {
+        "candidate_id": 17,
+        "fold_rmse": [
+          70.84472794908925,
+          65.29315990854388,
+          68.70019338311198,
+          59.00360567780365,
+          72.02773107764727
+        ],
+        "mean_cv_rmse": 67.1738835992392,
+        "parameters": {
+          "max_depth": 10,
+          "max_features": 1.0,
+          "min_samples_leaf": 4,
+          "n_estimators": 300
+        },
+        "std_cv_rmse": 4.6830570796235245
+      },
+      {
+        "candidate_id": 18,
+        "fold_rmse": [
+          89.50205141183662,
+          68.51511381827007,
+          72.8684023724158,
+          61.48123947435527,
+          78.04051361157572
+        ],
+        "mean_cv_rmse": 74.08146413769069,
+        "parameters": {
+          "max_depth": 10,
+          "max_features": "sqrt",
+          "min_samples_leaf": 1,
+          "n_estimators": 100
+        },
+        "std_cv_rmse": 9.430694787847106
+      },
+      {
+        "candidate_id": 19,
+        "fold_rmse": [
+          86.69880724563033,
+          68.3340709239439,
+          71.75430166172919,
+          60.982667766971616,
+          78.93070705787044
+        ],
+        "mean_cv_rmse": 73.3401109312291,
+        "parameters": {
+          "max_depth": 10,
+          "max_features": "sqrt",
+          "min_samples_leaf": 1,
+          "n_estimators": 300
+        },
+        "std_cv_rmse": 8.83166078858603
+      },
+      {
+        "candidate_id": 20,
+        "fold_rmse": [
+          81.97796951469228,
+          68.0312013778158,
+          70.88446779180006,
+          60.83095523395233,
+          74.70115441075819
+        ],
+        "mean_cv_rmse": 71.28514966580374,
+        "parameters": {
+          "max_depth": 10,
+          "max_features": "sqrt",
+          "min_samples_leaf": 2,
+          "n_estimators": 100
+        },
+        "std_cv_rmse": 7.014904010495706
+      },
+      {
+        "candidate_id": 21,
+        "fold_rmse": [
+          80.59896070266888,
+          66.99531445234234,
+          71.05520089566211,
+          60.44750008652286,
+          75.18109562735279
+        ],
+        "mean_cv_rmse": 70.85561435290978,
+        "parameters": {
+          "max_depth": 10,
+          "max_features": "sqrt",
+          "min_samples_leaf": 2,
+          "n_estimators": 300
+        },
+        "std_cv_rmse": 6.88350461668265
+      },
+      {
+        "candidate_id": 22,
+        "fold_rmse": [
+          74.18590789278879,
+          66.69659209629222,
+          70.4089207141156,
+          60.29092873813424,
+          75.26292696691857
+        ],
+        "mean_cv_rmse": 69.36905528164989,
+        "parameters": {
+          "max_depth": 10,
+          "max_features": "sqrt",
+          "min_samples_leaf": 4,
+          "n_estimators": 100
+        },
+        "std_cv_rmse": 5.451156825017238
+      },
+      {
+        "candidate_id": 23,
+        "fold_rmse": [
+          73.57385639708373,
+          66.98889811277193,
+          70.12303121317842,
+          60.288821669518924,
+          74.98890033659275
+        ],
+        "mean_cv_rmse": 69.19270154582915,
+        "parameters": {
+          "max_depth": 10,
+          "max_features": "sqrt",
+          "min_samples_leaf": 4,
+          "n_estimators": 300
+        },
+        "std_cv_rmse": 5.2496052797517665
+      },
+      {
+        "candidate_id": 24,
+        "fold_rmse": [
+          80.71597200901596,
+          69.10469934000724,
+          82.88202307633708,
+          66.77234506620236,
+          112.87434098095827
+        ],
+        "mean_cv_rmse": 82.46987609450419,
+        "parameters": {
+          "max_depth": 20,
+          "max_features": 1.0,
+          "min_samples_leaf": 1,
+          "n_estimators": 100
+        },
+        "std_cv_rmse": 16.448209384433245
+      },
+      {
+        "candidate_id": 25,
+        "fold_rmse": [
+          81.14974452697325,
+          68.48092808088518,
+          83.04323890786802,
+          65.33576544975641,
+          110.51012613152962
+        ],
+        "mean_cv_rmse": 81.7039606194025,
+        "parameters": {
+          "max_depth": 20,
+          "max_features": 1.0,
+          "min_samples_leaf": 1,
+          "n_estimators": 300
+        },
+        "std_cv_rmse": 15.966605124129789
+      },
+      {
+        "candidate_id": 26,
+        "fold_rmse": [
+          75.33073417955771,
+          66.59873875475607,
+          74.54559318061857,
+          61.890430779227344,
+          83.56637243400448
+        ],
+        "mean_cv_rmse": 72.38637386563282,
+        "parameters": {
+          "max_depth": 20,
+          "max_features": 1.0,
+          "min_samples_leaf": 2,
+          "n_estimators": 100
+        },
+        "std_cv_rmse": 7.509798867438888
+      },
+      {
+        "candidate_id": 27,
+        "fold_rmse": [
+          74.78889542102232,
+          66.50602922020914,
+          73.92959707320499,
+          61.64624942266157,
+          82.2187985939717
+        ],
+        "mean_cv_rmse": 71.81791394621395,
+        "parameters": {
+          "max_depth": 20,
+          "max_features": 1.0,
+          "min_samples_leaf": 2,
+          "n_estimators": 300
+        },
+        "std_cv_rmse": 7.115380756227923
+      },
+      {
+        "candidate_id": 28,
+        "fold_rmse": [
+          71.28699971759458,
+          65.7201405557329,
+          69.70047439856005,
+          60.07712836285341,
+          72.8877484806196
+        ],
+        "mean_cv_rmse": 67.9344983030721,
+        "parameters": {
+          "max_depth": 20,
+          "max_features": 1.0,
+          "min_samples_leaf": 4,
+          "n_estimators": 100
+        },
+        "std_cv_rmse": 4.594219568898247
+      },
+      {
+        "candidate_id": 29,
+        "fold_rmse": [
+          70.90002429267287,
+          65.37691131343975,
+          69.12477096877817,
+          59.78176238444106,
+          72.97177192436985
+        ],
+        "mean_cv_rmse": 67.63104817674034,
+        "parameters": {
+          "max_depth": 20,
+          "max_features": 1.0,
+          "min_samples_leaf": 4,
+          "n_estimators": 300
+        },
+        "std_cv_rmse": 4.650444349138398
+      },
+      {
+        "candidate_id": 30,
+        "fold_rmse": [
+          95.7197479530196,
+          70.94561104997517,
+          72.79602960976042,
+          63.29899766441916,
+          81.56723918490293
+        ],
+        "mean_cv_rmse": 76.86552509241545,
+        "parameters": {
+          "max_depth": 20,
+          "max_features": "sqrt",
+          "min_samples_leaf": 1,
+          "n_estimators": 100
+        },
+        "std_cv_rmse": 11.074697984980274
+      },
+      {
+        "candidate_id": 31,
+        "fold_rmse": [
+          90.02664504400731,
+          69.82444008836855,
+          72.10497860959327,
+          63.08117237329543,
+          81.49235290629488
+        ],
+        "mean_cv_rmse": 75.30591780431189,
+        "parameters": {
+          "max_depth": 20,
+          "max_features": "sqrt",
+          "min_samples_leaf": 1,
+          "n_estimators": 300
+        },
+        "std_cv_rmse": 9.430893915938034
+      },
+      {
+        "candidate_id": 32,
+        "fold_rmse": [
+          82.66081308965951,
+          67.51962502397906,
+          70.93849191386498,
+          61.42655511623829,
+          76.70537710463346
+        ],
+        "mean_cv_rmse": 71.85017244967506,
+        "parameters": {
+          "max_depth": 20,
+          "max_features": "sqrt",
+          "min_samples_leaf": 2,
+          "n_estimators": 100
+        },
+        "std_cv_rmse": 7.3304783473919874
+      },
+      {
+        "candidate_id": 33,
+        "fold_rmse": [
+          79.8640969784579,
+          67.39209266651373,
+          70.56400072454016,
+          60.92369721194839,
+          75.96105724168922
+        ],
+        "mean_cv_rmse": 70.94098896462988,
+        "parameters": {
+          "max_depth": 20,
+          "max_features": "sqrt",
+          "min_samples_leaf": 2,
+          "n_estimators": 300
+        },
+        "std_cv_rmse": 6.601603763617873
+      },
+      {
+        "candidate_id": 34,
+        "fold_rmse": [
+          75.14954706968422,
+          66.71169403350555,
+          70.74375945873952,
+          60.25221112586159,
+          75.71976688864606
+        ],
+        "mean_cv_rmse": 69.71539571528739,
+        "parameters": {
+          "max_depth": 20,
+          "max_features": "sqrt",
+          "min_samples_leaf": 4,
+          "n_estimators": 100
+        },
+        "std_cv_rmse": 5.748288310192614
+      },
+      {
+        "candidate_id": 35,
+        "fold_rmse": [
+          75.20391999253263,
+          66.8970821072378,
+          70.19291050643608,
+          59.96682885637459,
+          74.64807387254314
+        ],
+        "mean_cv_rmse": 69.38176306702485,
+        "parameters": {
+          "max_depth": 20,
+          "max_features": "sqrt",
+          "min_samples_leaf": 4,
+          "n_estimators": 300
+        },
+        "std_cv_rmse": 5.605428201249594
+      }
+    ],
+    "search_space": {
+      "max_depth": [
+        null,
+        10,
+        20
+      ],
+      "max_features": [
+        1.0,
+        "sqrt"
+      ],
+      "min_samples_leaf": [
+        1,
+        2,
+        4
+      ],
+      "n_estimators": [
+        100,
+        300
+      ]
+    }
+  },
+  "scoring": "neg_root_mean_squared_error",
+  "train_rows": 13108,
+  "validation_rows": 2809,
+  "xgboost": {
+    "base_parameters": {
+      "n_jobs": 1,
+      "objective": "reg:squarederror",
+      "random_state": 42,
+      "tree_method": "hist",
+      "verbosity": 0
+    },
+    "candidate_count": 16,
+    "candidates": [
+      {
+        "candidate_id": 0,
+        "fold_rmse": [
+          67.91297912597656,
+          65.285400390625,
+          68.99840545654297,
+          57.900299072265625,
+          70.72537994384766
+        ],
+        "mean_cv_rmse": 66.16449279785157,
+        "parameters": {
+          "colsample_bytree": 0.8,
+          "learning_rate": 0.03,
+          "max_depth": 3,
+          "min_child_weight": 1,
+          "n_estimators": 100,
+          "subsample": 0.8
+        },
+        "std_cv_rmse": 4.493543331263229
+      },
+      {
+        "candidate_id": 1,
+        "fold_rmse": [
+          66.98855590820312,
+          64.39273071289062,
+          68.8142318725586,
+          58.03533172607422,
+          70.7525405883789
+        ],
+        "mean_cv_rmse": 65.79667816162109,
+        "parameters": {
+          "colsample_bytree": 1.0,
+          "learning_rate": 0.03,
+          "max_depth": 3,
+          "min_child_weight": 5,
+          "n_estimators": 100,
+          "subsample": 1.0
+        },
+        "std_cv_rmse": 4.411266083235355
+      },
+      {
+        "candidate_id": 2,
+        "fold_rmse": [
+          79.3734130859375,
+          64.68650817871094,
+          73.95167541503906,
+          58.068092346191406,
+          72.4298095703125
+        ],
+        "mean_cv_rmse": 69.70189971923828,
+        "parameters": {
+          "colsample_bytree": 0.8,
+          "learning_rate": 0.03,
+          "max_depth": 6,
+          "min_child_weight": 1,
+          "n_estimators": 100,
+          "subsample": 1.0
+        },
+        "std_cv_rmse": 7.477163669740037
+      },
+      {
+        "candidate_id": 3,
+        "fold_rmse": [
+          73.09750366210938,
+          64.85397338867188,
+          69.5450439453125,
+          57.44009780883789,
+          73.17845916748047
+        ],
+        "mean_cv_rmse": 67.62301559448242,
+        "parameters": {
+          "colsample_bytree": 1.0,
+          "learning_rate": 0.03,
+          "max_depth": 6,
+          "min_child_weight": 5,
+          "n_estimators": 100,
+          "subsample": 0.8
+        },
+        "std_cv_rmse": 5.931046707681632
+      },
+      {
+        "candidate_id": 4,
+        "fold_rmse": [
+          84.7313003540039,
+          67.79615783691406,
+          69.77218627929688,
+          58.28784942626953,
+          68.46350860595703
+        ],
+        "mean_cv_rmse": 69.81020050048828,
+        "parameters": {
+          "colsample_bytree": 1.0,
+          "learning_rate": 0.1,
+          "max_depth": 3,
+          "min_child_weight": 1,
+          "n_estimators": 100,
+          "subsample": 1.0
+        },
+        "std_cv_rmse": 8.500296313736834
+      },
+      {
+        "candidate_id": 5,
+        "fold_rmse": [
+          89.70089721679688,
+          65.21165466308594,
+          68.14171600341797,
+          58.39146423339844,
+          68.61203002929688
+        ],
+        "mean_cv_rmse": 70.01155242919921,
+        "parameters": {
+          "colsample_bytree": 0.8,
+          "learning_rate": 0.1,
+          "max_depth": 3,
+          "min_child_weight": 5,
+          "n_estimators": 100,
+          "subsample": 0.8
+        },
+        "std_cv_rmse": 10.499435390679194
+      },
+      {
+        "candidate_id": 6,
+        "fold_rmse": [
+          94.21025848388672,
+          70.21023559570312,
+          84.95201110839844,
+          64.55143737792969,
+          78.80998992919922
+        ],
+        "mean_cv_rmse": 78.54678649902344,
+        "parameters": {
+          "colsample_bytree": 1.0,
+          "learning_rate": 0.1,
+          "max_depth": 6,
+          "min_child_weight": 1,
+          "n_estimators": 100,
+          "subsample": 0.8
+        },
+        "std_cv_rmse": 10.50531685336284
+      },
+      {
+        "candidate_id": 7,
+        "fold_rmse": [
+          93.72884368896484,
+          67.83648681640625,
+          76.3780517578125,
+          64.91142272949219,
+          76.35449981689453
+        ],
+        "mean_cv_rmse": 75.84186096191407,
+        "parameters": {
+          "colsample_bytree": 0.8,
+          "learning_rate": 0.1,
+          "max_depth": 6,
+          "min_child_weight": 5,
+          "n_estimators": 100,
+          "subsample": 1.0
+        },
+        "std_cv_rmse": 10.040467572831552
+      },
+      {
+        "candidate_id": 8,
+        "fold_rmse": [
+          89.3839340209961,
+          65.74620819091797,
+          69.0157241821289,
+          57.533119201660156,
+          70.24429321289062
+        ],
+        "mean_cv_rmse": 70.38465576171875,
+        "parameters": {
+          "colsample_bytree": 0.8,
+          "learning_rate": 0.03,
+          "max_depth": 3,
+          "min_child_weight": 1,
+          "n_estimators": 300,
+          "subsample": 0.8
+        },
+        "std_cv_rmse": 10.483734425382503
+      },
+      {
+        "candidate_id": 9,
+        "fold_rmse": [
+          76.73575592041016,
+          64.69412231445312,
+          68.88182067871094,
+          57.62973403930664,
+          68.10406494140625
+        ],
+        "mean_cv_rmse": 67.20909957885742,
+        "parameters": {
+          "colsample_bytree": 1.0,
+          "learning_rate": 0.03,
+          "max_depth": 3,
+          "min_child_weight": 5,
+          "n_estimators": 300,
+          "subsample": 1.0
+        },
+        "std_cv_rmse": 6.203958328501374
+      },
+      {
+        "candidate_id": 10,
+        "fold_rmse": [
+          91.38666534423828,
+          66.67456817626953,
+          78.93428039550781,
+          65.32421112060547,
+          73.65911102294922
+        ],
+        "mean_cv_rmse": 75.19576721191406,
+        "parameters": {
+          "colsample_bytree": 0.8,
+          "learning_rate": 0.03,
+          "max_depth": 6,
+          "min_child_weight": 1,
+          "n_estimators": 300,
+          "subsample": 1.0
+        },
+        "std_cv_rmse": 9.471445803753609
+      },
+      {
+        "candidate_id": 11,
+        "fold_rmse": [
+          87.7421646118164,
+          66.36637878417969,
+          71.89434051513672,
+          60.69876480102539,
+          74.58061218261719
+        ],
+        "mean_cv_rmse": 72.25645217895507,
+        "parameters": {
+          "colsample_bytree": 1.0,
+          "learning_rate": 0.03,
+          "max_depth": 6,
+          "min_child_weight": 5,
+          "n_estimators": 300,
+          "subsample": 0.8
+        },
+        "std_cv_rmse": 9.095199132012096
+      },
+      {
+        "candidate_id": 12,
+        "fold_rmse": [
+          132.31442260742188,
+          69.49530792236328,
+          79.71078491210938,
+          63.49945068359375,
+          84.89702606201172
+        ],
+        "mean_cv_rmse": 85.9833984375,
+        "parameters": {
+          "colsample_bytree": 1.0,
+          "learning_rate": 0.1,
+          "max_depth": 3,
+          "min_child_weight": 1,
+          "n_estimators": 300,
+          "subsample": 1.0
+        },
+        "std_cv_rmse": 24.34943416774505
+      },
+      {
+        "candidate_id": 13,
+        "fold_rmse": [
+          120.86334228515625,
+          67.51806640625,
+          74.38408660888672,
+          61.149391174316406,
+          74.91432189941406
+        ],
+        "mean_cv_rmse": 79.76584167480469,
+        "parameters": {
+          "colsample_bytree": 0.8,
+          "learning_rate": 0.1,
+          "max_depth": 3,
+          "min_child_weight": 5,
+          "n_estimators": 300,
+          "subsample": 0.8
+        },
+        "std_cv_rmse": 21.156962524920903
+      },
+      {
+        "candidate_id": 14,
+        "fold_rmse": [
+          106.36641693115234,
+          77.7642822265625,
+          106.11116027832031,
+          73.46056365966797,
+          91.10286712646484
+        ],
+        "mean_cv_rmse": 90.9610580444336,
+        "parameters": {
+          "colsample_bytree": 1.0,
+          "learning_rate": 0.1,
+          "max_depth": 6,
+          "min_child_weight": 1,
+          "n_estimators": 300,
+          "subsample": 0.8
+        },
+        "std_cv_rmse": 13.764395995756084
+      },
+      {
+        "candidate_id": 15,
+        "fold_rmse": [
+          102.52790069580078,
+          74.2524185180664,
+          82.71212005615234,
+          76.04484558105469,
+          84.65299224853516
+        ],
+        "mean_cv_rmse": 84.03805541992188,
+        "parameters": {
+          "colsample_bytree": 0.8,
+          "learning_rate": 0.1,
+          "max_depth": 6,
+          "min_child_weight": 5,
+          "n_estimators": 300,
+          "subsample": 1.0
+        },
+        "std_cv_rmse": 10.036540472903397
+      }
+    ],
+    "fixed_candidate_configurations": [
+      {
+        "colsample_bytree": 0.8,
+        "learning_rate": 0.03,
+        "max_depth": 3,
+        "min_child_weight": 1,
+        "n_estimators": 100,
+        "subsample": 0.8
+      },
+      {
+        "colsample_bytree": 1.0,
+        "learning_rate": 0.03,
+        "max_depth": 3,
+        "min_child_weight": 5,
+        "n_estimators": 100,
+        "subsample": 1.0
+      },
+      {
+        "colsample_bytree": 0.8,
+        "learning_rate": 0.03,
+        "max_depth": 6,
+        "min_child_weight": 1,
+        "n_estimators": 100,
+        "subsample": 1.0
+      },
+      {
+        "colsample_bytree": 1.0,
+        "learning_rate": 0.03,
+        "max_depth": 6,
+        "min_child_weight": 5,
+        "n_estimators": 100,
+        "subsample": 0.8
+      },
+      {
+        "colsample_bytree": 1.0,
+        "learning_rate": 0.1,
+        "max_depth": 3,
+        "min_child_weight": 1,
+        "n_estimators": 100,
+        "subsample": 1.0
+      },
+      {
+        "colsample_bytree": 0.8,
+        "learning_rate": 0.1,
+        "max_depth": 3,
+        "min_child_weight": 5,
+        "n_estimators": 100,
+        "subsample": 0.8
+      },
+      {
+        "colsample_bytree": 1.0,
+        "learning_rate": 0.1,
+        "max_depth": 6,
+        "min_child_weight": 1,
+        "n_estimators": 100,
+        "subsample": 0.8
+      },
+      {
+        "colsample_bytree": 0.8,
+        "learning_rate": 0.1,
+        "max_depth": 6,
+        "min_child_weight": 5,
+        "n_estimators": 100,
+        "subsample": 1.0
+      },
+      {
+        "colsample_bytree": 0.8,
+        "learning_rate": 0.03,
+        "max_depth": 3,
+        "min_child_weight": 1,
+        "n_estimators": 300,
+        "subsample": 0.8
+      },
+      {
+        "colsample_bytree": 1.0,
+        "learning_rate": 0.03,
+        "max_depth": 3,
+        "min_child_weight": 5,
+        "n_estimators": 300,
+        "subsample": 1.0
+      },
+      {
+        "colsample_bytree": 0.8,
+        "learning_rate": 0.03,
+        "max_depth": 6,
+        "min_child_weight": 1,
+        "n_estimators": 300,
+        "subsample": 1.0
+      },
+      {
+        "colsample_bytree": 1.0,
+        "learning_rate": 0.03,
+        "max_depth": 6,
+        "min_child_weight": 5,
+        "n_estimators": 300,
+        "subsample": 0.8
+      },
+      {
+        "colsample_bytree": 1.0,
+        "learning_rate": 0.1,
+        "max_depth": 3,
+        "min_child_weight": 1,
+        "n_estimators": 300,
+        "subsample": 1.0
+      },
+      {
+        "colsample_bytree": 0.8,
+        "learning_rate": 0.1,
+        "max_depth": 3,
+        "min_child_weight": 5,
+        "n_estimators": 300,
+        "subsample": 0.8
+      },
+      {
+        "colsample_bytree": 1.0,
+        "learning_rate": 0.1,
+        "max_depth": 6,
+        "min_child_weight": 1,
+        "n_estimators": 300,
+        "subsample": 0.8
+      },
+      {
+        "colsample_bytree": 0.8,
+        "learning_rate": 0.1,
+        "max_depth": 6,
+        "min_child_weight": 5,
+        "n_estimators": 300,
+        "subsample": 1.0
+      }
+    ]
+  }
+}
