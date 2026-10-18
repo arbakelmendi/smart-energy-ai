@@ -1,0 +1,8 @@
+{
+  "comparison": "Exact JSON numeric equality; no tolerance was needed",
+  "gain_reproduced_exactly": true,
+  "original_result_sha256": "f1c0ce2cb196accd00c78ce6a0d1158716dc03967ff7e963a11a4e207101a5b0",
+  "permutation_means_stds_and_all_repetitions_reproduced_exactly": true,
+  "phase11_metrics_reproduced": true,
+  "whole_result_reproduced_exactly": true
+}
