@@ -1,0 +1,70 @@
+{
+  "current_best_validation_model_by_rmse": "Linear Regression",
+  "early_stopping_used": false,
+  "evaluation_split": "validation",
+  "feature_count": 42,
+  "forecast_horizon_minutes": 10,
+  "hyperparameter_tuning_performed": false,
+  "mae": 54.392578125,
+  "mean_validation_residual": -33.896608291380176,
+  "model": "XGBoost",
+  "model_artifact_saved": false,
+  "note": "Test set was not loaded or evaluated in Phase 9.",
+  "r2": -0.013411760330200195,
+  "random_state": 42,
+  "resolved_xgboost_parameters": {
+    "colsample_bytree": 1.0,
+    "enable_categorical": true,
+    "learning_rate": 0.3,
+    "max_depth": 6,
+    "min_child_weight": 1,
+    "n_estimators": 100,
+    "n_jobs": 1,
+    "objective": "reg:squarederror",
+    "random_state": 42,
+    "reg_alpha": 0.0,
+    "reg_lambda": 1.0,
+    "subsample": 1.0,
+    "tree_method": "hist",
+    "verbosity": 0
+  },
+  "results_path": "C:\\Users\\arbak\\Projects\\SmartEnergyAI\\ml\\results\\phase9_xgboost_validation_metrics.json",
+  "rmse": 90.57733660386576,
+  "scaling_applied": false,
+  "std_validation_residual": 84.01063481384091,
+  "target": "target_appliances_next",
+  "test_set_accessed": false,
+  "train_rows": 13108,
+  "validation_model_comparison": {
+    "Linear Regression": {
+      "mae": 27.02529387063962,
+      "r2": 0.5649559830358953,
+      "rmse": 59.346237268480074
+    },
+    "Persistence Baseline": {
+      "mae": 25.920256318974722,
+      "r2": 0.46527285610821445,
+      "rmse": 65.79497157144202
+    },
+    "Random Forest": {
+      "mae": 53.004521181915266,
+      "r2": -0.25552711394804195,
+      "rmse": 100.81836183251377
+    },
+    "XGBoost": {
+      "mae": 54.392578125,
+      "r2": -0.013411760330200195,
+      "rmse": 90.57733660386576
+    }
+  },
+  "validation_rmse": {
+    "linear_regression": 59.346237268480074,
+    "persistence": 65.79497157144202,
+    "random_forest": 100.81836183251377,
+    "xgboost": 90.57733660386576
+  },
+  "validation_rows": 2809,
+  "xgboost_rmse_improvement_vs_linear_regression_percent": -52.62523922805317,
+  "xgboost_rmse_improvement_vs_persistence_percent": -37.666047177350556,
+  "xgboost_rmse_improvement_vs_random_forest_percent": 10.1578968776155
+}
