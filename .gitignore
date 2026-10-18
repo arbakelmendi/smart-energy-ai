@@ -72,3 +72,6 @@ __pycache__/
 # Additional Vite / TypeScript generated files
 .vite/
 *.tsbuildinfo
+
+# Generated evaluation predictions and diagnostic plots
+/ml/results/generated/

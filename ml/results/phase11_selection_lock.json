@@ -1,0 +1,127 @@
+{
+  "dependencies": {
+    "numpy": "2.5.4",
+    "pandas": "3.0.6",
+    "scikit-learn": "1.9.1",
+    "xgboost": "3.4.1"
+  },
+  "expected_test_sha256_from_phase6": "227efb785588e32e297acdbbb7595102c210b25b30492e8acef5effddc520600",
+  "expected_tuned_xgboost_selected": true,
+  "feature_columns": [
+    "Appliances",
+    "lights",
+    "T1",
+    "RH_1",
+    "T2",
+    "RH_2",
+    "T3",
+    "RH_3",
+    "T4",
+    "RH_4",
+    "T5",
+    "RH_5",
+    "T6",
+    "RH_6",
+    "T7",
+    "RH_7",
+    "T8",
+    "RH_8",
+    "T9",
+    "RH_9",
+    "T_out",
+    "Press_mm_hg",
+    "RH_out",
+    "Windspeed",
+    "Visibility",
+    "Tdewpoint",
+    "hour",
+    "day_of_week",
+    "month",
+    "is_weekend",
+    "hour_sin",
+    "hour_cos",
+    "dow_sin",
+    "dow_cos",
+    "appliances_lag_1",
+    "appliances_lag_6",
+    "appliances_lag_144",
+    "appliances_lag_1008",
+    "appliances_roll_mean_1h",
+    "appliances_roll_std_1h",
+    "appliances_roll_mean_24h",
+    "appliances_roll_std_24h"
+  ],
+  "final_model_name": "Tuned XGBoost",
+  "input_sha256_before_test": {
+    "data/processed/energy_train.csv": "b4e74536ad61bce5a75b044066f9012348a12cbd69095a0e5a801642fc7ebbe4",
+    "data/processed/energy_validation.csv": "5b93ccdb622696544eb3abb7d59b59445bf37c5ff6dfe2f8449b4b1282e41533",
+    "ml/results/feature_schema.json": "0b1038f2d41ddff90921867bfc4d6ea5bbe0195e122e1d7cf96a05eaef2fcdff",
+    "ml/results/phase10_tuning_cv_results.json": "0fe9df7e4887dacb64ca03b1723efe1710f44e26ea06bdf08890bda01a9f01af",
+    "ml/results/phase10_tuning_summary.json": "7c9b87bd663f5045ecdb94f12f23529a7339c8c91091d2736a376069fa559a7f",
+    "ml/results/phase7_validation_metrics.json": "35a6fdb36a52cff7873d0fe20969d564cdc23add94816aec720cbde11d7bc9b8",
+    "ml/results/phase8_random_forest_validation_metrics.json": "9ab2cb0717baa0cd95813ecc582377c8f431640ac3c658f7def889e84810156f",
+    "ml/results/phase9_xgboost_validation_metrics.json": "d523cd81ef67c71d7f28fc88f1f1e683b9f50e11c5db816221eccfc351d0584a",
+    "ml/results/split_metadata.json": "0bd0caa2ab2d159969e3e1744492ce47c6d6778ba488ed5bb816c209525b395f"
+  },
+  "python_version": "3.13.14",
+  "selected_hyperparameters": {
+    "colsample_bytree": 1.0,
+    "learning_rate": 0.03,
+    "max_depth": 3,
+    "min_child_weight": 5,
+    "n_estimators": 100,
+    "n_jobs": 1,
+    "objective": "reg:squarederror",
+    "random_state": 42,
+    "subsample": 1.0,
+    "tree_method": "hist",
+    "verbosity": 0
+  },
+  "selected_validation_metrics": {
+    "mae": 25.493202209472656,
+    "r2": 0.5898163318634033,
+    "rmse": 57.62563762187907
+  },
+  "selection_basis": "Saved validation results only; lowest validation RMSE",
+  "selection_metric": "validation_rmse",
+  "selection_statement": "Final model selection was completed before accessing the held-out test set.",
+  "tie_breaking_rule": "Exact RMSE ties: alphabetical model name; MAE and R2 are supporting only",
+  "validation_ranking": [
+    {
+      "mae": 25.493202209472656,
+      "model": "Tuned XGBoost",
+      "r2": 0.5898163318634033,
+      "rmse": 57.62563762187907
+    },
+    {
+      "mae": 27.02529387063962,
+      "model": "Linear Regression",
+      "r2": 0.5649559830358953,
+      "rmse": 59.346237268480074
+    },
+    {
+      "mae": 33.03036877970391,
+      "model": "Tuned Random Forest",
+      "r2": 0.4860585286448823,
+      "rmse": 64.50352076663437
+    },
+    {
+      "mae": 25.920256318974722,
+      "model": "Persistence Baseline",
+      "r2": 0.46527285610821445,
+      "rmse": 65.79497157144202
+    },
+    {
+      "mae": 54.392578125,
+      "model": "Untuned XGBoost",
+      "r2": -0.013411760330200195,
+      "rmse": 90.57733660386576
+    },
+    {
+      "mae": 53.004521181915266,
+      "model": "Untuned Random Forest",
+      "r2": -0.25552711394804195,
+      "rmse": 100.81836183251377
+    }
+  ]
+}

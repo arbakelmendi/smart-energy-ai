@@ -1,0 +1,7 @@
+{
+  "exact_metrics_reproduced": true,
+  "exact_predictions_reproduced": true,
+  "identical_configuration_inputs_dependencies": true,
+  "note": "Identical technical replay only; no new selection or tuning decisions",
+  "original_result_sha256": "00af469b8ee4270ba85c92c77832e89929715acdfe802efe7df84dcb1ac534d9"
+}
