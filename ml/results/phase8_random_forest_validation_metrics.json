@@ -1,0 +1,61 @@
+{
+  "current_best_validation_model_by_rmse": "Linear Regression",
+  "evaluation_split": "validation",
+  "feature_count": 42,
+  "forecast_horizon_minutes": 10,
+  "hyperparameter_tuning_performed": false,
+  "mae": 53.004521181915266,
+  "mean_validation_residual": -34.85813456746173,
+  "model": "Random Forest",
+  "model_artifact_saved": false,
+  "note": "Test set was not loaded or evaluated in Phase 8.",
+  "r2": -0.25552711394804195,
+  "random_forest_improvement_vs_linear_regression_percent": -69.881641150079,
+  "random_forest_improvement_vs_persistence_percent": -53.23110478593699,
+  "random_state": 42,
+  "resolved_random_forest_parameters": {
+    "bootstrap": true,
+    "ccp_alpha": 0.0,
+    "criterion": "squared_error",
+    "max_depth": null,
+    "max_features": 1.0,
+    "max_leaf_nodes": null,
+    "max_samples": null,
+    "min_impurity_decrease": 0.0,
+    "min_samples_leaf": 1,
+    "min_samples_split": 2,
+    "min_weight_fraction_leaf": 0.0,
+    "monotonic_cst": null,
+    "n_estimators": 100,
+    "n_jobs": -1,
+    "oob_score": false,
+    "random_state": 42,
+    "verbose": 0,
+    "warm_start": false
+  },
+  "results_path": "C:\\Users\\arbak\\Projects\\SmartEnergyAI\\ml\\results\\phase8_random_forest_validation_metrics.json",
+  "rmse": 100.81836183251377,
+  "scaling_applied": false,
+  "std_validation_residual": 94.61733241227644,
+  "target": "target_appliances_next",
+  "test_set_accessed": false,
+  "train_rows": 13108,
+  "validation_model_comparison": {
+    "Linear Regression": {
+      "mae": 27.02529387063962,
+      "r2": 0.5649559830358953,
+      "rmse": 59.346237268480074
+    },
+    "Persistence Baseline": {
+      "mae": 25.920256318974722,
+      "r2": 0.46527285610821445,
+      "rmse": 65.79497157144202
+    },
+    "Random Forest": {
+      "mae": 53.004521181915266,
+      "r2": -0.25552711394804195,
+      "rmse": 100.81836183251377
+    }
+  },
+  "validation_rows": 2809
+}
