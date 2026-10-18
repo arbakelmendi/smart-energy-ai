@@ -8,4 +8,4 @@ The first 1,008 rows are excluded because the required 7-day historical context 
 
 `energy_train.csv`, `energy_validation.csv`, and `energy_test.csv` are generated reproducibly from the feature dataset by `ml/src/split_data.py` using contiguous chronological 70%/15%/15% partitions. Split boundaries, checksums, and the model feature schema are recorded in `ml/results/split_metadata.json` and `ml/results/feature_schema.json`.
 
-Generated CSV files are ignored by Git; do not force-add them. No scaling or model training has been performed. The test split is reserved for one final evaluation after model selection.
+Generated CSV files are ignored by Git; do not force-add them. Phase 7 compares persistence with Linear Regression using validation-only metrics in `ml/results/phase7_validation_metrics.json`; its StandardScaler is fitted on training rows only. No hyperparameter tuning, feature selection, test evaluation, or model artifact persistence was performed. The test split remains reserved for one final evaluation after model selection.
