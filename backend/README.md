@@ -15,6 +15,8 @@ Default address: `http://127.0.0.1:8000`. Swagger: `http://127.0.0.1:8000/docs`;
 | GET | `/` | API identification |
 | GET | `/health` | Model/threshold availability without prediction |
 | GET | `/model/info` | Safe model metadata, ordered feature names and existing Phase 11 metrics |
+| GET | `/analysis/model-comparison` | Saved Phase 10 validation metrics and original selection lock |
+| GET | `/analysis/feature-importance` | Saved Phase 12 predictive gain/permutation importance |
 | POST | `/forecast` | One forecast |
 | POST | `/forecast/recommendation` | One forecast with the unchanged Phase 14 recommendation structure |
 | GET | `/recommendations/thresholds` | Development-only thresholds and exact level definitions |
@@ -51,3 +53,5 @@ Tests use FastAPI TestClient (`httpx` is required for tests):
 
 
 Phase 17 adds read-only `/analysis/model-comparison` (committed Phase 10 VALIDATION metrics and the existing Phase 11 selection lock) and `/analysis/feature-importance` (saved Phase 12 gain/permutation results). These endpoints do not load datasets or models, compute new rankings, refit, evaluate, or recompute importance. Normalized gain is a predictive fraction, not an energy share or causal effect. Permutation mean/std retain their recorded Wh interpretation; std is not a confidence interval.
+
+For installation, artifact prerequisites and the ordered verification/research workflows, see the [reproducibility guide](../docs/reproducibility.md) and [architecture](../docs/system-architecture.md).

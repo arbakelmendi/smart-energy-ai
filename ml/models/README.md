@@ -1,6 +1,6 @@
 # Final forecasting model
 
-Generate or verify deterministic regeneration from the project root:
+Generate or verify deterministic regeneration from the project root (this reconstructs/refits the locked development model and checks Phase 11 equivalence; it is not a load-only operation):
 
 ```powershell
 .venv\Scripts\python.exe ml/src/save_final_model.py
@@ -27,7 +27,7 @@ Run the new tests after generation:
 .venv\Scripts\python.exe -m unittest discover -s tests -p "test_model_*.py" -v
 ```
 
-Artifact integration tests skip when the ignored model is absent; feature-contract unit tests remain available without local datasets. This package prepares later backend inference only. Correct feature timing, units and historical availability remain the caller's responsibility.
+Artifact integration tests skip when the ignored model is absent; feature-contract unit tests remain available without local datasets. The existing backend already uses this inference helper. Correct feature timing, units and historical availability remain the caller's responsibility.
 
 Native serialization reference: https://xgboost.readthedocs.io/en/stable/tutorials/saving_model.html
 
@@ -44,6 +44,8 @@ results = predict_and_recommend(engineered_feature_frame, model_bundle=bundle)
 
 The return value is always a list, one JSON-safe object per row in input order, with forecast, thresholds, trend, recommendation and scope. Current Appliances is taken from the same validated row. No extra sensors or context are required. Negative/nonfinite energy and malformed feature input fail; missing metadata fails without fallback. Model loading and strict feature validation reuse Phase 13 utilities. The native artifact must already exist; this phase does not recreate or retrain it.
 
-Trend is the exact sign of forecast minus current Wh (no tolerance); percent change is null at zero current energy. It only explains direction and does not affect rules. No automatic equipment control, causal feature claims, guaranteed savings or savings estimates are provided. Percentile bands have not been validated as effective interventions; development examples are behavior demonstrations, not model evaluation. Later API integration can expose the structured result.
+Trend is the exact sign of forecast minus current Wh (no tolerance); percent change is null at zero current energy. It only explains direction and does not affect rules. No automatic equipment control, causal feature claims, guaranteed savings or savings estimates are provided. Percentile bands have not been validated as effective interventions; development examples are behavior demonstrations, not model evaluation. The existing `/forecast/recommendation` endpoint exposes this structure for one observation.
 
 Verification: `.venv\Scripts\python.exe -m unittest discover -s tests -p "test_recommendation_engine.py" -v`. Execute `ml/notebooks/13_recommendation_engine.ipynb` with the project .venv; it selects the first chronological development forecast in each band without considering prediction error.
+
+For load-only verification, use `python -c "from ml.src.model_inference import load_final_model; load_final_model()"`. See the [reproducibility guide](../../docs/reproducibility.md) for recorded dependency versions and the difference between original result generation and technical replay.

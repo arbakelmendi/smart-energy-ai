@@ -1,4 +1,4 @@
-# Frontend API integration (Phase 16)
+# Frontend API integration
 
 React 19/TypeScript, TanStack Start SSR/file routes, the existing router QueryClient/root provider, Tailwind and the Lovable Vite wrapper are preserved. Native fetch and existing TanStack Query are used; no dependencies or routes were added.
 
@@ -10,11 +10,11 @@ Start the backend from the project root (canonical local model artifact and matc
 .venv\Scripts\python.exe -m uvicorn backend.main:app --reload
 ```
 
-The existing frontend script is `dev: vite dev`. With the repository Bun workflow, run `bun run dev`. If Bun is unavailable, `npm run dev` executes the same installed Vite script without installing packages or changing package managers/lockfiles. Build: `bun run build` (or `npm run build`). There is no typecheck script; run `node node_modules/typescript/bin/tsc --noEmit`.
+The existing scripts are `dev: vite dev` and `build: vite build`. Verified local commands are `npm run dev -- --host localhost --port 5173 --strictPort` and `npm run build`, using installed dependencies. Bun was unavailable in recorded QA; no Bun command is claimed as verified. Preserve the existing Bun/npm state and lockfiles. There is no typecheck script; run `node node_modules/typescript/bin/tsc --noEmit`.
 
 Functions: `getHealth`, `getModelInfo`, `getRecommendationThresholds`, `forecast`, `forecastWithRecommendation`. Types mirror `backend/schemas.py`. `ApiError` exposes status (null for connection/timeout failures) and parsed error detail. Server failures have generic UI messages; invalid JSON fails explicitly. Requests time out after 10 seconds unless a caller signal is supplied. GET hooks use TanStack Query cancellation signals. There are no mock fallbacks or automatic POST retries.
 
-Hooks: `useHealth`, `useModelInfo`, `useRecommendationThresholds`, `useForecast`, `useForecastRecommendation`. Queries wait until browser mount, using the existing QueryClient; no SSR API calls, preload or polling is introduced. Queries can refetch on focus/reconnect after their stale period. The existing app-shell header renders real loading/connected/unavailable status, a Retry action and small model metadata. A refresh failure shows unavailable rather than stale success. Other dashboard content remains demo data until the Phase 17 audit/replacement.
+Hooks: `useHealth`, `useModelInfo`, `useRecommendationThresholds`, `useForecast`, `useForecastRecommendation`. Queries wait until browser mount, using the existing QueryClient; no SSR API calls, preload or polling is introduced. Queries can refetch on focus/reconnect after their stale period. The existing app-shell header renders real loading/connected/unavailable status, a Retry action and small model metadata. A refresh failure shows unavailable rather than stale success. Dashboard research panels now use verified API results; unsupported operational views are explicitly unavailable.
 
 The threshold hook/function retrieves the backend's TRAIN + VALIDATION thresholds; the frontend does not classify consumption or hardcode cutoffs. POST functions wrap a supplied feature mapping as `{ features }`. The backend enforces the exact 42-feature schema. Forecasts are Appliances Wh, 10 minutes ahead. The browser cannot construct valid lag_1/6/144/1008 or rolling history from temperature/humidity alone. No raw-sensor form, fabricated histories, development-row production UI, causal control actions or savings estimates are introduced. Recommendations are decision support only.
 
@@ -41,3 +41,5 @@ The app shell disables unsupported data/building/admin operational views and hid
 Optional repeatable Windows browser regression: `.venv\Scripts\python.exe tests/verify_dashboard_browser.py`. Uses the installed Edge browser and `websocket-client` already present in the project's Jupyter environment, not a new browser test framework. Requires free ports 8000/5173 and installed frontend dependencies. It starts/stops only its verification processes, blocks external page requests, verifies desktop/mobile/error states, and saves ignored screenshots/evidence under `ml/results/generated`. `SMARTENERGY_BROWSER` can override the Edge executable. Phase 18 includes a route-wide browser QA mode: append `--phase18` to this command. Public/account pages no longer claim working account services.
 
 Phase 18 repeatable automated gates: `.venv\Scripts\python.exe tests/verify_phase18.py`; add `--browser` for the full local Edge/API/route checks. The script records targeted formatting findings separately from semantic lint and does not reformat unrelated files.
+
+Current architecture and complete setup/reproduction prerequisites are in the [architecture guide](../../../docs/system-architecture.md) and [reproducibility guide](../../../docs/reproducibility.md). The current endpoint/client additions are read-only analysis results, not a new live forecasting feed.
