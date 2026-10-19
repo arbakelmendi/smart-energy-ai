@@ -1,6 +1,5 @@
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import {
-  Bell,
   Building2,
   ChevronsLeft,
   ChevronsRight,
@@ -21,7 +20,7 @@ import { ThemeToggle } from "@/components/theme-toggle";
 import { BackendStatus } from "@/components/backend-status";
 import { Logo } from "@/components/public-layout";
 import { useAuth } from "@/lib/auth";
-import { alerts } from "@/lib/mock-data";
+import { Panel } from "@/components/ui-kit";
 import { cn } from "@/lib/utils";
 
 const mainNav = [
@@ -56,6 +55,8 @@ export function AppShell({
   const navigate = useNavigate();
 
   useEffect(() => setMobileOpen(false), [pathname]);
+
+  const operationalUnavailable = pathname === "/data" || pathname.startsWith("/buildings") || pathname.startsWith("/admin");
 
   const isAdmin = user?.role === "Platform Admin";
 
@@ -157,25 +158,15 @@ export function AppShell({
                 <LayoutGrid className="size-4" />
               </Button>
               <div className="min-w-0">
-                <h1 className="truncate text-lg font-semibold sm:text-xl">{title}</h1>
+                <h1 className="truncate text-lg font-semibold sm:text-xl">{operationalUnavailable ? "Operational data not connected" : title}</h1>
                 {subtitle ? (
-                  <p className="truncate text-xs text-muted-foreground">{subtitle}</p>
+                  <p className="truncate text-xs text-muted-foreground">{operationalUnavailable ? "No verified building feed or operational service is available" : subtitle}</p>
                 ) : null}
               </div>
             </div>
             <div className="flex items-center gap-1.5">
               <BackendStatus />
-              <Link
-                to="/dashboard"
-                hash="alerts"
-                className="relative grid size-9 place-items-center rounded-lg text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-                aria-label="Alerts"
-              >
-                <Bell className="size-4" />
-                <span className="absolute top-1.5 right-1.5 grid size-4 place-items-center rounded-full bg-peak text-[9px] font-bold text-peak-foreground">
-                  {alerts.length}
-                </span>
-              </Link>
+
               <ThemeToggle />
               <div className="ml-1 hidden items-center gap-2 border-l border-border pl-3 sm:flex">
                 <div className="text-right">
@@ -205,14 +196,17 @@ export function AppShell({
               </Button>
             </div>
           </div>
-          {actions ? (
+          {actions && !operationalUnavailable ? (
             <div className="flex flex-wrap items-center gap-2 border-t border-border/60 px-4 py-2.5 sm:px-6">
               {actions}
             </div>
           ) : null}
         </header>
         <main key={pathname} className="rise-in min-w-0 flex-1 px-4 py-6 sm:px-6 lg:py-8">
-          {children}
+          {operationalUnavailable ? <Panel title="Not connected" subtitle="Operational capability unavailable">
+            <p className="text-sm text-muted-foreground">No verified operational readings, building records or management service is connected. This prototype does not provide live measurements or equipment control.</p>
+            <Link to="/dashboard" className="mt-4 inline-block text-sm text-efficiency underline">View verified research results</Link>
+          </Panel> : children}
         </main>
       </div>
     </div>

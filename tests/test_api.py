@@ -216,5 +216,65 @@ class ApiTests(unittest.TestCase):
             self.assertEqual(response.status_code, 422, response.text)
 
 
+class ReadOnlyAnalysisTests(unittest.TestCase):
+    def setUp(self):
+        self.client = TestClient(app, raise_server_exceptions=False)
+
+    def test_comparison_equals_committed_validation(self):
+        response = self.client.get("/analysis/model-comparison")
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        summary = inference.read_json(inference.ROOT / "ml/results/phase10_tuning_summary.json")
+        lock = inference.read_json(inference.ROOT / "ml/results/phase11_selection_lock.json")
+        self.assertEqual(data["evaluation_dataset"], "validation")
+        self.assertEqual(data["unit"], "Wh")
+        self.assertEqual(len(data["models"]), 6)
+        self.assertEqual({r["model"]: {k:r[k] for k in ("mae", "rmse", "r2")} for r in data["models"]}, summary["validation_model_comparison"])
+        self.assertEqual(data["selected_model"], lock["final_model_name"])
+        self.assertEqual(data["selection_metric"], lock["selection_metric"])
+        self.assertEqual(data["selected_validation_rmse"], lock["selected_validation_metrics"]["rmse"])
+        self.assertNotIn(str(inference.ROOT), response.text)
+
+    def test_importance_equals_committed_phase12(self):
+        response = self.client.get("/analysis/feature-importance")
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        record = inference.read_json(inference.ROOT / "ml/results/phase12_feature_importance.json")
+        fields = ("feature", "normalized_gain", "gain_rank", "permutation_mean", "permutation_std", "permutation_rank")
+        self.assertEqual(data["features"], [{k:item[k] for k in fields} for item in record["features"]])
+        self.assertEqual(len(data["features"]), 42)
+        self.assertEqual(data["gain_dataset"], record["gain_dataset"])
+        self.assertEqual(data["permutation_dataset"], record["explanation_dataset"])
+        self.assertEqual(data["permutation_std_definition"], record["permutation_std_definition"])
+        self.assertIn("not causal", data["scope_note"])
+        self.assertNotIn(str(inference.ROOT), response.text)
+
+    def test_analysis_never_loads_data_models_or_computes_importance(self):
+        from xgboost import XGBRegressor
+        import sklearn.inspection
+        with patch.object(pd, "read_csv", side_effect=AssertionError("No dataset reads")), \
+             patch.object(inference, "load_final_model", side_effect=AssertionError("No model loading")), \
+             patch.object(XGBRegressor, "fit", side_effect=AssertionError("No fitting")), \
+             patch.object(sklearn.inspection, "permutation_importance", side_effect=AssertionError("No recomputation")):
+            for route in ("/analysis/model-comparison", "/analysis/feature-importance"):
+                self.assertEqual(self.client.get(route).status_code, 200)
+
+    def test_missing_analysis_artifact_is_safe_503(self):
+        with patch.object(inference, "read_json", side_effect=FileNotFoundError("private/local/path")):
+            for route in ("/analysis/model-comparison", "/analysis/feature-importance"):
+                response = self.client.get(route)
+                self.assertEqual(response.status_code, 503)
+                self.assertNotIn("private/local", response.text)
+
+    def test_malformed_json_artifact_is_safe_503(self):
+        with patch.object(inference, "read_json", side_effect=ValueError("malformed private artifact")):
+            self.assertEqual(self.client.get("/analysis/feature-importance").status_code, 503)
+
+    def test_openapi_has_typed_analysis_responses(self):
+        schemas = self.client.get("/openapi.json").json()["components"]["schemas"]
+        self.assertIn("ModelComparisonResponse", schemas)
+        self.assertIn("FeatureImportanceResponse", schemas)
+
+
 if __name__ == "__main__":
     unittest.main()

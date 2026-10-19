@@ -116,3 +116,40 @@ def threshold_info():
             "unit": metadata["unit"], "forecast_horizon_minutes": metadata["forecast_horizon_minutes"],
             "percentiles_wh": {k: metadata[k] for k in ("percentile_50", "percentile_75", "percentile_90", "percentile_95")},
             "level_definitions": metadata["level_definitions"], "test_used": metadata["test_used"]}
+
+
+def _research_artifact(name):
+    """Read existing committed JSON only. Never load datasets, fit or evaluate."""
+    try:
+        return inference.read_json(inference.ROOT / "ml/results" / name)
+    except (OSError, ValueError) as exc:
+        raise ResourceUnavailable("Research results unavailable. Restore the committed analysis artifacts.") from exc
+
+
+def model_comparison():
+    summary = _research_artifact("phase10_tuning_summary.json")
+    # Selection is read from the original lock, never re-ranked after test evaluation.
+    lock = _research_artifact("phase11_selection_lock.json")
+    names = ("Persistence Baseline", "Linear Regression", "Untuned Random Forest",
+             "Tuned Random Forest", "Untuned XGBoost", "Tuned XGBoost")
+    return {
+        "evaluation_dataset": "validation", "unit": "Wh",
+        "models": [{"model": name, **summary["validation_model_comparison"][name]} for name in names],
+        "selected_model": lock["final_model_name"], "selection_metric": lock["selection_metric"],
+        "selected_validation_rmse": lock["selected_validation_metrics"]["rmse"],
+        "selection_basis": lock["selection_basis"],
+    }
+
+
+def feature_importance():
+    record = _research_artifact("phase12_feature_importance.json")
+    fields = ("feature", "normalized_gain", "gain_rank", "permutation_mean", "permutation_std", "permutation_rank")
+    return {
+        "model_name": record["final_model_name"],
+        "features": [{key: item[key] for key in fields} for item in record["features"]],
+        "gain_dataset": record["gain_dataset"], "permutation_dataset": record["explanation_dataset"],
+        "normalized_gain_definition": record["normalized_gain_definition"],
+        "permutation_interpretation": record["permutation_interpretation"],
+        "permutation_std_definition": record["permutation_std_definition"],
+        "scope_note": "Predictive importance, not causal effect. No intervention savings are implied.",
+    }

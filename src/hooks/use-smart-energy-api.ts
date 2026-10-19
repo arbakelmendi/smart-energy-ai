@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { forecast, forecastWithRecommendation, getHealth, getModelInfo, getRecommendationThresholds } from "@/lib/api/smartEnergyApi";
+import { forecast, forecastWithRecommendation, getHealth, getModelInfo, getRecommendationThresholds, getModelComparison, getFeatureImportance } from "@/lib/api/smartEnergyApi";
 
 // SSR and the first hydration render both stay pending. Fetch only after browser mount.
 function useBrowserReady() {
@@ -33,4 +33,16 @@ export function useForecast() {
 }
 export function useForecastRecommendation() {
   return useMutation({ mutationFn: forecastWithRecommendation, retry: false });
+}
+
+
+export function useModelComparison() {
+  const enabled = useBrowserReady();
+  return useQuery({ queryKey: ["smart-energy-api", "model-comparison"], queryFn: ({ signal }) => getModelComparison(signal),
+    enabled, retry: false, staleTime: 60_000 });
+}
+export function useFeatureImportance() {
+  const enabled = useBrowserReady();
+  return useQuery({ queryKey: ["smart-energy-api", "feature-importance"], queryFn: ({ signal }) => getFeatureImportance(signal),
+    enabled, retry: false, staleTime: 60_000 });
 }

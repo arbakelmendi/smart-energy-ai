@@ -67,3 +67,25 @@ export interface ForecastRecommendationResponse {
   };
   scope: { automatic_control: false; estimated_savings: null; note: string };
 }
+
+
+export interface ModelComparisonResponse {
+  evaluation_dataset: "validation";
+  unit: "Wh";
+  models: Array<{ model: string; mae: number; rmse: number; r2: number }>;
+  selected_model: string;
+  selection_metric: string;
+  selected_validation_rmse: number;
+  selection_basis: string;
+}
+export interface FeatureImportanceResponse {
+  model_name: string;
+  features: Array<{ feature: string; normalized_gain: number; gain_rank: number;
+    permutation_mean: number; permutation_std: number; permutation_rank: number }>;
+  gain_dataset: string;
+  permutation_dataset: string;
+  normalized_gain_definition: string;
+  permutation_interpretation: string;
+  permutation_std_definition: string;
+  scope_note: string;
+}

@@ -1,0 +1,435 @@
+{
+  "backend_test_total": 57,
+  "backend_tests_status": {
+    "test_api.py": {
+      "errors": 0,
+      "failures": 0,
+      "passed": 29,
+      "skipped": 0,
+      "tests": 29
+    },
+    "test_model_inference.py": {
+      "errors": 0,
+      "failures": 0,
+      "passed": 15,
+      "skipped": 0,
+      "tests": 15
+    },
+    "test_recommendation_engine.py": {
+      "errors": 0,
+      "failures": 0,
+      "passed": 13,
+      "skipped": 0,
+      "tests": 13
+    }
+  },
+  "build_status": {
+    "client_ssr_nitro_preserved": true,
+    "command": "npm run build",
+    "passed": true
+  },
+  "bun_lock_unchanged": true,
+  "dashboard_components_audited": [
+    {
+      "category": "VERIFIED_REAL",
+      "classification": "A",
+      "component": "AppShell backend status",
+      "decision": "Retain /health and /model/info status"
+    },
+    {
+      "category": "REQUIRES_REAL_OPERATIONAL_DATA_NOT_AVAILABLE",
+      "classification": "C",
+      "component": "Dashboard current load and sparklines",
+      "decision": "Replace with held-out model KPIs"
+    },
+    {
+      "category": "UNSUPPORTED_AND_SHOULD_BE_REMOVED",
+      "classification": "D",
+      "component": "Dashboard savings, currency, avoided energy",
+      "decision": "Remove without scenario substitution"
+    },
+    {
+      "category": "REQUIRES_REAL_OPERATIONAL_DATA_NOT_AVAILABLE",
+      "classification": "C",
+      "component": "Dashboard peak window and anomaly alerts",
+      "decision": "Remove; no operational feed"
+    },
+    {
+      "category": "CAN_BE_REPLACED_WITH_VERIFIED_PROJECT_RESULT",
+      "classification": "B",
+      "component": "Dashboard model accuracy and retraining time",
+      "decision": "Use /model/info; remove retraining claim"
+    },
+    {
+      "category": "UNSUPPORTED_AND_SHOULD_BE_REMOVED",
+      "classification": "D",
+      "component": "Actual-vs-predicted series and confidence band",
+      "decision": "Replace with validation RMSE comparison; no intervals"
+    },
+    {
+      "category": "REQUIRES_REAL_OPERATIONAL_DATA_NOT_AVAILABLE",
+      "classification": "C",
+      "component": "Weekday, daily and seasonal mock profiles",
+      "decision": "Replace with research panels or explicit unavailable state"
+    },
+    {
+      "category": "REQUIRES_REAL_OPERATIONAL_DATA_NOT_AVAILABLE",
+      "classification": "C",
+      "component": "Multi-building selectors, totals, sensors and building statuses",
+      "decision": "Remove dashboard controls; disable operational building views"
+    },
+    {
+      "category": "UNSUPPORTED_AND_SHOULD_BE_REMOVED",
+      "classification": "D",
+      "component": "Predictions 48-hour/90-day forecasts, LSTM, MAPE and seasonal errors",
+      "decision": "Replace with verified model information and validation-only comparison"
+    },
+    {
+      "category": "REQUIRES_REAL_OPERATIONAL_DATA_NOT_AVAILABLE",
+      "classification": "C",
+      "component": "Temperature/humidity forecast drivers and sensor readings",
+      "decision": "Remove; no current measurements"
+    },
+    {
+      "category": "CAN_BE_REPLACED_WITH_VERIFIED_PROJECT_RESULT",
+      "classification": "B",
+      "component": "Mock feature importance",
+      "decision": "Render Phase 12 normalized gain through read-only API"
+    },
+    {
+      "category": "UNSUPPORTED_AND_SHOULD_BE_REMOVED",
+      "classification": "D",
+      "component": "Recommendations savings, comfort risk, equipment actions, applied counts",
+      "decision": "Remove; show real development bands and pending live recommendation"
+    },
+    {
+      "category": "UNSUPPORTED_AND_SHOULD_BE_REMOVED",
+      "classification": "D",
+      "component": "Data and building-detail occupancy counts, histories and equipment status",
+      "decision": "Do not render unsupported operational views; show not-connected state"
+    },
+    {
+      "category": "UNSUPPORTED_AND_SHOULD_BE_REMOVED",
+      "classification": "D",
+      "component": "Admin mock building/platform metrics and fake actions",
+      "decision": "Disable in operational shell; no database or admin backend exists"
+    },
+    {
+      "category": "UNSUPPORTED_AND_SHOULD_BE_REMOVED",
+      "classification": "D",
+      "component": "Public marketing/index/about and account demo screens",
+      "decision": "Inspected; outside dashboard integration scope, retain existing files and record remaining legacy demo limitation"
+    }
+  ],
+  "elements_converted_to_unavailable": [
+    "Live forecast",
+    "Active recommendation",
+    "Operational energy history",
+    "Data/building/admin views and action buttons"
+  ],
+  "elements_removed": [
+    "Mock building/range selectors",
+    "Currency/energy/CO2/efficiency savings numbers",
+    "Fabricated confidence intervals and MAPE",
+    "LSTM/hourly/48-hour/90-day forecast claims",
+    "Retraining times",
+    "Fake alert counts and peak windows",
+    "Equipment-specific recommendation actions and comfort risk",
+    "Applied-action counts/status filters",
+    "Mock temperature/humidity driver charts"
+  ],
+  "elements_replaced": [
+    "Current-load/savings/accuracy KPIs -> final model metadata and held-out test MAE/RMSE/R-squared",
+    "Fake operational history/confidence series -> six-model validation RMSE chart",
+    "Fake feature importance -> saved Phase 12 top-ten normalized gain",
+    "Projected-impact recommendations -> real development-threshold bands"
+  ],
+  "evaluation_or_importance_recomputed": false,
+  "feature_importance_visualization": "Top ten saved gain_rank features; normalized gain fractions. Predictive importance, not causal effect. Recorded permutation data exposed without recomputation.",
+  "files_created": {
+    "ml/results/phase17_dashboard_real_data_integration.json": "Dashboard provenance, decisions and verification audit",
+    "src/components/research-dashboard.tsx": "Shared verified model, validation, importance, threshold and no-live-feed panels",
+    "src/lib/api/research-schemas.ts": "Runtime research-response shape validation using existing Zod",
+    "tests/verify_dashboard_browser.py": "Repeatable optional headless browser regression using installed tooling"
+  },
+  "files_modified": {
+    "backend/README.md": "Analysis endpoint sources and interpretation",
+    "backend/main.py": "Two read-only analysis endpoints",
+    "backend/schemas.py": "Typed analysis response schemas",
+    "backend/services.py": "Read committed comparison/importance JSON without recomputation",
+    "src/components/app-shell.tsx": "Remove fake alert badge; withhold unsupported operational views/actions",
+    "src/components/backend-status.tsx": "Clarify real API status and fix placeholder punctuation",
+    "src/components/charts.tsx": "Horizontal research chart with explicit Wh/fraction units and tooltip",
+    "src/hooks/use-smart-energy-api.ts": "Existing-provider analysis query hooks; POST hooks retained",
+    "src/lib/api/README.md": "Dashboard sources, limitations and verification commands",
+    "src/lib/api/smartEnergyApi.ts": "Analysis GET functions and malformed-response handling",
+    "src/lib/api/types.ts": "Analysis TypeScript response types",
+    "src/routes/dashboard.tsx": "Verified research dashboard replaces mocked operational content",
+    "src/routes/predictions.tsx": "Verified model information/validation/importance; no fabricated forecasts",
+    "src/routes/recommendations.tsx": "Real threshold bands and no-active-recommendation state",
+    "tests/frontend_api.test.mjs": "Real-shape fixtures, analysis parsing and malformed-response tests",
+    "tests/test_api.py": "Six analysis endpoint/provenance/no-recomputation regression tests"
+  },
+  "frontend_tests_status": {
+    "command": "node --experimental-strip-types --test tests/frontend_api.test.mjs",
+    "passed": 18,
+    "tests": 18
+  },
+  "git_diff_check_passed": true,
+  "known_limitations": [
+    "No operational sensor/history feed; valid 42-feature forecast inputs are still required.",
+    "Data/building/admin implementation files remain as legacy code but their unsupported views/actions are withheld by AppShell.",
+    "Public marketing/index/about and account demo pages were inspected but are outside this dashboard phase and retain legacy demo claims; they require review before public thesis presentation.",
+    "No financial/energy/CO2 savings estimates, occupancy inference, automatic control, uncertainty intervals or new model capabilities were introduced.",
+    "Bun unavailable locally; existing npm scripts used without installs or lockfile modifications.",
+    "Installed Starlette emits a nonblocking httpx deprecation warning; tests pass."
+  ],
+  "kpi_numeric_source_reference": "ml/results/final_model_metadata.json; frontend reads /model/info only",
+  "live_integration_status": {
+    "api_response_statuses": [
+      {
+        "path": "/model/info",
+        "status": 200
+      },
+      {
+        "path": "/health",
+        "status": 200
+      },
+      {
+        "path": "/recommendations/thresholds",
+        "status": 200
+      },
+      {
+        "path": "/analysis/model-comparison",
+        "status": 200
+      },
+      {
+        "path": "/analysis/feature-importance",
+        "status": 200
+      },
+      {
+        "path": "/model/info",
+        "status": 200
+      },
+      {
+        "path": "/health",
+        "status": 200
+      },
+      {
+        "path": "/analysis/feature-importance",
+        "status": 200
+      },
+      {
+        "path": "/analysis/model-comparison",
+        "status": 200
+      },
+      {
+        "path": "/recommendations/thresholds",
+        "status": 200
+      },
+      {
+        "path": "/health",
+        "status": 200
+      },
+      {
+        "path": "/model/info",
+        "status": 200
+      },
+      {
+        "path": "/health",
+        "status": 200
+      },
+      {
+        "path": "/model/info",
+        "status": 200
+      },
+      {
+        "path": "/analysis/model-comparison",
+        "status": 200
+      },
+      {
+        "path": "/analysis/feature-importance",
+        "status": 200
+      },
+      {
+        "path": "/recommendations/thresholds",
+        "status": 200
+      },
+      {
+        "path": "/model/info",
+        "status": 200
+      },
+      {
+        "path": "/health",
+        "status": 200
+      },
+      {
+        "path": "/recommendations/thresholds",
+        "status": 200
+      },
+      {
+        "path": "/analysis/feature-importance",
+        "status": 200
+      },
+      {
+        "path": "/analysis/model-comparison",
+        "status": 200
+      },
+      {
+        "path": "/model/info",
+        "status": 200
+      },
+      {
+        "path": "/model/info",
+        "status": 200
+      },
+      {
+        "path": "/analysis/feature-importance",
+        "status": 200
+      },
+      {
+        "path": "/analysis/model-comparison",
+        "status": 200
+      },
+      {
+        "path": "/recommendations/thresholds",
+        "status": 200
+      }
+    ],
+    "backend_origin": "http://127.0.0.1:8000",
+    "browser": "Microsoft Edge headless via local CDP",
+    "cors_errors": [],
+    "disabled_operational_routes_verified": [
+      "/data",
+      "/buildings",
+      "/admin",
+      "/buildings/ubt-campus-a"
+    ],
+    "external_page_requests_blocked": 11,
+    "feature_importance_chart_verified": true,
+    "frontend_origin": "http://localhost:5173",
+    "loading_state_verified": true,
+    "malformed_response_state_verified": true,
+    "no_forecast_posts_used_to_populate_dashboard": true,
+    "no_page_horizontal_overflow": true,
+    "no_visible_unsupported_content_in_updated_views": true,
+    "offline_error_panels_without_fake_fallback": true,
+    "real_kpis_match_api": true,
+    "responsive_widths": [
+      1440,
+      390
+    ],
+    "retry_recovery_verified": true,
+    "runtime_exceptions": [],
+    "screenshots": [
+      "phase17_dashboard_desktop.png",
+      "phase17_dashboard_mobile.png",
+      "phase17_dashboard_offline.png"
+    ],
+    "thresholds_match_api": true,
+    "tooltip_verified": true,
+    "validation_chart_verified": true,
+    "verification_processes_stopped": true
+  },
+  "model_and_preexisting_research_artifacts_unchanged": true,
+  "model_comparison_visualization": "Six validation RMSE bars, Wh; expandable validation MAE/RMSE/R-squared table. Selected model and RMSE read from original lock.",
+  "new_frontend_routes": false,
+  "new_read_only_endpoints": [
+    "GET /analysis/model-comparison",
+    "GET /analysis/feature-importance"
+  ],
+  "no_automatic_equipment_control_claimed": true,
+  "no_fabricated_active_recommendation": true,
+  "no_fabricated_live_forecast": true,
+  "no_fake_api_fallback": true,
+  "occupancy_claims_removed_from_displayed_operational_views": true,
+  "package_dependencies_unchanged": true,
+  "package_lock_preexisting_state_preserved": true,
+  "phase": 17,
+  "phase18_started": false,
+  "post_clients_used_to_populate_ui": false,
+  "post_forecast_clients_and_mutations_retained": true,
+  "preexisting_unrelated_worktree_items": [
+    "Modified src/routeTree.gen.ts",
+    "Untracked package-lock.json"
+  ],
+  "protected_file_checksums_verified": {
+    "bun.lock": "7183239bf3c5721bc5908924f24695adbd24d9109e2127eaa0e7d0b72527b24a",
+    "ml/models/final_xgboost_model.json": "6418bca4fd34b120928bdcc7c37c72e32f2cb6b8e5fd48d6164441aa1a9f7404",
+    "ml/results/feature_schema.json": "0b1038f2d41ddff90921867bfc4d6ea5bbe0195e122e1d7cf96a05eaef2fcdff",
+    "ml/results/final_model_metadata.json": "c712ab6d3823ee40750bc0ad8a30f31901fe3b98862b844177df8d993ec7da3a",
+    "ml/results/phase10_tuning_cv_results.json": "0fe9df7e4887dacb64ca03b1723efe1710f44e26ea06bdf08890bda01a9f01af",
+    "ml/results/phase10_tuning_summary.json": "7c9b87bd663f5045ecdb94f12f23529a7339c8c91091d2736a376069fa559a7f",
+    "ml/results/phase11_final_test_evaluation.json": "00af469b8ee4270ba85c92c77832e89929715acdfe802efe7df84dcb1ac534d9",
+    "ml/results/phase11_reproducibility.json": "e2b9b0eb588121df5382e61a919bbf29af6ad168b71eef51e1085b9ea1ec1b96",
+    "ml/results/phase11_selection_lock.json": "d184f3034c2952a0befafe69bea70f5977db39256d43380f681c752ab6e1e9f2",
+    "ml/results/phase12_feature_importance.json": "f1c0ce2cb196accd00c78ce6a0d1158716dc03967ff7e963a11a4e207101a5b0",
+    "ml/results/phase12_reproducibility.json": "95a6d57ddb0613b75df72b06fe98b5d1be219d6c7b84272f07ac0ee5e65a31cf",
+    "ml/results/phase13_model_persistence.json": "d66f097e23b2e06ef70f85fb412924025cef0a9093760ff9f72eb49d6764b41d",
+    "ml/results/phase14_recommendation_engine.json": "16c2fb20c9fee04e9606f6a120b6356ecbe38fa94f5e0a62b5d03dfba4cd99d2",
+    "ml/results/phase14_recommendation_thresholds.json": "673707f8ec93d8599d1dac25990d876cec751efd955a941d25e307d8c7ceab86",
+    "ml/results/phase15_api_backend.json": "a1a0c9b8a9b3cf262d7f82c3ea2c9efaf4234b02890271f11c37a558eea0cf82",
+    "ml/results/phase16_frontend_api_integration.json": "d318dfac7e32c8746918f754d3b185641df211ed751025046e9bba7b49083360",
+    "ml/results/phase7_validation_metrics.json": "35a6fdb36a52cff7873d0fe20969d564cdc23add94816aec720cbde11d7bc9b8",
+    "ml/results/phase8_random_forest_validation_metrics.json": "9ab2cb0717baa0cd95813ecc582377c8f431640ac3c658f7def889e84810156f",
+    "ml/results/phase9_xgboost_validation_metrics.json": "d523cd81ef67c71d7f28fc88f1f1e683b9f50e11c5db816221eccfc351d0584a",
+    "ml/results/split_metadata.json": "0bd0caa2ab2d159969e3e1744492ce47c6d6778ba488ed5bb816c209525b395f",
+    "ml/src/check_dataset.py": "0a076dea43edc068a6481ac2ba330e5fb2654be32ccf0d6610b8270c4bf90ec3",
+    "ml/src/evaluate_final_model.py": "20e09ae37bc4c45c6b562d1ab14c38b2db6dccb2b8a91e2ef4c1d9f701e66731",
+    "ml/src/explain_final_model.py": "936b99da17fdb720dada7cc13ac0ac5674480643fd0b2d2c2d2a02aab2950076",
+    "ml/src/feature_engineering.py": "bc3ab4690fef669809a811da5152dd29791ac959815bf95a8f3c90d6e27aef54",
+    "ml/src/model_inference.py": "4b01eda9c7d13b27d935ec0a4ccd988fd951bed8ea8091035743b546bbc880ef",
+    "ml/src/preprocess.py": "b9a863b2b7d31d0e285db5778e420f1a79abcfa70bb1d86e6222b34df1fb2c6d",
+    "ml/src/recommendation_engine.py": "5c284e98a411a0fd7675109cf9586e2c8615bb92862d2905f9f34337a9be4c17",
+    "ml/src/save_final_model.py": "04a912f544f774a931cc8d247dce675faa693d1a220bf46382b61f4aa2661b94",
+    "ml/src/split_data.py": "d01284831ba55a07fc9f4186a44db845fce2a0855917678837c9f787bed93a03",
+    "ml/src/train_baselines.py": "20d3106c5165ffb2e7530da3f1376684c475302d4bcbaee447dbb7c62e4d16d5",
+    "ml/src/train_random_forest.py": "38b02d666e781c98175ab9d2605cfd3fde286b8fe75cfe8ed2f30caad868400c",
+    "ml/src/train_xgboost.py": "06345dc878da7775b754aaa496da2ebff1e78009c2f5860d6903c9b8bb5178c8",
+    "ml/src/tune_models.py": "34d451bac2de7abe52cd83ffddd0f91877715aed0c437c292d67dec3987eb47d",
+    "package-lock.json": "8eea83d6283db3d337e5130e0b2dbaa0bc0eefdffd2f78203e841d8ed9995e7c",
+    "package.json": "da6d358a8fb396f0ac1578b167d7e7432746a195ad68c54c352262c14b3e779b",
+    "requirements.txt": "34617ffe970dd4561303173e1651b87800b1dc287e47d14dd536518a93d9e508",
+    "src/routeTree.gen.ts": "c5f7acf36348efb97cf18ba381d1dcf1b5beed16cce7c3f4c3ea549725d518af",
+    "src/router.tsx": "7e3481892de4073ba86e9a6c3a52f1cc6c0d8ab8668df1b14a3ce9f7658edc4a",
+    "src/routes/__root.tsx": "d02a0e87cbf58b058e4228f50b5869126b32e40af3a5473639f2fb0bdfa6d95a",
+    "src/server.ts": "4200dda605d3af5b6ba95e79022fdd40d3075cb39ee0d8bacd769ec2312baa92",
+    "src/start.ts": "9d3a00e7f89d1596407c269e9df54f163f36ca5edc2e9d2b180af640ccf4622e",
+    "vite.config.ts": "a1c369f516f02aacb4bde1be0856bd97d46a5192a6cfb2f1ae7ceb82e7fee9ab"
+  },
+  "real_backend_sources": {
+    "/analysis/feature-importance": "Committed Phase 12 features and recorded definitions",
+    "/analysis/model-comparison": "Committed Phase 10 validation_model_comparison + original Phase 11 selection lock; no re-ranking",
+    "/health": "Existing verified-resource status",
+    "/model/info": "Committed final_model_metadata.json, metrics originally from Phase 11",
+    "/recommendations/thresholds": "Existing Phase 14 TRAIN + VALIDATION calibration metadata"
+  },
+  "real_kpi_fields_displayed": [
+    "model_name",
+    "prediction_unit via unit",
+    "forecast_horizon_minutes",
+    "feature_count",
+    "final_held_out_metrics.mae",
+    "final_held_out_metrics.rmse",
+    "final_held_out_metrics.r2"
+  ],
+  "recommendation_threshold_visualization": "Backend-provided level definitions with backend percentile values substituted for display only; no frontend classification.",
+  "research_methodology_changed": false,
+  "responsive_verification_status": {
+    "desktop_width": 1440,
+    "mobile_width": 390,
+    "no_page_overflow": true,
+    "screenshots_visually_inspected": true,
+    "tooltip_checked": true
+  },
+  "root_provider_and_server_middleware_preserved": true,
+  "route_tree_preexisting_state_preserved": true,
+  "scope": "Verified dashboard, linked predictions/recommendations and honest suppression of unsupported internal operational views",
+  "training_or_tuning_performed": false,
+  "typecheck_status": {
+    "command": "node node_modules/typescript/bin/tsc --noEmit",
+    "passed": true
+  },
+  "unsupported_confidence_removed_in_updated_views": true,
+  "unsupported_savings_removed_in_updated_views": true
+}

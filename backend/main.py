@@ -77,3 +77,15 @@ def forecast_recommendation(body: schemas.ForecastRequest):
          description="Existing TRAIN + VALIDATION percentile thresholds in Wh and inclusive/exclusive band definitions. No recalibration.")
 def recommendation_thresholds():
     return services.threshold_info()
+
+
+@app.get("/analysis/model-comparison", response_model=schemas.ModelComparisonResponse,
+         description="Committed Phase 10 validation metrics for six approaches and the original selection lock. No new ranking, fitting or test evaluation.")
+def model_comparison():
+    return services.model_comparison()
+
+
+@app.get("/analysis/feature-importance", response_model=schemas.FeatureImportanceResponse,
+         description="Saved Phase 12 gain and permutation importance. Predictive, not causal; no recomputation.")
+def feature_importance():
+    return services.feature_importance()

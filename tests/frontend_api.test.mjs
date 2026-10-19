@@ -3,7 +3,25 @@ import assert from "node:assert/strict";
 import { afterEach, test } from "node:test";
 import { readFileSync } from "node:fs";
 import { API_BASE_URL, ApiError, apiRequest, normalizeApiBaseUrl } from "../src/lib/api/client.ts";
-import { getHealth, getModelInfo, getRecommendationThresholds, forecast, forecastWithRecommendation } from "../src/lib/api/smartEnergyApi.ts";
+import { getHealth, getModelInfo, getRecommendationThresholds, forecast, forecastWithRecommendation, getModelComparison, getFeatureImportance } from "../src/lib/api/smartEnergyApi.ts";
+
+const readResult = (name) => JSON.parse(readFileSync(new URL(`../ml/results/${name}`, import.meta.url), "utf8"));
+const metadata = readResult("final_model_metadata.json");
+const modelInfo = {
+  model_name: metadata.model_name, model_family: metadata.model_family, target: metadata.target_column,
+  unit: metadata.prediction_unit, forecast_horizon_minutes: metadata.forecast_horizon_minutes,
+  feature_count: metadata.feature_count, ordered_feature_names: metadata.ordered_feature_names,
+  final_held_out_metrics: metadata.held_out_test_metrics_from_phase11,
+  model_selection_method: metadata.model_selection_basis, recommendation_capability: "Decision support", recommendation_available: true,
+};
+const savedThresholds = readResult("phase14_recommendation_thresholds.json");
+const thresholdInfo = {
+  calibration_dataset: savedThresholds.calibration_dataset, calibration_rows: savedThresholds.calibration_rows,
+  target_column: savedThresholds.target_column, unit: savedThresholds.unit,
+  forecast_horizon_minutes: savedThresholds.forecast_horizon_minutes,
+  percentiles_wh: Object.fromEntries([50,75,90,95].map(p => [`percentile_${p}`, savedThresholds[`percentile_${p}`]])),
+  level_definitions: savedThresholds.level_definitions, test_used: savedThresholds.test_used,
+};
 
 const originalFetch = globalThis.fetch;
 afterEach(() => { globalThis.fetch = originalFetch; });
@@ -35,14 +53,14 @@ test("health parses JSON and uses configured base without credentials", async ()
 });
 
 test("model information passes through without fabricated defaults", async () => {
-  const fixture = { model_name: "transport-fixture", feature_count: 42 };
+  const fixture = modelInfo;
   const calls = respond(fixture);
   assert.deepEqual(await getModelInfo(), fixture);
   assert.equal(calls[0].url, `${API_BASE_URL}/model/info`);
 });
 
 test("threshold data passes through, without client classification", async () => {
-  const fixture = { calibration_dataset: "train+validation", percentiles_wh: {} };
+  const fixture = thresholdInfo;
   const calls = respond(fixture);
   assert.deepEqual(await getRecommendationThresholds(), fixture);
   assert.equal(calls[0].url, `${API_BASE_URL}/recommendations/thresholds`);
@@ -112,4 +130,34 @@ test("ambiguous endpoint URLs are rejected", async () => {
 test("API imports are SSR-safe without window", async () => {
   assert.equal(typeof globalThis.window, "undefined");
   assert.ok(API_BASE_URL.startsWith("http"));
+});
+
+
+test("analysis comparison parses committed validation metrics", async () => {
+  const saved = readResult("phase10_tuning_summary.json");
+  const lock = readResult("phase11_selection_lock.json");
+  const payload = { evaluation_dataset: "validation", unit: "Wh", models: Object.entries(saved.validation_model_comparison).map(([model, metrics]) => ({model, ...metrics})),
+    selected_model: lock.final_model_name, selection_metric: lock.selection_metric,
+    selected_validation_rmse: lock.selected_validation_metrics.rmse, selection_basis: lock.selection_basis };
+  const calls = respond(payload);
+  assert.deepEqual(await getModelComparison(), payload);
+  assert.equal(calls[0].url, `${API_BASE_URL}/analysis/model-comparison`);
+});
+
+test("feature importance parses saved values without causal reinterpretation", async () => {
+  const saved = readResult("phase12_feature_importance.json");
+  const fields = ["feature", "normalized_gain", "gain_rank", "permutation_mean", "permutation_std", "permutation_rank"];
+  const payload = { model_name: saved.final_model_name, features: saved.features.map(f => Object.fromEntries(fields.map(k => [k, f[k]]))),
+    gain_dataset: saved.gain_dataset, permutation_dataset: saved.explanation_dataset, normalized_gain_definition: saved.normalized_gain_definition,
+    permutation_interpretation: saved.permutation_interpretation, permutation_std_definition: saved.permutation_std_definition, scope_note: "Predictive importance, not causal effect." };
+  const calls = respond(payload);
+  assert.deepEqual(await getFeatureImportance(), payload);
+  assert.equal(calls[0].url, `${API_BASE_URL}/analysis/feature-importance`);
+});
+
+test("malformed research responses reject instead of supplying defaults", async () => {
+  for (const fn of [getModelInfo, getRecommendationThresholds, getModelComparison, getFeatureImportance]) {
+    respond({ malformed: true });
+    await assert.rejects(fn(), error => error instanceof ApiError && /malformed research data/.test(error.message));
+  }
 });

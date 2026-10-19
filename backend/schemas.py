@@ -109,3 +109,40 @@ class RootResponse(ApiModel):
     name: str
     version: str
     docs: str
+
+
+class ValidationModel(ApiModel):
+    model: str
+    mae: FiniteNumber
+    rmse: FiniteNumber
+    r2: FiniteNumber
+
+
+class ModelComparisonResponse(ApiModel):
+    evaluation_dataset: Literal["validation"]
+    unit: Literal["Wh"]
+    models: list[ValidationModel]
+    selected_model: str
+    selection_metric: str
+    selected_validation_rmse: FiniteNumber
+    selection_basis: str
+
+
+class FeatureImportanceItem(ApiModel):
+    feature: str
+    normalized_gain: FiniteNumber
+    gain_rank: int
+    permutation_mean: FiniteNumber
+    permutation_std: FiniteNumber
+    permutation_rank: int
+
+
+class FeatureImportanceResponse(ApiModel):
+    model_name: str
+    features: list[FeatureImportanceItem]
+    gain_dataset: str
+    permutation_dataset: str
+    normalized_gain_definition: str
+    permutation_interpretation: str
+    permutation_std_definition: str
+    scope_note: str

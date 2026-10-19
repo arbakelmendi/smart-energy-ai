@@ -27,3 +27,15 @@ node --experimental-strip-types --test tests/frontend_api.test.mjs
 ```
 
 Tests use clearly identified HTTP fixtures only, never research results. Live POST verification uses a real existing TRAIN row only in the verification process, not in production UI.
+
+
+## Phase 17 dashboard presentation
+
+Dashboard, predictions and recommendations now share verified research panels. The existing API client adds `getModelComparison` and `getFeatureImportance`, with `useModelComparison` and `useFeatureImportance`. Research response shapes are checked with the already-installed Zod library; malformed data produces an explicit error with Retry. Existing forecast mutations remain available but are not called to populate the dashboard.
+
+Model KPIs come from `/model/info` and are labeled held-out test; six-model comparison comes from `/analysis/model-comparison` and is validation-only. Top-ten normalized gain comes from `/analysis/feature-importance`, labeled predictive rather than causal. Recommendation bands display definitions and values from `/recommendations/thresholds`; the browser does not classify forecasts. No live forecast, recommendations, histories, savings or uncertainty intervals are fabricated.
+
+The app shell disables unsupported data/building/admin operational views and hides their action buttons. Their legacy implementation files are preserved; they are not displayed as working services. Public marketing/account demo pages are outside this dashboard integration phase and still require a separate content audit before public research presentation. No new routes or providers are added.
+
+
+Optional repeatable Windows browser regression: `.venv\Scripts\python.exe tests/verify_dashboard_browser.py`. Uses the installed Edge browser and `websocket-client` already present in the project's Jupyter environment, not a new browser test framework. Requires free ports 8000/5173 and installed frontend dependencies. It starts/stops only its verification processes, blocks external page requests, verifies desktop/mobile/error states, and saves ignored screenshots/evidence under `ml/results/generated`. `SMARTENERGY_BROWSER` can override the Edge executable. Public marketing/account demo content remains a documented limitation outside these verified dashboard views.

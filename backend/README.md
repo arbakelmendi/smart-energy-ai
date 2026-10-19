@@ -48,3 +48,6 @@ Tests use FastAPI TestClient (`httpx` is required for tests):
 ```powershell
 .venv\Scripts\python.exe -m unittest discover -s tests -p "test_api.py" -v
 ```
+
+
+Phase 17 adds read-only `/analysis/model-comparison` (committed Phase 10 VALIDATION metrics and the existing Phase 11 selection lock) and `/analysis/feature-importance` (saved Phase 12 gain/permutation results). These endpoints do not load datasets or models, compute new rankings, refit, evaluate, or recompute importance. Normalized gain is a predictive fraction, not an energy share or causal effect. Permutation mean/std retain their recorded Wh interpretation; std is not a confidence interval.

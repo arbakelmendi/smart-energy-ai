@@ -218,3 +218,23 @@ export function WeightBars({ items }: { items: Array<{ feature: string; weight: 
     </ul>
   );
 }
+
+
+/** Horizontal research values only: normalized gain fractions or validation RMSE in Wh. */
+export function ResearchBarChart({ data, labelKey, valueKey, label, unit = "", height = 300 }: {
+  data: Array<Record<string, unknown>>; labelKey: string; valueKey: string; label: string; unit?: string; height?: number;
+}) {
+  return (
+    <div role="img" aria-label={label} className="min-w-0">
+      <ResponsiveContainer width="100%" height={height}>
+        <BarChart data={data} layout="vertical" margin={{ top: 4, right: 12, bottom: 8, left: 0 }}>
+          <CartesianGrid stroke="var(--grid-line)" strokeDasharray="3 6" horizontal={false} />
+          <XAxis type="number" {...axis} unit={unit} />
+          <YAxis type="category" dataKey={labelKey} {...axis} fontSize={10} width={160} />
+          <Tooltip {...tooltipStyle()} formatter={(value: number) => [value.toFixed(4) + unit, label]} cursor={{ fill: "var(--muted)", opacity: 0.3 }} />
+          <Bar dataKey={valueKey} name={label} fill="var(--chart-1)" radius={[0, 5, 5, 0]} isAnimationActive={false} />
+        </BarChart>
+      </ResponsiveContainer>
+    </div>
+  );
+}
