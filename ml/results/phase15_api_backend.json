@@ -1,0 +1,137 @@
+{
+  "api_direct_inference_equivalent": true,
+  "api_direct_recommendation_equivalent": true,
+  "api_title": "SmartEnergyAI API",
+  "api_version": "1.0.0",
+  "application_import_successful": true,
+  "authentication_introduced": false,
+  "cors": {
+    "credentials": false,
+    "default_origins": [
+      "http://localhost:3000",
+      "http://localhost:5173",
+      "http://localhost:8080"
+    ],
+    "headers": [
+      "Content-Type"
+    ],
+    "methods": [
+      "GET",
+      "POST"
+    ],
+    "override_environment_variable": "SMARTENERGY_CORS_ORIGINS"
+  },
+  "database_introduced": false,
+  "dependency_change": "Added httpx for required FastAPI TestClient tests; no unrelated upgrades or pins.",
+  "endpoints": [
+    {
+      "method": "get",
+      "path": "/"
+    },
+    {
+      "method": "get",
+      "path": "/health"
+    },
+    {
+      "method": "get",
+      "path": "/model/info"
+    },
+    {
+      "method": "post",
+      "path": "/forecast"
+    },
+    {
+      "method": "post",
+      "path": "/forecast/recommendation"
+    },
+    {
+      "method": "get",
+      "path": "/recommendations/thresholds"
+    }
+  ],
+  "feature_count": 42,
+  "forecast_horizon_minutes": 10,
+  "frontend_checksum_verification": {
+    "contents_and_file_set_unchanged": true,
+    "existing_files_checked": 91
+  },
+  "frontend_modified": false,
+  "git_diff_check_passed": true,
+  "known_input_limitation": "Exactly 42 already-engineered origin-time features, including real lags and rolling history. Single observation only; no raw-sensor feature engineering or fabricated history.",
+  "local_launch_verification": {
+    "responses": {
+      "/docs": {
+        "status": 200
+      },
+      "/health": {
+        "body": {
+          "forecast_horizon_minutes": 10,
+          "model_available": true,
+          "recommendation_available": true,
+          "status": "ok"
+        },
+        "status": 200
+      },
+      "/model/info": {
+        "status": 200
+      },
+      "/openapi.json": {
+        "api_title": "SmartEnergyAI API",
+        "status": 200
+      }
+    },
+    "server": "Uvicorn, project .venv, temporary loopback port",
+    "verification_process_stopped": true
+  },
+  "model_artifact_reference": "ml/models/final_xgboost_model.json",
+  "model_artifact_unchanged": true,
+  "model_used": "Tuned XGBoost",
+  "no_model_retraining_or_tuning_occurred": true,
+  "nonblocking_test_warning": "Installed Starlette warns that httpx TestClient support is deprecated in favor of httpx2; all tests pass with the installed httpx.",
+  "passed_count": 51,
+  "phase11_through_phase14_results_unchanged": true,
+  "protected_research_checksums": {
+    "ml/models/final_xgboost_model.json": "6418bca4fd34b120928bdcc7c37c72e32f2cb6b8e5fd48d6164441aa1a9f7404",
+    "ml/results/feature_schema.json": "0b1038f2d41ddff90921867bfc4d6ea5bbe0195e122e1d7cf96a05eaef2fcdff",
+    "ml/results/final_model_metadata.json": "c712ab6d3823ee40750bc0ad8a30f31901fe3b98862b844177df8d993ec7da3a",
+    "ml/results/phase11_final_test_evaluation.json": "00af469b8ee4270ba85c92c77832e89929715acdfe802efe7df84dcb1ac534d9",
+    "ml/results/phase11_reproducibility.json": "e2b9b0eb588121df5382e61a919bbf29af6ad168b71eef51e1085b9ea1ec1b96",
+    "ml/results/phase11_selection_lock.json": "d184f3034c2952a0befafe69bea70f5977db39256d43380f681c752ab6e1e9f2",
+    "ml/results/phase12_feature_importance.json": "f1c0ce2cb196accd00c78ce6a0d1158716dc03967ff7e963a11a4e207101a5b0",
+    "ml/results/phase12_reproducibility.json": "95a6d57ddb0613b75df72b06fe98b5d1be219d6c7b84272f07ac0ee5e65a31cf",
+    "ml/results/phase13_model_persistence.json": "d66f097e23b2e06ef70f85fb412924025cef0a9093760ff9f72eb49d6764b41d",
+    "ml/results/phase14_recommendation_engine.json": "16c2fb20c9fee04e9606f6a120b6356ecbe38fa94f5e0a62b5d03dfba4cd99d2",
+    "ml/results/phase14_recommendation_thresholds.json": "673707f8ec93d8599d1dac25990d876cec751efd955a941d25e307d8c7ceab86"
+  },
+  "recommendation_integration": "Unchanged Phase 14 predict_and_recommend; cached existing threshold metadata; no duplicated rules or recalibration.",
+  "resource_loading": "Lazy successful loads cached per process; failures not cached. Restart after artifact changes. Health verifies cached usability, not continuous disk integrity.",
+  "scope": "Forecast-based decision support; no automatic equipment control, estimated savings or guaranteed savings.",
+  "swagger_openapi_verified": true,
+  "target": "target_appliances_next",
+  "test_count": 51,
+  "test_data_usage": "No TEST CSV access for API behavior design or verification. Deterministic API fixtures use the first TRAIN row; existing recommendation tests read TRAIN + VALIDATION only.",
+  "test_summary": {
+    "test_api.py": {
+      "errors": 0,
+      "failures": 0,
+      "passed": 23,
+      "skipped": 0,
+      "tests": 23
+    },
+    "test_model_inference.py": {
+      "errors": 0,
+      "failures": 0,
+      "passed": 15,
+      "skipped": 0,
+      "tests": 15
+    },
+    "test_recommendation_engine.py": {
+      "errors": 0,
+      "failures": 0,
+      "passed": 13,
+      "skipped": 0,
+      "tests": 13
+    }
+  },
+  "unit": "Wh"
+}

@@ -1,0 +1,1 @@
+"""SmartEnergyAI forecasting API package."""

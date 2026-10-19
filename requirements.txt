@@ -10,3 +10,4 @@ ipykernel
 fastapi
 uvicorn
 pydantic
+httpx
