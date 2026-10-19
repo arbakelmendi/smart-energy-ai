@@ -1,0 +1,25 @@
+{
+  "calibration_dataset": "train+validation",
+  "calibration_input_sha256": {
+    "data/processed/energy_train.csv": "b4e74536ad61bce5a75b044066f9012348a12cbd69095a0e5a801642fc7ebbe4",
+    "data/processed/energy_validation.csv": "5b93ccdb622696544eb3abb7d59b59445bf37c5ff6dfe2f8449b4b1282e41533"
+  },
+  "calibration_rows": 15917,
+  "forecast_horizon_minutes": 10,
+  "level_definitions": {
+    "ELEVATED": "percentile_75 <= prediction < percentile_90",
+    "HIGH": "percentile_90 <= prediction < percentile_95",
+    "NORMAL": "prediction < percentile_75",
+    "VERY HIGH": "prediction >= percentile_95"
+  },
+  "percentile_50": 60.0,
+  "percentile_75": 100.0,
+  "percentile_90": 190.0,
+  "percentile_95": 320.0,
+  "percentile_method": "numpy.percentile(method=linear)",
+  "schema_version": 1,
+  "target_column": "target_appliances_next",
+  "test_usage_statement": "TEST was not opened or used for threshold calibration or rule design.",
+  "test_used": false,
+  "unit": "Wh"
+}

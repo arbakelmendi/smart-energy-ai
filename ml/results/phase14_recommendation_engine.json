@@ -1,0 +1,207 @@
+{
+  "automatic_control_claimed": false,
+  "deterministic_verification_passed": true,
+  "example_selection": "First chronological development forecast in each band; no error-based selection; behavior demonstration only",
+  "examples": {
+    "ELEVATED": {
+      "origin": "2016-01-18T19:20:00",
+      "result": {
+        "prediction": {
+          "horizon_minutes": 10,
+          "level": "ELEVATED",
+          "unit": "Wh",
+          "value_wh": 106.69683837890625
+        },
+        "recommendation": {
+          "code": "ELEVATED_CONSUMPTION",
+          "message": "Review flexible or non-essential electrical loads where operationally appropriate for the upcoming 10-minute period.",
+          "priority": "medium",
+          "rationale": "Forecast 106.697 Wh satisfies percentile_75 <= prediction < percentile_90 using TRAIN + VALIDATION target percentiles; thresholds are in thresholds_wh.",
+          "title": "Review flexible loads"
+        },
+        "scope": {
+          "automatic_control": false,
+          "estimated_savings": null,
+          "note": "Forecast-based decision support only. No automatic equipment control, causal sensor attribution, or guaranteed savings. Keep essential equipment operating safely. Forecasts may be inaccurate."
+        },
+        "thresholds_wh": {
+          "percentile_50": 60.0,
+          "percentile_75": 100.0,
+          "percentile_90": 190.0,
+          "percentile_95": 320.0
+        },
+        "trend": {
+          "change_percent": 18.552042643229168,
+          "change_wh": 16.69683837890625,
+          "current_wh": 90.0,
+          "direction": "rising"
+        }
+      }
+    },
+    "HIGH": {
+      "origin": "2016-01-18T18:50:00",
+      "result": {
+        "prediction": {
+          "horizon_minutes": 10,
+          "level": "HIGH",
+          "unit": "Wh",
+          "value_wh": 255.26837158203125
+        },
+        "recommendation": {
+          "code": "HIGH_CONSUMPTION",
+          "message": "Check whether discretionary loads can be delayed or reduced during the upcoming 10-minute period, if safe and operationally feasible.",
+          "priority": "high",
+          "rationale": "Forecast 255.268 Wh satisfies percentile_90 <= prediction < percentile_95 using TRAIN + VALIDATION target percentiles; thresholds are in thresholds_wh.",
+          "title": "Review discretionary demand"
+        },
+        "scope": {
+          "automatic_control": false,
+          "estimated_savings": null,
+          "note": "Forecast-based decision support only. No automatic equipment control, causal sensor attribution, or guaranteed savings. Keep essential equipment operating safely. Forecasts may be inaccurate."
+        },
+        "thresholds_wh": {
+          "percentile_50": 60.0,
+          "percentile_75": 100.0,
+          "percentile_90": 190.0,
+          "percentile_95": 320.0
+        },
+        "trend": {
+          "change_percent": -14.910542805989582,
+          "change_wh": -44.73162841796875,
+          "current_wh": 300.0,
+          "direction": "falling"
+        }
+      }
+    },
+    "NORMAL": {
+      "origin": "2016-01-18T17:00:00",
+      "result": {
+        "prediction": {
+          "horizon_minutes": 10,
+          "level": "NORMAL",
+          "unit": "Wh",
+          "value_wh": 55.505409240722656
+        },
+        "recommendation": {
+          "code": "NORMAL_CONSUMPTION",
+          "message": "No immediate high-consumption warning is detected for the upcoming 10-minute period.",
+          "priority": "low",
+          "rationale": "Forecast 55.5054 Wh satisfies prediction < percentile_75 using TRAIN + VALIDATION target percentiles; thresholds are in thresholds_wh.",
+          "title": "No high-consumption warning"
+        },
+        "scope": {
+          "automatic_control": false,
+          "estimated_savings": null,
+          "note": "Forecast-based decision support only. No automatic equipment control, causal sensor attribution, or guaranteed savings. Keep essential equipment operating safely. Forecasts may be inaccurate."
+        },
+        "thresholds_wh": {
+          "percentile_50": 60.0,
+          "percentile_75": 100.0,
+          "percentile_90": 190.0,
+          "percentile_95": 320.0
+        },
+        "trend": {
+          "change_percent": 38.76352310180664,
+          "change_wh": 15.505409240722656,
+          "current_wh": 40.0,
+          "direction": "rising"
+        }
+      }
+    },
+    "VERY HIGH": {
+      "origin": "2016-01-18T18:20:00",
+      "result": {
+        "prediction": {
+          "horizon_minutes": 10,
+          "level": "VERY HIGH",
+          "unit": "Wh",
+          "value_wh": 321.5818786621094
+        },
+        "recommendation": {
+          "code": "VERY_HIGH_CONSUMPTION",
+          "message": "Predicted appliance consumption is unusually high relative to the development-data distribution. Review controllable, non-critical loads for the upcoming 10-minute period only if safe and operationally feasible.",
+          "priority": "high",
+          "rationale": "Forecast 321.582 Wh satisfies prediction >= percentile_95 using TRAIN + VALIDATION target percentiles; thresholds are in thresholds_wh.",
+          "title": "Unusually high forecast consumption"
+        },
+        "scope": {
+          "automatic_control": false,
+          "estimated_savings": null,
+          "note": "Forecast-based decision support only. No automatic equipment control, causal sensor attribution, or guaranteed savings. Keep essential equipment operating safely. Forecasts may be inaccurate."
+        },
+        "thresholds_wh": {
+          "percentile_50": 60.0,
+          "percentile_75": 100.0,
+          "percentile_90": 190.0,
+          "percentile_95": 320.0
+        },
+        "trend": {
+          "change_percent": 39.818208113960594,
+          "change_wh": 91.58187866210938,
+          "current_wh": 230.0,
+          "direction": "rising"
+        }
+      }
+    }
+  },
+  "features_changed": false,
+  "inference_helper": "ml/src/model_inference.py:predict_next_appliances",
+  "inference_model_reference": "ml/models/final_xgboost_model.json",
+  "limitations": [
+    "Development-distribution bands, not validated intervention effectiveness or operational alert performance.",
+    "Forecast error and distribution drift can affect recommendations.",
+    "No causal, occupancy, equipment-specific or comfort inference.",
+    "Negative forecasts rejected without clipping.",
+    "Caller must provide valid origin-time engineered features."
+  ],
+  "model_fitting_performed": false,
+  "notebook": {
+    "all_code_cells_executed": true,
+    "execution_environment": "project .venv",
+    "execution_method": "IPython InteractiveShell in project .venv Python; captured outputs",
+    "path": "ml/notebooks/13_recommendation_engine.ipynb"
+  },
+  "number_of_rules": 4,
+  "protected_artifact_checksums_verified": {
+    "ml/models/final_xgboost_model.json": "6418bca4fd34b120928bdcc7c37c72e32f2cb6b8e5fd48d6164441aa1a9f7404",
+    "ml/results/feature_schema.json": "0b1038f2d41ddff90921867bfc4d6ea5bbe0195e122e1d7cf96a05eaef2fcdff",
+    "ml/results/final_model_metadata.json": "c712ab6d3823ee40750bc0ad8a30f31901fe3b98862b844177df8d993ec7da3a",
+    "ml/results/phase10_tuning_cv_results.json": "0fe9df7e4887dacb64ca03b1723efe1710f44e26ea06bdf08890bda01a9f01af",
+    "ml/results/phase10_tuning_summary.json": "7c9b87bd663f5045ecdb94f12f23529a7339c8c91091d2736a376069fa559a7f",
+    "ml/results/phase11_final_test_evaluation.json": "00af469b8ee4270ba85c92c77832e89929715acdfe802efe7df84dcb1ac534d9",
+    "ml/results/phase11_reproducibility.json": "e2b9b0eb588121df5382e61a919bbf29af6ad168b71eef51e1085b9ea1ec1b96",
+    "ml/results/phase11_selection_lock.json": "d184f3034c2952a0befafe69bea70f5977db39256d43380f681c752ab6e1e9f2",
+    "ml/results/phase12_feature_importance.json": "f1c0ce2cb196accd00c78ce6a0d1158716dc03967ff7e963a11a4e207101a5b0",
+    "ml/results/phase12_reproducibility.json": "95a6d57ddb0613b75df72b06fe98b5d1be219d6c7b84272f07ac0ee5e65a31cf",
+    "ml/results/phase7_validation_metrics.json": "35a6fdb36a52cff7873d0fe20969d564cdc23add94816aec720cbde11d7bc9b8",
+    "ml/results/phase8_random_forest_validation_metrics.json": "9ab2cb0717baa0cd95813ecc582377c8f431640ac3c658f7def889e84810156f",
+    "ml/results/phase9_xgboost_validation_metrics.json": "d523cd81ef67c71d7f28fc88f1f1e683b9f50e11c5db816221eccfc351d0584a",
+    "ml/results/split_metadata.json": "0bd0caa2ab2d159969e3e1744492ce47c6d6778ba488ed5bb816c209525b395f"
+  },
+  "recommendation_levels": {
+    "ELEVATED": "percentile_75 <= prediction < percentile_90",
+    "HIGH": "percentile_90 <= prediction < percentile_95",
+    "NORMAL": "prediction < percentile_75",
+    "VERY HIGH": "prediction >= percentile_95"
+  },
+  "savings_estimated": false,
+  "stable_codes": [
+    "NORMAL_CONSUMPTION",
+    "ELEVATED_CONSUMPTION",
+    "HIGH_CONSUMPTION",
+    "VERY_HIGH_CONSUMPTION"
+  ],
+  "test_results_summary": {
+    "command": ".venv/Scripts/python.exe -m unittest discover -s tests -p test_recommendation_engine.py -v",
+    "errors": 0,
+    "failures": 0,
+    "passed": true,
+    "skipped": 0,
+    "tests_run": 13
+  },
+  "test_usage_statement": "TEST CSV was not accessed for calibration, rule design, examples or Phase 14 verification. Existing Phase 11 artifacts were checksum-verified only.",
+  "threshold_metadata": "ml/results/phase14_recommendation_thresholds.json",
+  "threshold_metadata_sha256": "673707f8ec93d8599d1dac25990d876cec751efd955a941d25e307d8c7ceab86",
+  "trend_definition": "Exact sign of forecast-current Wh; no tolerance; percent null when current=0; explanatory only",
+  "tuning_performed": false
+}

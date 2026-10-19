@@ -30,3 +30,20 @@ Run the new tests after generation:
 Artifact integration tests skip when the ignored model is absent; feature-contract unit tests remain available without local datasets. This package prepares later backend inference only. Correct feature timing, units and historical availability remain the caller's responsibility.
 
 Native serialization reference: https://xgboost.readthedocs.io/en/stable/tutorials/saving_model.html
+
+## Phase 14 recommendation engine
+
+`ml/src/recommendation_engine.py` provides forecast-based decision support for the unchanged 10-minute-ahead Appliances forecast in Wh. Generate development-only thresholds with `.venv\Scripts\python.exe -m ml.src.recommendation_engine`. The committed `ml/results/phase14_recommendation_thresholds.json` records linear p50/p75/p90/p95 target percentiles from verified TRAIN + VALIDATION files and their checksums. TEST and the whole-dataset exploratory threshold are excluded.
+
+NORMAL: forecast < p75; ELEVATED: p75 <= forecast < p90; HIGH: p90 <= forecast < p95; VERY HIGH: forecast >= p95. Stable codes are NORMAL_CONSUMPTION, ELEVATED_CONSUMPTION, HIGH_CONSUMPTION and VERY_HIGH_CONSUMPTION. Equal cutoffs produce empty bands naturally. p50 is descriptive only.
+
+```python
+from ml.src.recommendation_engine import predict_and_recommend
+results = predict_and_recommend(engineered_feature_frame, model_bundle=bundle)
+```
+
+The return value is always a list, one JSON-safe object per row in input order, with forecast, thresholds, trend, recommendation and scope. Current Appliances is taken from the same validated row. No extra sensors or context are required. Negative/nonfinite energy and malformed feature input fail; missing metadata fails without fallback. Model loading and strict feature validation reuse Phase 13 utilities. The native artifact must already exist; this phase does not recreate or retrain it.
+
+Trend is the exact sign of forecast minus current Wh (no tolerance); percent change is null at zero current energy. It only explains direction and does not affect rules. No automatic equipment control, causal feature claims, guaranteed savings or savings estimates are provided. Percentile bands have not been validated as effective interventions; development examples are behavior demonstrations, not model evaluation. Later API integration can expose the structured result.
+
+Verification: `.venv\Scripts\python.exe -m unittest discover -s tests -p "test_recommendation_engine.py" -v`. Execute `ml/notebooks/13_recommendation_engine.ipynb` with the project .venv; it selects the first chronological development forecast in each band without considering prediction error.
