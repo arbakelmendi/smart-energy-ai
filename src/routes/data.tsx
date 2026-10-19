@@ -10,18 +10,7 @@ import { Input } from "@/components/ui/input";
 import { hourlyProfile, readings, seasonProfile, weekdayProfile } from "@/lib/mock-data";
 
 export const Route = createFileRoute("/data")({
-  head: () => ({
-    meta: [
-      { title: "Data & reports — Smart Energy AI" },
-      {
-        name: "description",
-        content:
-          "Import CSV datasets, browse historical readings with search and sorting, and export PDF or CSV reports broken down by hour, weekday and season.",
-      },
-      { property: "og:title", content: "Data & reports — Smart Energy AI" },
-      { property: "og:description", content: "Dataset import, historical table and report export." },
-    ],
-  }),
+  head: () => ({ meta: [{ title: "Operational service not connected | SmartEnergyAI" }, { name: "description", content: "No verified operational data or management service is connected to this prototype." }] }),
   component: DataPage,
 });
 

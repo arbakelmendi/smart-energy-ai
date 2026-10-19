@@ -1,0 +1,690 @@
+{
+  "backend_import_and_startup": {
+    "model_loaded_via_production_helper": true,
+    "model_regenerated": false,
+    "passed": true
+  },
+  "backend_live_endpoint_status": {
+    "/": 200,
+    "/analysis/feature-importance": 200,
+    "/analysis/model-comparison": 200,
+    "/docs": 200,
+    "/health": 200,
+    "/model/info": 200,
+    "/openapi.json": 200,
+    "/recommendations/thresholds": 200
+  },
+  "backend_offline_result": {
+    "explicit_error_panels": true,
+    "fake_values_shown": false,
+    "retry_after_restore": true
+  },
+  "build_result": {
+    "command": [
+      "npm",
+      "run",
+      "build"
+    ],
+    "passed": true,
+    "return_code": 0,
+    "significant_warnings": [
+      "The plugin \"vite-tsconfig-paths\" is detected. Vite now supports tsconfig paths resolution natively via the resolve.tsconfigPaths option. You can remove the plugin and set resolve.tsconfigPaths: true in your Vite config instead.",
+      " WARN  inlineDynamicImports option is ignored because the codeSplitting option is specified."
+    ]
+  },
+  "data_provenance_result": {
+    "importance": "/analysis/feature-importance",
+    "model_and_held_out_metrics": "/model/info",
+    "no_frontend_research_constants_added": true,
+    "status": "/health",
+    "thresholds": "/recommendations/thresholds",
+    "validation_comparison": "/analysis/model-comparison"
+  },
+  "dependency_sanity": {
+    "bun_lock_unchanged": true,
+    "httpx_justification": "Existing FastAPI TestClient tests",
+    "native_fetch_retained": true,
+    "no_new_libraries": true,
+    "package_json_unchanged": true,
+    "package_lock_preserved": true,
+    "requirements_unchanged": true
+  },
+  "desktop_responsive_result": {
+    "chart_tooltip_verified": true,
+    "no_page_overflow": true,
+    "passed": true,
+    "routes_verified": 19,
+    "width": 1440
+  },
+  "fabricated_operational_data_audit": "All 19 reachable routes inspected in browser at both widths; known false numeric/capability claims absent. Disabled operational views remain not connected; no live history/forecast/recommendation fabricated.",
+  "files_created": {
+    "ml/results/phase18_quality_assurance.json": "Phase 18 QA audit",
+    "src/lib/demo-session.ts": "Safe parsing of existing local prototype state; not authentication",
+    "tests/verify_phase18.py": "Repeatable consolidated gates and integrity/security sanity checks"
+  },
+  "files_modified_due_to_qa_fixes": {
+    "src/components/app-shell.tsx": "Label persisted local state as demo/visitor rather than a real account",
+    "src/components/auth-shell.tsx": "Remove unsupported long-horizon and retraining claims",
+    "src/components/public-layout.tsx": "Remove invented model metrics/contact details and correct prototype wording",
+    "src/lib/api/README.md": "Keep existing integration note consistent with QA fixes and repeatable commands",
+    "src/lib/auth.tsx": "Validate saved prototype state, remove personal demo identity and unused fake credential export",
+    "src/routes/__root.tsx": "Correct default metadata without changing root layout/providers/middleware",
+    "src/routes/about.tsx": "Replace false methodology/stack/metrics with truthful scope and existing verified API panels",
+    "src/routes/admin.buildings.tsx": "Correct misleading metadata; keep existing unavailable operational view",
+    "src/routes/admin.index.tsx": "Correct misleading metadata; keep existing unavailable operational view",
+    "src/routes/admin.users.tsx": "Correct misleading metadata; keep existing unavailable operational view",
+    "src/routes/buildings.$id.tsx": "Remove fake building-specific metadata while preserving existing route and loader",
+    "src/routes/buildings.index.tsx": "Correct misleading metadata; keep existing unavailable operational view",
+    "src/routes/contact.tsx": "Remove fake message delivery/contact data; explicit unavailable state and accessible heading",
+    "src/routes/data.tsx": "Correct misleading metadata; keep existing unavailable operational view",
+    "src/routes/forgot-password.tsx": "Explicit email/recovery unavailable state",
+    "src/routes/index.tsx": "Remove fabricated operational/savings series and unsupported capability claims, retaining hero/style/navigation",
+    "src/routes/login.tsx": "Explicit open prototype access without real credentials",
+    "src/routes/onboarding.tsx": "Remove fake building/sensor registration and savings-goal workflow",
+    "src/routes/reset-password.tsx": "Explicit password-service unavailable state",
+    "src/routes/settings.tsx": "Keep working theme control; remove fake profile/password/team services",
+    "src/routes/signup.tsx": "Explicit account-creation unavailable state",
+    "src/routes/verify-email.tsx": "Remove fake email dispatch/activation claims",
+    "tests/frontend_api.test.mjs": "Regressions for corrupt prototype state and known misleading public/account claims",
+    "tests/verify_dashboard_browser.py": "Optional Phase 18 all-route/live API/failure/malformed/mobile/performance checks"
+  },
+  "forecast_e2e": {
+    "fixture": "First TRAIN engineered observation; never production UI; no TEST fixture",
+    "horizon_minutes": 10,
+    "passed": true,
+    "unit": "Wh"
+  },
+  "frontend_backend_integration": {
+    "browser": "Installed Microsoft Edge headless/CDP",
+    "cors_errors": [],
+    "passed": true,
+    "temporary_servers_stopped": true,
+    "uncaught_runtime_exceptions": []
+  },
+  "frontend_test_results": {
+    "command": [
+      "node",
+      "--experimental-strip-types",
+      "--test",
+      "tests/frontend_api.test.mjs"
+    ],
+    "fail": 0,
+    "pass": 20,
+    "passed": true,
+    "return_code": 0,
+    "skipped": 0,
+    "tests": 20
+  },
+  "git_diff_check_passed": true,
+  "invalid_input_result": {
+    "all_expected_http_422": true,
+    "cases": [
+      "missing feature",
+      "extra feature",
+      "nonnumeric string",
+      "null",
+      "NaN",
+      "Infinity",
+      "missing envelope",
+      "batch/malformed structure"
+    ],
+    "live_checks": 16,
+    "stack_traces_or_local_paths_exposed": false
+  },
+  "legacy_demo_claims_found_and_corrected": [
+    {
+      "correction": "Removed unsupported values and charts; retained illustrative hero and neutral prototype capability cards",
+      "found": "Invented savings, live totals, building counts and confidence/forecast charts on landing page"
+    },
+    {
+      "correction": "Corrected about/auth/public copy; metrics and importance use existing verified API components",
+      "found": "False UCI dataset description, occupancy, LSTM, nightly retraining, infrastructure and optimization methodology"
+    },
+    {
+      "correction": "Removed numeric claims and unverified contacts; indicate delivery not connected",
+      "found": "Invented footer model metrics and contact identities"
+    },
+    {
+      "correction": "Replaced unsupported forms/actions with explicit unavailable/open-prototype states",
+      "found": "Fake login/signup/email/password/building registration success actions"
+    },
+    {
+      "correction": "Removed unsupported controls; preserved real local theme preference",
+      "found": "Settings claimed real profiles, team accounts, password changes and notifications"
+    },
+    {
+      "correction": "Corrected affected route metadata without route-tree changes",
+      "found": "Legacy metadata implied operational functionality even on disabled views"
+    },
+    {
+      "correction": "Validate stored object shape before rendering; add regression test and browser fixture",
+      "found": "Malformed JSON local demo state could expose a numeric name to header string operations"
+    },
+    {
+      "correction": "Add contact availability h1; all-route checks pass",
+      "found": "Replacement contact state lacked a page-level heading"
+    }
+  ],
+  "lint_policy": "Default targeted lint has 956 prettier/prettier findings and no semantic findings in that run. Formatting is reported, not treated as a clean lint pass. No mass formatting or line-ending cleanup; semantic lint rerun with only formatting rule disabled passes.",
+  "malformed_response_result": {
+    "controlled_error_state_verified_for": [
+      "/model/info",
+      "/analysis/model-comparison",
+      "/analysis/feature-importance",
+      "/recommendations/thresholds"
+    ],
+    "frontend_response_validation_regressions_passed": true
+  },
+  "mobile_responsive_result": {
+    "navigation_verified": true,
+    "no_page_overflow": true,
+    "passed": true,
+    "routes_verified": 19,
+    "width": 390
+  },
+  "model_unavailable_result": {
+    "fake_fallback": false,
+    "health_http_status": 503,
+    "method": "Temporary verification process patches production loader to raise FileNotFoundError; artifact never moved/deleted",
+    "passed": true
+  },
+  "overall_verdict": "PASS for functional thesis-prototype QA, with formatting findings and prototype limitations explicitly recorded.",
+  "performance_sanity": {
+    "model_cache_test_passed": true,
+    "research_endpoints_no_recomputation_test_passed": true,
+    "scope": "Qualitative sanity checks, no load benchmark.",
+    "steady_api_responses": 0,
+    "steady_browser_window_seconds": 1.8,
+    "uncontrolled_request_loop_detected": false
+  },
+  "phase": 18,
+  "phase18_changed_source_semantic_lint": {
+    "command": [
+      "node",
+      "node_modules/eslint/bin/eslint.js",
+      "src/components/app-shell.tsx",
+      "src/components/auth-shell.tsx",
+      "src/components/public-layout.tsx",
+      "src/lib/auth.tsx",
+      "src/routes/__root.tsx",
+      "src/routes/about.tsx",
+      "src/routes/admin.buildings.tsx",
+      "src/routes/admin.index.tsx",
+      "src/routes/admin.users.tsx",
+      "src/routes/buildings.$id.tsx",
+      "src/routes/buildings.index.tsx",
+      "src/routes/contact.tsx",
+      "src/routes/data.tsx",
+      "src/routes/forgot-password.tsx",
+      "src/routes/index.tsx",
+      "src/routes/login.tsx",
+      "src/routes/onboarding.tsx",
+      "src/routes/reset-password.tsx",
+      "src/routes/settings.tsx",
+      "src/routes/signup.tsx",
+      "src/routes/verify-email.tsx",
+      "src/lib/demo-session.ts",
+      "--rule",
+      "{\"prettier/prettier\":\"off\"}"
+    ],
+    "passed": true,
+    "return_code": 0
+  },
+  "phase19_started": false,
+  "preexisting_worktree_preserved": [
+    "src/routeTree.gen.ts modified state and checksum unchanged",
+    "package-lock.json untracked state and checksum unchanged"
+  ],
+  "python_test_results": {
+    "collected": 66,
+    "command": [
+      ".venv/Scripts/python.exe",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "tests",
+      "-p",
+      "test_*.py"
+    ],
+    "errors": 0,
+    "failed_count": 0,
+    "passed": true,
+    "passed_count": 66,
+    "return_code": 0,
+    "skipped": 0,
+    "tooling": "Existing unittest suite; pytest not installed and no new test framework installed"
+  },
+  "qa_scope": "Final research-prototype QA and corrections to actual misleading presentation/robustness defects; no new research/product functionality.",
+  "recommendation_e2e": {
+    "automatic_control": false,
+    "estimated_savings": null,
+    "passed": true,
+    "same_development_row_as_forecast": true
+  },
+  "remaining_known_limitations": [
+    "No operational history/sensor feed; forecast input requires all 42 engineered features with real historical context.",
+    "No authentication, account/email delivery, database, equipment control, savings estimates or calibrated intervals.",
+    "Legacy mock implementation code remains withheld in operational routes; it is not presented as connected data.",
+    "Default formatting lint is not clean (956 targeted formatting findings); broad cleanup was explicitly excluded.",
+    "Browser QA performed on installed Edge/Windows only; this is not a cross-browser or load/security certification.",
+    "Root README remains a historical product brief; the full documentation pass is deferred to Phase 19 as requested.",
+    "Local setup requires the ignored verified model and datasets; Bun unavailable here, existing npm scripts used without installs/lockfile changes."
+  ],
+  "repeatable_commands": [
+    ".venv/Scripts/python.exe tests/verify_phase18.py",
+    ".venv/Scripts/python.exe tests/verify_phase18.py --browser"
+  ],
+  "research_model_integrity": {
+    "initial_consistency_audit": {
+      "artifacts_inspected": [
+        "feature_schema.json",
+        "final_model_metadata.json",
+        "phase10_tuning_cv_results.json",
+        "phase10_tuning_summary.json",
+        "phase11_final_test_evaluation.json",
+        "phase11_reproducibility.json",
+        "phase11_selection_lock.json",
+        "phase12_feature_importance.json",
+        "phase12_reproducibility.json",
+        "phase13_model_persistence.json",
+        "phase14_recommendation_engine.json",
+        "phase14_recommendation_thresholds.json",
+        "phase15_api_backend.json",
+        "phase16_frontend_api_integration.json",
+        "phase17_dashboard_real_data_integration.json",
+        "phase7_validation_metrics.json",
+        "phase8_random_forest_validation_metrics.json",
+        "phase9_xgboost_validation_metrics.json",
+        "split_metadata.json"
+      ],
+      "initial_contract_cross_checks_passed": true,
+      "model_checksum_matches": true
+    },
+    "model_fitted_or_tuned": false,
+    "new_test_evaluation_performed": false,
+    "notebooks_rewritten": false,
+    "protected_checksums_unchanged": true,
+    "protected_files": {
+      "bun.lock": "7183239bf3c5721bc5908924f24695adbd24d9109e2127eaa0e7d0b72527b24a",
+      "data/processed/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "data/processed/README.md": "166a29889e0d5ff14a6fcac1afb439650bd11985ca6d6593b622f0dd69545664",
+      "data/processed/energy_test.csv": "227efb785588e32e297acdbbb7595102c210b25b30492e8acef5effddc520600",
+      "data/processed/energy_train.csv": "b4e74536ad61bce5a75b044066f9012348a12cbd69095a0e5a801642fc7ebbe4",
+      "data/processed/energy_validation.csv": "5b93ccdb622696544eb3abb7d59b59445bf37c5ff6dfe2f8449b4b1282e41533",
+      "data/processed/energydata_cleaned.csv": "d4d5964a61a5a6ddfc1148012abb77f14f826dfa0ebd6f9b5e52d93a6c705a19",
+      "data/processed/energydata_features.csv": "f69480c282e32601920f0820cdf9d2530ecfc5b053c4cefa4de2d15c73c2077f",
+      "data/raw/README.md": "7b99f897dca5afa3d24b72dc9fdac952a7d0aef39413da9cfdfa83baa8e0f11d",
+      "data/raw/energydata_complete.csv": "2820bf712ad0275cb18b85a05250926100d8e65ebb9f4d2d016ca91ea152a25d",
+      "ml/models/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "ml/models/README.md": "1e5084b780a31e831e28f9f977b6f33fe1677f3d699694891412a8f6b2c0adee",
+      "ml/models/final_xgboost_model.json": "6418bca4fd34b120928bdcc7c37c72e32f2cb6b8e5fd48d6164441aa1a9f7404",
+      "ml/notebooks/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "ml/notebooks/01_data_exploration.ipynb": "6d60155ce7151d6719baa3ea644e50601a53c2055ce9af40ca6f150e6f12e711",
+      "ml/notebooks/02_exploratory_data_analysis.ipynb": "d0087a1f8060d319804560439c110d43934d0fe79758b8889d4cb54ffcc1477f",
+      "ml/notebooks/03_preprocessing.ipynb": "c72529c84d2e7900c2b6e68242dde1316a498059be530ba3d1d47de7b705f747",
+      "ml/notebooks/04_feature_engineering.ipynb": "a611599109d625a08898de38c8d26d828dba098bd8b453bdc92e9d2abdf4da70",
+      "ml/notebooks/05_train_validation_test_split.ipynb": "35371b82d8d386c40473d696ba1d92dec2445414044e709544b5a6dba57fca60",
+      "ml/notebooks/06_baseline_linear_regression.ipynb": "29915d5e41e8439f8575fa61c8b901c77905792e3b55c557d2e11c633249e45a",
+      "ml/notebooks/07_random_forest.ipynb": "940d03f07b4f73f623c5fedd94f32e7d178ff69f6294c13b8eae1a9dfa2cf791",
+      "ml/notebooks/08_xgboost.ipynb": "f034d7b109401d42f52dba1d824d68f00e53c8a1e346f5fe6c28de2a2167a811",
+      "ml/notebooks/09_hyperparameter_tuning.ipynb": "abbfcac4392ed513cb674b163e5d1b18cf2958573bb9d419051e058c4d5143e1",
+      "ml/notebooks/10_final_model_evaluation.ipynb": "a59e5d1f31c35eca9dca174e576b8e7fda9af4c06102313faa4447efe7942527",
+      "ml/notebooks/11_model_explainability.ipynb": "9a80fb5603aa0ae415a98567f6e96eb9a7877efe47d6cbce1a15d68d731ddd1b",
+      "ml/notebooks/12_model_persistence.ipynb": "872f58307059715be63b9d834571c3420746d6fc9b2ebc7324f0ec7b56b64c47",
+      "ml/notebooks/13_recommendation_engine.ipynb": "6e2021325037ecaa0e1e9162fa5f7154a5d504fa61614a64bd027b9d19a23197",
+      "ml/results/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "ml/results/feature_schema.json": "0b1038f2d41ddff90921867bfc4d6ea5bbe0195e122e1d7cf96a05eaef2fcdff",
+      "ml/results/final_model_metadata.json": "c712ab6d3823ee40750bc0ad8a30f31901fe3b98862b844177df8d993ec7da3a",
+      "ml/results/phase10_tuning_cv_results.json": "0fe9df7e4887dacb64ca03b1723efe1710f44e26ea06bdf08890bda01a9f01af",
+      "ml/results/phase10_tuning_summary.json": "7c9b87bd663f5045ecdb94f12f23529a7339c8c91091d2736a376069fa559a7f",
+      "ml/results/phase11_final_test_evaluation.json": "00af469b8ee4270ba85c92c77832e89929715acdfe802efe7df84dcb1ac534d9",
+      "ml/results/phase11_reproducibility.json": "e2b9b0eb588121df5382e61a919bbf29af6ad168b71eef51e1085b9ea1ec1b96",
+      "ml/results/phase11_selection_lock.json": "d184f3034c2952a0befafe69bea70f5977db39256d43380f681c752ab6e1e9f2",
+      "ml/results/phase12_feature_importance.json": "f1c0ce2cb196accd00c78ce6a0d1158716dc03967ff7e963a11a4e207101a5b0",
+      "ml/results/phase12_reproducibility.json": "95a6d57ddb0613b75df72b06fe98b5d1be219d6c7b84272f07ac0ee5e65a31cf",
+      "ml/results/phase13_model_persistence.json": "d66f097e23b2e06ef70f85fb412924025cef0a9093760ff9f72eb49d6764b41d",
+      "ml/results/phase14_recommendation_engine.json": "16c2fb20c9fee04e9606f6a120b6356ecbe38fa94f5e0a62b5d03dfba4cd99d2",
+      "ml/results/phase14_recommendation_thresholds.json": "673707f8ec93d8599d1dac25990d876cec751efd955a941d25e307d8c7ceab86",
+      "ml/results/phase15_api_backend.json": "a1a0c9b8a9b3cf262d7f82c3ea2c9efaf4234b02890271f11c37a558eea0cf82",
+      "ml/results/phase16_frontend_api_integration.json": "d318dfac7e32c8746918f754d3b185641df211ed751025046e9bba7b49083360",
+      "ml/results/phase17_dashboard_real_data_integration.json": "7a985d324f06a2247f78f6d9335ce65b611cac727ba858478589fe79346e7e33",
+      "ml/results/phase7_validation_metrics.json": "35a6fdb36a52cff7873d0fe20969d564cdc23add94816aec720cbde11d7bc9b8",
+      "ml/results/phase8_random_forest_validation_metrics.json": "9ab2cb0717baa0cd95813ecc582377c8f431640ac3c658f7def889e84810156f",
+      "ml/results/phase9_xgboost_validation_metrics.json": "d523cd81ef67c71d7f28fc88f1f1e683b9f50e11c5db816221eccfc351d0584a",
+      "ml/results/split_metadata.json": "0bd0caa2ab2d159969e3e1744492ce47c6d6778ba488ed5bb816c209525b395f",
+      "ml/src/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "ml/src/check_dataset.py": "0a076dea43edc068a6481ac2ba330e5fb2654be32ccf0d6610b8270c4bf90ec3",
+      "ml/src/evaluate_final_model.py": "20e09ae37bc4c45c6b562d1ab14c38b2db6dccb2b8a91e2ef4c1d9f701e66731",
+      "ml/src/explain_final_model.py": "936b99da17fdb720dada7cc13ac0ac5674480643fd0b2d2c2d2a02aab2950076",
+      "ml/src/feature_engineering.py": "bc3ab4690fef669809a811da5152dd29791ac959815bf95a8f3c90d6e27aef54",
+      "ml/src/model_inference.py": "4b01eda9c7d13b27d935ec0a4ccd988fd951bed8ea8091035743b546bbc880ef",
+      "ml/src/preprocess.py": "b9a863b2b7d31d0e285db5778e420f1a79abcfa70bb1d86e6222b34df1fb2c6d",
+      "ml/src/recommendation_engine.py": "5c284e98a411a0fd7675109cf9586e2c8615bb92862d2905f9f34337a9be4c17",
+      "ml/src/save_final_model.py": "04a912f544f774a931cc8d247dce675faa693d1a220bf46382b61f4aa2661b94",
+      "ml/src/split_data.py": "d01284831ba55a07fc9f4186a44db845fce2a0855917678837c9f787bed93a03",
+      "ml/src/train_baselines.py": "20d3106c5165ffb2e7530da3f1376684c475302d4bcbaee447dbb7c62e4d16d5",
+      "ml/src/train_random_forest.py": "38b02d666e781c98175ab9d2605cfd3fde286b8fe75cfe8ed2f30caad868400c",
+      "ml/src/train_xgboost.py": "06345dc878da7775b754aaa496da2ebff1e78009c2f5860d6903c9b8bb5178c8",
+      "ml/src/tune_models.py": "34d451bac2de7abe52cd83ffddd0f91877715aed0c437c292d67dec3987eb47d",
+      "package-lock.json": "8eea83d6283db3d337e5130e0b2dbaa0bc0eefdffd2f78203e841d8ed9995e7c",
+      "package.json": "da6d358a8fb396f0ac1578b167d7e7432746a195ad68c54c352262c14b3e779b",
+      "requirements.txt": "34617ffe970dd4561303173e1651b87800b1dc287e47d14dd536518a93d9e508",
+      "src/routeTree.gen.ts": "c5f7acf36348efb97cf18ba381d1dcf1b5beed16cce7c3f4c3ea549725d518af",
+      "src/router.tsx": "7e3481892de4073ba86e9a6c3a52f1cc6c0d8ab8668df1b14a3ce9f7658edc4a",
+      "src/server.ts": "4200dda605d3af5b6ba95e79022fdd40d3075cb39ee0d8bacd769ec2312baa92",
+      "src/start.ts": "9d3a00e7f89d1596407c269e9df54f163f36ca5edc2e9d2b180af640ccf4622e",
+      "vite.config.ts": "a1c369f516f02aacb4bde1be0856bd97d46a5192a6cfb2f1ae7ceb82e7fee9ab"
+    },
+    "research_methodology_changed": false
+  },
+  "route_classification_legend": {
+    "A": "Truthful/current",
+    "B": "Harmless generic copy",
+    "C": "Misleading legacy/mock capability claim",
+    "D": "Broken/incomplete"
+  },
+  "route_count": 19,
+  "route_inventory": [
+    {
+      "final_classification": "A",
+      "final_state": "Verified research presentation",
+      "initial_classification": "C",
+      "responsive_widths_verified": [
+        1440,
+        390
+      ],
+      "route": "/about",
+      "source": "src/routes/about.tsx",
+      "tested_url": "/about"
+    },
+    {
+      "final_classification": "A",
+      "final_state": "Explicit unsupported/not-connected state",
+      "initial_classification": "C",
+      "responsive_widths_verified": [
+        1440,
+        390
+      ],
+      "route": "/admin/buildings",
+      "source": "src/routes/admin.buildings.tsx",
+      "tested_url": "/admin/buildings"
+    },
+    {
+      "final_classification": "A",
+      "final_state": "Explicit unsupported/not-connected state",
+      "initial_classification": "C",
+      "responsive_widths_verified": [
+        1440,
+        390
+      ],
+      "route": "/admin/",
+      "source": "src/routes/admin.index.tsx",
+      "tested_url": "/admin/"
+    },
+    {
+      "final_classification": "A",
+      "final_state": "Explicit unsupported/not-connected state",
+      "initial_classification": "C",
+      "responsive_widths_verified": [
+        1440,
+        390
+      ],
+      "route": "/admin/users",
+      "source": "src/routes/admin.users.tsx",
+      "tested_url": "/admin/users"
+    },
+    {
+      "final_classification": "A",
+      "final_state": "Explicit unsupported/not-connected state",
+      "initial_classification": "C",
+      "responsive_widths_verified": [
+        1440,
+        390
+      ],
+      "route": "/buildings/$id",
+      "source": "src/routes/buildings.$id.tsx",
+      "tested_url": "/buildings/ubt-campus-a"
+    },
+    {
+      "final_classification": "A",
+      "final_state": "Explicit unsupported/not-connected state",
+      "initial_classification": "C",
+      "responsive_widths_verified": [
+        1440,
+        390
+      ],
+      "route": "/buildings/",
+      "source": "src/routes/buildings.index.tsx",
+      "tested_url": "/buildings/"
+    },
+    {
+      "final_classification": "A",
+      "final_state": "Explicit unsupported/not-connected state",
+      "initial_classification": "C",
+      "responsive_widths_verified": [
+        1440,
+        390
+      ],
+      "route": "/contact",
+      "source": "src/routes/contact.tsx",
+      "tested_url": "/contact"
+    },
+    {
+      "final_classification": "A",
+      "final_state": "Verified research presentation",
+      "initial_classification": "A",
+      "responsive_widths_verified": [
+        1440,
+        390
+      ],
+      "route": "/dashboard",
+      "source": "src/routes/dashboard.tsx",
+      "tested_url": "/dashboard"
+    },
+    {
+      "final_classification": "A",
+      "final_state": "Explicit unsupported/not-connected state",
+      "initial_classification": "C",
+      "responsive_widths_verified": [
+        1440,
+        390
+      ],
+      "route": "/data",
+      "source": "src/routes/data.tsx",
+      "tested_url": "/data"
+    },
+    {
+      "final_classification": "A",
+      "final_state": "Explicit unsupported/not-connected state",
+      "initial_classification": "C",
+      "responsive_widths_verified": [
+        1440,
+        390
+      ],
+      "route": "/forgot-password",
+      "source": "src/routes/forgot-password.tsx",
+      "tested_url": "/forgot-password"
+    },
+    {
+      "final_classification": "A",
+      "final_state": "Truthful prototype access/display",
+      "initial_classification": "C",
+      "responsive_widths_verified": [
+        1440,
+        390
+      ],
+      "route": "/",
+      "source": "src/routes/index.tsx",
+      "tested_url": "/"
+    },
+    {
+      "final_classification": "A",
+      "final_state": "Truthful prototype access/display",
+      "initial_classification": "C",
+      "responsive_widths_verified": [
+        1440,
+        390
+      ],
+      "route": "/login",
+      "source": "src/routes/login.tsx",
+      "tested_url": "/login"
+    },
+    {
+      "final_classification": "A",
+      "final_state": "Explicit unsupported/not-connected state",
+      "initial_classification": "C",
+      "responsive_widths_verified": [
+        1440,
+        390
+      ],
+      "route": "/onboarding",
+      "source": "src/routes/onboarding.tsx",
+      "tested_url": "/onboarding"
+    },
+    {
+      "final_classification": "A",
+      "final_state": "Verified research presentation",
+      "initial_classification": "A",
+      "responsive_widths_verified": [
+        1440,
+        390
+      ],
+      "route": "/predictions",
+      "source": "src/routes/predictions.tsx",
+      "tested_url": "/predictions"
+    },
+    {
+      "final_classification": "A",
+      "final_state": "Verified research presentation",
+      "initial_classification": "A",
+      "responsive_widths_verified": [
+        1440,
+        390
+      ],
+      "route": "/recommendations",
+      "source": "src/routes/recommendations.tsx",
+      "tested_url": "/recommendations"
+    },
+    {
+      "final_classification": "A",
+      "final_state": "Explicit unsupported/not-connected state",
+      "initial_classification": "C",
+      "responsive_widths_verified": [
+        1440,
+        390
+      ],
+      "route": "/reset-password",
+      "source": "src/routes/reset-password.tsx",
+      "tested_url": "/reset-password"
+    },
+    {
+      "final_classification": "A",
+      "final_state": "Truthful prototype access/display",
+      "initial_classification": "C",
+      "responsive_widths_verified": [
+        1440,
+        390
+      ],
+      "route": "/settings",
+      "source": "src/routes/settings.tsx",
+      "tested_url": "/settings"
+    },
+    {
+      "final_classification": "A",
+      "final_state": "Explicit unsupported/not-connected state",
+      "initial_classification": "C",
+      "responsive_widths_verified": [
+        1440,
+        390
+      ],
+      "route": "/signup",
+      "source": "src/routes/signup.tsx",
+      "tested_url": "/signup"
+    },
+    {
+      "final_classification": "A",
+      "final_state": "Explicit unsupported/not-connected state",
+      "initial_classification": "C",
+      "responsive_widths_verified": [
+        1440,
+        390
+      ],
+      "route": "/verify-email",
+      "source": "src/routes/verify-email.tsx",
+      "tested_url": "/verify-email"
+    }
+  ],
+  "security_exposure_sanity": {
+    "fault_injection_responses_safe": true,
+    "live_api_absolute_paths_or_python_traces": false,
+    "scope": "Lightweight prototype sanity check, not penetration testing or a security guarantee.",
+    "source_and_bundle_scan": {
+      "files_scanned": 128,
+      "scope": "Lightweight source and built frontend JS pattern scan, not penetration testing or proof of absence of all secrets.",
+      "secret_pattern_findings": []
+    }
+  },
+  "targeted_lint": {
+    "command": [
+      "node",
+      "node_modules/eslint/bin/eslint.js",
+      "src/lib/api/client.ts",
+      "src/lib/api/types.ts",
+      "src/lib/api/smartEnergyApi.ts",
+      "src/lib/api/research-schemas.ts",
+      "src/hooks/use-smart-energy-api.ts",
+      "src/components/research-dashboard.tsx",
+      "src/components/backend-status.tsx",
+      "src/components/app-shell.tsx",
+      "src/components/charts.tsx",
+      "src/routes/dashboard.tsx",
+      "src/routes/predictions.tsx",
+      "src/routes/recommendations.tsx",
+      "--format",
+      "json"
+    ],
+    "issues_by_rule": {
+      "prettier/prettier": 956
+    },
+    "passed": false,
+    "return_code": 1
+  },
+  "targeted_semantic_lint": {
+    "command": [
+      "node",
+      "node_modules/eslint/bin/eslint.js",
+      "src/lib/api/client.ts",
+      "src/lib/api/types.ts",
+      "src/lib/api/smartEnergyApi.ts",
+      "src/lib/api/research-schemas.ts",
+      "src/hooks/use-smart-energy-api.ts",
+      "src/components/research-dashboard.tsx",
+      "src/components/backend-status.tsx",
+      "src/components/app-shell.tsx",
+      "src/components/charts.tsx",
+      "src/routes/dashboard.tsx",
+      "src/routes/predictions.tsx",
+      "src/routes/recommendations.tsx",
+      "--rule",
+      "{\"prettier/prettier\":\"off\"}"
+    ],
+    "passed": true,
+    "return_code": 0
+  },
+  "terminology_result": "Wh energy and ten-minute horizon preserved; validation versus held-out test and predictive versus causal importance remain explicit; public copy no longer promises automatic control.",
+  "typecheck_result": {
+    "command": [
+      "node",
+      "node_modules/typescript/bin/tsc",
+      "--noEmit"
+    ],
+    "passed": true,
+    "return_code": 0
+  },
+  "warnings": [
+    "Installed Starlette TestClient warns that httpx support is deprecated; all tests execute with existing httpx.",
+    "The plugin \"vite-tsconfig-paths\" is detected. Vite now supports tsconfig paths resolution natively via the resolve.tsconfigPaths option. You can remove the plugin and set resolve.tsconfigPaths: true in your Vite config instead.",
+    " WARN  inlineDynamicImports option is ignored because the codeSplitting option is specified."
+  ]
+}

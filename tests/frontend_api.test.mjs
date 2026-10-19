@@ -161,3 +161,21 @@ test("malformed research responses reject instead of supplying defaults", async 
     await assert.rejects(fn(), error => error instanceof ApiError && /malformed research data/.test(error.message));
   }
 });
+
+
+test("corrupt local prototype sessions cannot crash rendering or invent a user", async () => {
+  const { parseDemoSession } = await import("../src/lib/demo-session.ts");
+  for (const value of ["invalid", "null", "[]", '{"name":42}', '{"name":42,"email":"demo@example.invalid","role":"Viewer","onboarded":true}']) {
+    assert.equal(parseDemoSession(value), null);
+  }
+  const sample = {name:"Local test visitor",email:"demo@example.invalid",role:"Viewer",onboarded:true};
+  assert.deepEqual(parseDemoSession(JSON.stringify(sample)),sample);
+});
+
+test("public/account presentation does not regress to known unsupported claims", () => {
+  const files = ["index", "about", "contact", "login", "signup", "forgot-password", "reset-password", "verify-email", "onboarding", "settings"];
+  const source = files.map(name => readFileSync(new URL(`../src/routes/${name}.tsx`, import.meta.url), "utf8")).join("\n")
+    + readFileSync(new URL("../src/components/public-layout.tsx", import.meta.url),"utf8")
+    + readFileSync(new URL("../src/components/auth-shell.tsx", import.meta.url),"utf8");
+  for (const claim of ["LSTM seq-48", "2.94M", "0.962", "MAE 12.4", "nightly retraining", "Verification email re-sent", "Password changed.", "Account created", "We sent a confirmation", "up to 90 days", "PMV"]) assert.ok(!source.includes(claim), claim);
+});

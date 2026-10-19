@@ -1,3 +1,4 @@
+import { parseDemoSession } from "./demo-session";
 import { createContext, useCallback, useContext, useEffect, useState, type ReactNode } from "react";
 
 export type Role = "Building Admin" | "Analyst" | "Viewer" | "Platform Admin";
@@ -21,8 +22,8 @@ type AuthCtx = {
 const KEY = "sea-session";
 
 const DEMO: SessionUser = {
-  name: "Arber Krasniqi",
-  email: "arber.krasniqi@ubt-uni.net",
+  name: "Prototype visitor",
+  email: "demo@example.invalid",
   role: "Platform Admin",
   onboarded: true,
 };
@@ -45,7 +46,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     try {
       const raw = window.localStorage.getItem(KEY);
-      if (raw) setUser(JSON.parse(raw) as SessionUser);
+      if (raw) setUser(parseDemoSession(raw));
     } catch {
       /* ignore corrupt session */
     }
@@ -101,5 +102,3 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 export function useAuth() {
   return useContext(Ctx);
 }
-
-export const demoCredentials = { email: DEMO.email, password: "energy2026" };

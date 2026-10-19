@@ -6,17 +6,7 @@ import { Button } from "@/components/ui/button";
 import { auditLog, platformStats } from "@/lib/mock-data";
 
 export const Route = createFileRoute("/admin/")({
-  head: () => ({
-    meta: [
-      { title: "Admin overview — Smart Energy AI" },
-      {
-        name: "description",
-        content: "Platform-wide statistics, model activity and a full audit log of user, data and model events.",
-      },
-      { property: "og:title", content: "Admin overview — Smart Energy AI" },
-      { property: "og:description", content: "Platform statistics and audit log." },
-    ],
-  }),
+  head: () => ({ meta: [{ title: "Operational service not connected | SmartEnergyAI" }, { name: "description", content: "No verified operational data or management service is connected to this prototype." }] }),
   component: AdminOverview,
 });
 

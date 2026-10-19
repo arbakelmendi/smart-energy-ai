@@ -28,14 +28,13 @@ export function AuthShell({
       <div className="mx-auto grid w-full max-w-6xl flex-1 items-center gap-12 px-4 py-8 sm:px-6 lg:grid-cols-[1fr_minmax(0,440px)]">
         <div className="hidden min-w-0 lg:block">
           <p className="font-mono text-[11px] tracking-[0.2em] text-efficiency uppercase">
-            smart energy ai · control room
+            smart energy ai | research prototype
           </p>
           <h2 className="mt-4 text-4xl leading-tight font-bold">
-            Every kWh explained by a model you can inspect.
+            Inspect verified energy forecasting results.
           </h2>
           <p className="mt-4 max-w-md text-sm text-muted-foreground">
-            Forecast horizon up to 90 days, nightly retraining, and published MAE / RMSE / R² on
-            every screen. No black boxes, no vanity metrics.
+            The research dashboard shows verified model performance and decision-support thresholds. No account or live building connection is required.
           </p>
           {aside}
         </div>
@@ -48,7 +47,7 @@ export function AuthShell({
       </div>
       <footer className="px-4 py-5 text-center text-xs text-muted-foreground sm:px-6">
         <Link to="/" className="hover:text-efficiency">
-          ← Back to smart-energy-ai.dev
+          ← Back to the prototype
         </Link>
       </footer>
     </div>

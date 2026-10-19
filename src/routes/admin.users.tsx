@@ -9,17 +9,7 @@ import { platformUsers, type PlatformUser } from "@/lib/mock-data";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/admin/users")({
-  head: () => ({
-    meta: [
-      { title: "User management — Smart Energy AI" },
-      {
-        name: "description",
-        content: "Platform admin console for reviewing accounts, roles and suspending or activating users.",
-      },
-      { property: "og:title", content: "User management — Smart Energy AI" },
-      { property: "og:description", content: "Accounts, roles and account status control." },
-    ],
-  }),
+  head: () => ({ meta: [{ title: "Operational service not connected | SmartEnergyAI" }, { name: "description", content: "No verified operational data or management service is connected to this prototype." }] }),
   component: AdminUsers,
 });
 

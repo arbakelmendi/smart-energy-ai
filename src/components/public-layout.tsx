@@ -21,7 +21,7 @@ export function Logo({ className }: { className?: string }) {
       <span className="min-w-0 leading-tight">
         <span className="block font-display text-sm font-bold tracking-tight">Smart Energy AI</span>
         <span className="block font-mono text-[10px] tracking-[0.16em] text-muted-foreground uppercase">
-          forecast · optimize
+          forecast | review
         </span>
       </span>
     </Link>
@@ -49,10 +49,10 @@ export function PublicHeader() {
           </nav>
           <ThemeToggle />
           <Button asChild variant="ghost" size="sm" className="hidden sm:inline-flex">
-            <Link to="/login">Log in</Link>
+            <Link to="/login">Prototype access</Link>
           </Button>
           <Button asChild size="sm" variant="energy">
-            <Link to="/signup">Request demo</Link>
+            <Link to="/signup">View prototype</Link>
           </Button>
           <Button
             variant="ghost"
@@ -67,7 +67,7 @@ export function PublicHeader() {
       </div>
       {open ? (
         <nav className="border-t border-border bg-surface px-4 py-2 md:hidden">
-          {[...nav, { to: "/login", label: "Log in" }].map((n) => (
+          {[...nav, { to: "/login", label: "Prototype access" }].map((n) => (
             <Link
               key={n.to}
               to={n.to}
@@ -90,11 +90,11 @@ export function PublicFooter() {
         <div className="space-y-4">
           <Logo />
           <p className="max-w-xs text-sm text-muted-foreground">
-            Machine-learning forecasting and optimization of energy consumption in smart buildings.
+            Energy forecasting research and transparent decision support.
             Built as a bachelor thesis project at UBT — University for Business and Technology.
           </p>
           <p className="font-mono text-[11px] text-muted-foreground">
-            Active model: LSTM seq-48 v4.2 · MAE 12.4 kWh · R² 0.962
+            Model performance is available from verified backend results.
           </p>
         </div>
         <FooterCol
@@ -111,8 +111,8 @@ export function PublicFooter() {
           links={[
             { to: "/about", label: "About the project" },
             { to: "/contact", label: "Contact & support" },
-            { to: "/signup", label: "Create account" },
-            { to: "/login", label: "Log in" },
+            { to: "/signup", label: "Account availability" },
+            { to: "/login", label: "Prototype access" },
           ]}
         />
         <div className="space-y-3 text-sm text-muted-foreground">
@@ -121,21 +121,20 @@ export function PublicFooter() {
           </p>
           <p className="flex items-start gap-2">
             <MapPin className="mt-0.5 size-4 shrink-0 text-efficiency" />
-            UBT Innovation Campus, Lipjan, Kosovo
+            Academic research prototype
           </p>
           <p className="flex items-start gap-2">
             <Mail className="mt-0.5 size-4 shrink-0 text-efficiency" />
-            research@smart-energy-ai.dev
+            Contact delivery not connected
           </p>
           <p className="flex items-start gap-2">
             <Github className="mt-0.5 size-4 shrink-0 text-efficiency" />
-            github.com/smart-energy-ai
+            Verified results available in the dashboard
           </p>
         </div>
       </div>
       <div className="border-t border-border px-4 py-5 text-center text-xs text-muted-foreground sm:px-6">
-        © 2026 Smart Energy AI · Academic research prototype · All consumption data shown is
-        simulated.
+        © 2026 Smart Energy AI · Academic research prototype · Research metrics are labeled; no live operational feed is connected.
       </div>
     </footer>
   );

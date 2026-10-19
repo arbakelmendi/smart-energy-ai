@@ -5,17 +5,7 @@ import { buildings } from "@/lib/mock-data";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/admin/buildings")({
-  head: () => ({
-    meta: [
-      { title: "All buildings (admin) — Smart Energy AI" },
-      {
-        name: "description",
-        content: "Admin view of every monitored building with load, baseline, savings and sensor counts.",
-      },
-      { property: "og:title", content: "All buildings (admin) — Smart Energy AI" },
-      { property: "og:description", content: "Cross-tenant building inventory." },
-    ],
-  }),
+  head: () => ({ meta: [{ title: "Operational service not connected | SmartEnergyAI" }, { name: "description", content: "No verified operational data or management service is connected to this prototype." }] }),
   component: AdminBuildings,
 });
 

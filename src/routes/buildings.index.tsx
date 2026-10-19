@@ -9,17 +9,7 @@ import { buildTrend, buildings } from "@/lib/mock-data";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/buildings/")({
-  head: () => ({
-    meta: [
-      { title: "Buildings — Smart Energy AI" },
-      {
-        name: "description",
-        content: "Manage your building portfolio: current load, status, sensors and savings per site.",
-      },
-      { property: "og:title", content: "Buildings — Smart Energy AI" },
-      { property: "og:description", content: "Portfolio of monitored buildings and their status." },
-    ],
-  }),
+  head: () => ({ meta: [{ title: "Operational service not connected | SmartEnergyAI" }, { name: "description", content: "No verified operational data or management service is connected to this prototype." }] }),
   component: BuildingsPage,
 });
 

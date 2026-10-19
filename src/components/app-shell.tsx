@@ -173,7 +173,7 @@ export function AppShell({
                   <p className="max-w-[140px] truncate text-xs font-medium">
                     {user?.name ?? "Demo User"}
                   </p>
-                  <p className="text-[10px] text-muted-foreground">{user?.role ?? "Viewer"}</p>
+                  <p className="text-[10px] text-muted-foreground">{user ? "Local demo session" : "Prototype visitor"}</p>
                 </div>
                 <span className="grid size-8 place-items-center rounded-full bg-efficiency/15 font-display text-xs font-bold text-efficiency">
                   {(user?.name ?? "DU")

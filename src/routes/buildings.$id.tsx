@@ -21,26 +21,7 @@ export const Route = createFileRoute("/buildings/$id")({
     if (!building) throw notFound();
     return { building };
   },
-  head: ({ loaderData }) => {
-    if (!loaderData) {
-      return { meta: [{ title: "Building unavailable — Smart Energy AI" }, { name: "robots", content: "noindex" }] };
-    }
-    const { building } = loaderData;
-    return {
-      meta: [
-        { title: `${building.name} — Smart Energy AI` },
-        {
-          name: "description",
-          content: `Consumption forecast, savings and alerts for ${building.name} (${building.type}, ${building.areaM2} m²).`,
-        },
-        { property: "og:title", content: `${building.name} — Smart Energy AI` },
-        {
-          property: "og:description",
-          content: `Per-building forecast, model accuracy and recommendations for ${building.name}.`,
-        },
-      ],
-    };
-  },
+  head: () => ({ meta: [{ title: "Building service not connected | SmartEnergyAI" }, { name: "description", content: "No verified operational building service is connected to this prototype." }] }),
   component: BuildingDetail,
 });
 

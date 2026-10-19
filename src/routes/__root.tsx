@@ -97,7 +97,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       {
         name: "description",
         content:
-          "Forecast and optimize building energy consumption with machine learning. Live telemetry, actual-vs-predicted charts and actionable savings recommendations.",
+          "Verified energy forecasting research and forecast-based decision support. No live operational feed or automatic equipment control.",
       },
       { name: "author", content: "Smart Energy AI — UBT thesis project" },
       { property: "og:type", content: "website" },
