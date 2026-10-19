@@ -18,6 +18,7 @@ import {
 import { useEffect, useState, type ReactNode } from "react";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { BackendStatus } from "@/components/backend-status";
 import { Logo } from "@/components/public-layout";
 import { useAuth } from "@/lib/auth";
 import { alerts } from "@/lib/mock-data";
@@ -163,12 +164,7 @@ export function AppShell({
               </div>
             </div>
             <div className="flex items-center gap-1.5">
-              <div className="hidden items-center gap-2 rounded-full border border-efficiency/35 bg-efficiency/10 px-3 py-1.5 sm:flex">
-                <span className="size-1.5 rounded-full bg-efficiency pulse-dot" />
-                <span className="font-mono text-[10px] tracking-wider text-efficiency uppercase">
-                  live telemetry
-                </span>
-              </div>
+              <BackendStatus />
               <Link
                 to="/dashboard"
                 hash="alerts"
