@@ -75,3 +75,17 @@ __pycache__/
 
 # Generated evaluation predictions and diagnostic plots
 /ml/results/generated/
+
+# Local application SQLite databases and sidecars
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+*.sqlite
+*.sqlite3
+*.sqlite-journal
+*.sqlite-wal
+*.sqlite-shm
+*.sqlite3-journal
+*.sqlite3-wal
+*.sqlite3-shm

@@ -14,7 +14,7 @@ The objective is to compare forecasting approaches chronologically, estimate lat
 - Return deterministic recommendations calibrated on TRAIN + VALIDATION only.
 - Present API-sourced research results with explicit loading/error/unavailable states.
 
-No operational sensor/history stream is connected. The browser cannot fabricate historical lag/rolling context for a live forecast. No real authentication, database, account/email service, occupancy inference or equipment control is implemented. No guaranteed energy, monetary or CO2 savings or calibrated prediction intervals are claimed.
+No operational sensor/history stream is connected. The browser cannot fabricate historical lag/rolling context for a live forecast. No real authentication, account/email service, occupancy inference or equipment control is implemented. The independent Phase 21 database foundation is described below; research routes do not use it. No guaranteed energy, monetary or CO2 savings or calibrated prediction intervals are claimed.
 
 ## Dataset and methodology
 
@@ -168,7 +168,7 @@ Optional Windows Edge route/browser QA: `python tests/verify_phase18.py --browse
 - No reliable occupancy input or operational sensor/history feed. Temperatures/humidity alone cannot provide valid engineered forecast inputs.
 - Decision support, not automatic control; no validated intervention savings or calibrated prediction intervals.
 - One later chronological test period; model/climate/building transfer requires further evidence. Importance is predictive and period-specific.
-- No real authentication, database, accounts or email. Explicit local-development CORS/loopback assumptions are not production-grade security.
+- No real authentication, operational account service or email; the Phase 21 database is an independent schema foundation only. Explicit local-development CORS/loopback assumptions are not production-grade security.
 - Exact replay depends on input bytes, recorded libraries and serialization environment. Historical audits describe their phase snapshots, not immutable later application code.
 
 Committed artifacts are the source of truth. Do not retune/select on TEST, rewrite results for a different environment, present research observations as live telemetry, or replace API failures with mock values. Preserve Lovable history and unrelated worktree changes.
@@ -180,3 +180,7 @@ Use the [demo guide](docs/thesis-demo-guide.md), [technical reference](docs/defe
 ## Dataset reference
 
 UCI Machine Learning Repository. *Appliances Energy Prediction*. DOI: [10.24432/C5VC8G](https://doi.org/10.24432/C5VC8G). Retrieval date/version was not recorded locally. Saved [inspection](ml/notebooks/01_data_exploration.ipynb) and [EDA](ml/notebooks/02_exploratory_data_analysis.ipynb) provide local findings. No additional bibliographic fields are assumed.
+
+## Application database foundation (Phase 21)
+
+An independent SQLAlchemy/Alembic schema now supports users, owned buildings, raw measurements and prediction/recommendation snapshots. See [database architecture and initialization](docs/database-architecture.md). SQLite defaults to an ignored repository-local `smartenergy.db`; initialize an empty schema with `python -m alembic upgrade head`. This adds no authentication, import or CRUD/persistence endpoints. Existing research routes/dashboard remain database-independent. Earlier phase documents describe their verified historical scope.
