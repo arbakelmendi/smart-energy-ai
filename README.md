@@ -173,6 +173,10 @@ Optional Windows Edge route/browser QA: `python tests/verify_phase18.py --browse
 
 Committed artifacts are the source of truth. Do not retune/select on TEST, rewrite results for a different environment, present research observations as live telemetry, or replace API failures with mock values. Preserve Lovable history and unrelated worktree changes.
 
+## Thesis defense preparation
+
+Use the [demo guide](docs/thesis-demo-guide.md), [technical reference](docs/defense-technical-reference.md) and [one-page fact sheet](docs/project-fact-sheet.md). Run `python tests/verify_demo_preflight.py` before starting the local servers. It verifies the existing model and a known development-data example without fitting or reading TEST. The final audit is recorded in [Phase 20](ml/results/phase20_final_audit.json).
+
 ## Dataset reference
 
 UCI Machine Learning Repository. *Appliances Energy Prediction*. DOI: [10.24432/C5VC8G](https://doi.org/10.24432/C5VC8G). Retrieval date/version was not recorded locally. Saved [inspection](ml/notebooks/01_data_exploration.ipynb) and [EDA](ml/notebooks/02_exploratory_data_analysis.ipynb) provide local findings. No additional bibliographic fields are assumed.
