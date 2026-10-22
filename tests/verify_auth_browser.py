@@ -29,7 +29,7 @@ def main():
     api = f'http://localhost:{backend_port}'
     frontend = f'http://localhost:{frontend_port}'
     original = (root / 'tests/verify_dashboard_browser.py').read_text(encoding='utf-8')
-    original = original.replace('8000',str(backend_port)).replace('5173',str(frontend_port)).replace('phase17_', 'phase24_' if '--measurements' in sys.argv else ('phase23_' if '--buildings' in sys.argv else 'phase22_'))
+    original = original.replace('8000',str(backend_port)).replace('5173',str(frontend_port)).replace('phase17_', 'phase25_' if '--readiness' in sys.argv else 'phase24_' if '--measurements' in sys.argv else ('phase23_' if '--buildings' in sys.argv else 'phase22_'))
     original = original.replace(f'127.0.0.1:{backend_port}', f'localhost:{backend_port}')
     tree = ast.parse(original)
     helpers = [node for node in tree.body if isinstance(node, (ast.ClassDef, ast.FunctionDef)) and node.name in ('CDP','spawn','stop','ready')]
@@ -187,6 +187,20 @@ def main():
                         from verify_measurements_browser import scenario as measurement_scenario
                         measurement_verification = measurement_scenario(c=c,visit=visit,submit=submit,signed_out=signed_out,
                             signed_in=signed_in,api=api,user_email=email,user_password=password,reload=reload,restart=restart_for_buildings)
+                    readiness_verification = None
+                    if '--readiness' in sys.argv:
+                        from scripts.import_uci_reference_building import import_reference
+                        with factory() as db:
+                            reference = import_reference(db, admin_email)
+                        from verify_readiness_browser import scenario as readiness_scenario
+                        readiness_verification = readiness_scenario(c=c,visit=visit,submit=submit,signed_out=signed_out,
+                            signed_in=signed_in,api=api,user_email=email,user_password=password,
+                            admin_email=admin_email,admin_password=admin_password,reference_id=reference['building_id'])
+                        from backend.db_models import Prediction
+                        from sqlalchemy import func
+                        with factory() as db:
+                            assert db.scalar(select(func.count(Prediction.id))) == 0
+                        readiness_verification['no_prediction_records_created'] = True
                     # Public research APIs still operate without cookies.
                     statuses={}
                     for path in ('/','/health','/model/info','/recommendations/thresholds','/analysis/model-comparison','/analysis/feature-importance','/docs','/openapi.json'):
@@ -221,6 +235,8 @@ def main():
                         evidence['building_management'] = building_verification
                     if measurement_verification is not None:
                         evidence['measurements'] = measurement_verification
+                    if readiness_verification is not None:
+                        evidence['prediction_readiness'] = readiness_verification
                     c.ws.close()
                 finally:
                     for process in reversed(processes):stop(process)
@@ -228,7 +244,7 @@ def main():
                     engine.dispose()
             evidence['verification_processes_stopped']=True
         evidence['temporary_database_and_profile_removed']=True
-    (g/('phase24_browser_evidence.json' if '--measurements' in sys.argv else ('phase23_browser_evidence.json' if '--buildings' in sys.argv else 'phase22_browser_evidence.json'))).write_text(json.dumps(evidence,indent=2)+'\n',encoding='utf-8')
+    (g/('phase25_browser_evidence.json' if '--readiness' in sys.argv else 'phase24_browser_evidence.json' if '--measurements' in sys.argv else ('phase23_browser_evidence.json' if '--buildings' in sys.argv else 'phase22_browser_evidence.json'))).write_text(json.dumps(evidence,indent=2)+'\n',encoding='utf-8')
     print(json.dumps(evidence,indent=2))
 
 

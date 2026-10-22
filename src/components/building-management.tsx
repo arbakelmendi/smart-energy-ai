@@ -2,6 +2,7 @@ import { Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { Panel } from "@/components/ui-kit";
 import { Button } from "@/components/ui/button";
+import { PredictionReadinessPanel } from "@/components/prediction-readiness";
 import { BuildingMeasurements } from "@/components/building-measurements";
 import { BuildingForm } from "@/components/building-form";
 import { useBuilding, useBuildings, useCreateBuilding, useDeleteBuilding, useUpdateBuilding } from "@/hooks/use-buildings";
@@ -54,6 +55,7 @@ function PersistedBuilding({ building }: { building: Building }) {
     {confirming ? <Panel title="Delete this building?"><p className="text-sm">Deleting this building permanently removes its metadata and any associated measurement and prediction history stored now or in the future. This cannot be undone.</p>
       {remove.error ? <p role="alert" className="mt-3 text-sm text-destructive">{remove.error.message}</p> : null}
       <div className="mt-4 flex gap-3"><Button variant="destructive" disabled={remove.isPending} onClick={async () => {try {await remove.mutateAsync();await navigate({to:"/buildings"});} catch {/* Error is shown by mutation state. */}}}>{remove.isPending ? "Deleting..." : "Confirm delete"}</Button><Button variant="ghost" disabled={remove.isPending} onClick={() => setConfirming(false)}>Cancel delete</Button></div></Panel> : null}
+    <PredictionReadinessPanel buildingId={building.id} />
     <BuildingMeasurements buildingId={building.id} />
   </div>;
 }

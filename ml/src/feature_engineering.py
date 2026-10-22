@@ -174,6 +174,35 @@ def _validate_alignment(
     return checks
 
 
+def engineer_origin_features(source: pd.DataFrame) -> pd.DataFrame:
+    """Pure origin-time features shared by research and application inference.
+
+    Caller supplies validated chronological raw data with a datetime date column.
+    Leading rows retain unavailable lags/windows as NaN. No target is generated,
+    no rows are dropped, and no input/output files are read or written.
+    """
+    engineered = source.copy()
+    engineered["hour"] = source["date"].dt.hour
+    engineered["day_of_week"] = source["date"].dt.dayofweek
+    engineered["month"] = source["date"].dt.month
+    engineered["is_weekend"] = (source["date"].dt.dayofweek >= 5).astype("int8")
+
+    engineered["hour_sin"] = np.sin(2 * np.pi * engineered["hour"] / 24)
+    engineered["hour_cos"] = np.cos(2 * np.pi * engineered["hour"] / 24)
+    engineered["dow_sin"] = np.sin(2 * np.pi * engineered["day_of_week"] / 7)
+    engineered["dow_cos"] = np.cos(2 * np.pi * engineered["day_of_week"] / 7)
+
+    for steps, feature in zip(LAG_STEPS, LAG_FEATURES):
+        engineered[feature] = source[TARGET_COLUMN].shift(steps)
+
+    for period, window in ROLLING_WINDOWS.items():
+        # The uncentered full window ends at the current forecast origin t.
+        rolling = source[TARGET_COLUMN].rolling(window=window, min_periods=window, center=False)
+        engineered[f"appliances_roll_mean_{period}"] = rolling.mean()
+        engineered[f"appliances_roll_std_{period}"] = rolling.std(ddof=1)
+    return engineered
+
+
 def engineer_dataset(
     input_path: Path = INPUT_DATA_PATH,
     output_path: Path = OUTPUT_DATA_PATH,
@@ -197,25 +226,7 @@ def engineer_dataset(
     original_columns = list(source.columns)
     original_rows = len(source)
 
-    engineered = source.copy()
-    engineered["hour"] = source["date"].dt.hour
-    engineered["day_of_week"] = source["date"].dt.dayofweek
-    engineered["month"] = source["date"].dt.month
-    engineered["is_weekend"] = (source["date"].dt.dayofweek >= 5).astype("int8")
-
-    engineered["hour_sin"] = np.sin(2 * np.pi * engineered["hour"] / 24)
-    engineered["hour_cos"] = np.cos(2 * np.pi * engineered["hour"] / 24)
-    engineered["dow_sin"] = np.sin(2 * np.pi * engineered["day_of_week"] / 7)
-    engineered["dow_cos"] = np.cos(2 * np.pi * engineered["day_of_week"] / 7)
-
-    for steps, feature in zip(LAG_STEPS, LAG_FEATURES):
-        engineered[feature] = source[TARGET_COLUMN].shift(steps)
-
-    for period, window in ROLLING_WINDOWS.items():
-        # The uncentered full window ends at the current forecast origin t.
-        rolling = source[TARGET_COLUMN].rolling(window=window, min_periods=window, center=False)
-        engineered[f"appliances_roll_mean_{period}"] = rolling.mean()
-        engineered[f"appliances_roll_std_{period}"] = rolling.std(ddof=1)
+    engineered = engineer_origin_features(source)
 
     # This is the only future shift: it creates the label, never an input feature.
     engineered[NEXT_TARGET_COLUMN] = source[TARGET_COLUMN].shift(-1)

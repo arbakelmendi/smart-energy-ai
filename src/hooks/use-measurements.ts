@@ -9,10 +9,8 @@ import {
   importMeasurementsCsv,
   type CreateMeasurementRequest,
 } from "@/lib/api/measurements";
-export const measurementKeys = {
-  building: (userId: number | undefined, buildingId: number) =>
-    ["measurements", userId, buildingId] as const,
-};
+import { measurementKeys, invalidateMeasurementDependents } from "@/lib/measurement-cache";
+export { measurementKeys };
 export function useMeasurements(buildingId: number, limit: number, offset: number) {
   const { user, ready, retry } = useAuth();
   const query = useQuery({
@@ -34,7 +32,7 @@ function useMeasurementMutation<T>(buildingId: number, mutationFn: (body: T) => 
     mutationFn,
     retry: false,
     onSuccess: async () => {
-      await client.invalidateQueries({ queryKey: measurementKeys.building(user?.id, buildingId) });
+      await invalidateMeasurementDependents(client, user?.id, buildingId);
     },
     onError: (error) => {
       if (error instanceof ApiError && error.status === 401) retry();
@@ -58,7 +56,7 @@ export function useImportMeasurements(id: number) {
     mutationFn: (file: File) => importMeasurementsCsv(id, file),
     retry: false,
     onSuccess: async () => {
-      await client.invalidateQueries({ queryKey: measurementKeys.building(user?.id, id) });
+      await invalidateMeasurementDependents(client, user?.id, id);
     },
     onError: (error) => {
       if (error instanceof ApiError && error.status === 401) retry();

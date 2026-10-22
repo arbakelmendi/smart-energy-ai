@@ -177,9 +177,9 @@ export function BuildingMeasurements({ buildingId }: { buildingId: number }) {
     <Panel title="Measurements">
       <div className="space-y-5 min-w-0">
         <p className="text-sm text-muted-foreground">
-          Stored raw observations. Building-specific predictions and ML readiness checks are
-          deferred; a row count does not establish continuous ten-minute history or model validity
-          for this building.
+          Stored raw observations. Prediction readiness is checked separately from the latest
+          continuous history; a row count alone does not establish readiness or model validity
+          for this building. Forecast execution is not enabled.
         </p>
         {adding ? (
           <MeasurementForm

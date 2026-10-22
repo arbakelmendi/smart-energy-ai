@@ -196,3 +196,7 @@ Signed-in users can create, list, view, edit and delete their own building metad
 ## Building measurement history (Phase 24)
 
 Owned buildings now support raw manual measurements, paginated persisted history and atomic CSV uploads. The explicit active-ADMIN reference importer reads the existing local UCI source without changing it. Install updated requirements for `python-multipart`. See [measurement import](docs/measurement-import.md) for fields/units, timezone-naive timestamp policy, CSV header, commands, ownership and verification. Counts do not establish ML readiness; building-specific feature construction and forecasting remain deferred.
+
+## Automatic feature construction and readiness (Phase 25)
+
+Building detail now checks the latest required ten-minute history and constructs the exact 42-feature input internally using shared finalized research formulas. Readiness requires 1,009 observations, not a count-only threshold. The owner-only readiness API runs no model and stores no features or predictions. See [prediction readiness](docs/prediction-readiness.md) for continuity policy, parity evidence and verification. Building forecasts remain deferred.

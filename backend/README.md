@@ -67,3 +67,7 @@ Authenticated owner-only `GET/POST /buildings` and `GET/PATCH/DELETE /buildings/
 ## Measurement ingestion (Phase 24)
 
 Owned `GET/POST /buildings/{id}/measurements`, `DELETE /buildings/{id}/measurements/{measurement_id}` and `POST /buildings/{id}/measurements/import` retain active-session/CSRF protections and owner-only ADMIN behavior. Install `python-multipart` from requirements for UploadFile. CSV validation is atomic, bounded to 16 MiB / 25,000 rows, with 500-row bulk batches; no schema migration or ML execution. See [measurement import](../docs/measurement-import.md).
+
+## Prediction readiness (Phase 25)
+
+Authenticated owner-only `GET /buildings/{id}/prediction-readiness` verifies the latest continuous 1,009-observation window and its exact 42-feature input using shared research formulas. The service fetches at most 1,010 rows and returns factual reason codes, not feature previews or forecasts. No model invocation, feature storage, migration or new dependency. See [prediction readiness](../docs/prediction-readiness.md).

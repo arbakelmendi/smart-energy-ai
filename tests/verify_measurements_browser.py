@@ -61,7 +61,7 @@ def scenario(*,c,visit,submit,signed_out,signed_in,api,user_email,user_password,
     assert call('DELETE',path+f"/{row['id']}")['status']==404
     login(user_email,user_password);visit(f'/buildings/{bid}');count(2)
     assert 'Stored measurements: 2' in c.text()
-    for fake in ('100% ready','prediction readiness','Sensors online','occupants','kWh/day'):assert fake not in c.text()
+    for fake in ('100% ready','Sensors online','occupants','kWh/day'):assert fake not in c.text()
     print('Measurement QA: manual/CSV persistence, atomic rejection, duplicates, delete, responsive UI and cross-owner isolation passed',flush=True)
     return {'passed':True,'manual_entry_all_raw_fields':True,'refresh_and_restart_persistence':True,'actual_FormData_upload':True,'confirmed_count_and_history':True,'invalid_csv_no_partial_insert':True,'structured_row_error_rendered':True,'csv_and_manual_duplicates_rejected':True,'delete_and_cancel':True,'cross_owner_read_create_import_delete_denied':True,'responsive_widths':[1440,390],'no_fake_readiness_or_metrics':True}
 
