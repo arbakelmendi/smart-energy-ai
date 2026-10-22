@@ -9,27 +9,29 @@ from fastapi.responses import JSONResponse
 
 from . import schemas, services
 from .auth import router as auth_router, allowed_origins
+from .buildings import router as buildings_router
 from sqlalchemy.exc import SQLAlchemyError
 
 API_VERSION = "1.0.0"
 app = FastAPI(title="SmartEnergyAI API", version=API_VERSION,
               description="Single-observation Appliances forecasting in Wh, 10 minutes ahead. Requires 42 already-engineered features. Recommendations are decision support only; no automatic control or guaranteed savings.")
 app.add_middleware(CORSMiddleware, allow_origins=allowed_origins(),
-                   allow_credentials=True, allow_methods=["GET", "POST"], allow_headers=["Content-Type", "X-SmartEnergy-CSRF"])
+                   allow_credentials=True, allow_methods=["GET", "POST", "PATCH", "DELETE"], allow_headers=["Content-Type", "X-SmartEnergy-CSRF"])
 app.include_router(auth_router)
+app.include_router(buildings_router)
 
 
 @app.middleware("http")
 async def auth_cache_policy(request: Request, call_next):
     response = await call_next(request)
-    if request.url.path.startswith("/auth/"):
+    if request.url.path.startswith("/auth/") or request.url.path == "/buildings" or request.url.path.startswith("/buildings/"):
         response.headers["Cache-Control"] = "no-store"
     return response
 
 
 @app.exception_handler(SQLAlchemyError)
 async def database_error(request: Request, exc: SQLAlchemyError):
-    return JSONResponse(status_code=503, content={"detail": "Authentication database unavailable. Verify migrations."})
+    return JSONResponse(status_code=503, content={"detail": "Application database unavailable. Verify migrations."})
 
 
 @app.exception_handler(RequestValidationError)

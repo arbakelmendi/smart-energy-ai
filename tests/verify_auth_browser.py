@@ -29,7 +29,7 @@ def main():
     api = f'http://localhost:{backend_port}'
     frontend = f'http://localhost:{frontend_port}'
     original = (root / 'tests/verify_dashboard_browser.py').read_text(encoding='utf-8')
-    original = original.replace('8000',str(backend_port)).replace('5173',str(frontend_port)).replace('phase17_', 'phase22_')
+    original = original.replace('8000',str(backend_port)).replace('5173',str(frontend_port)).replace('phase17_', 'phase23_' if '--buildings' in sys.argv else 'phase22_')
     original = original.replace(f'127.0.0.1:{backend_port}', f'localhost:{backend_port}')
     tree = ast.parse(original)
     helpers = [node for node in tree.body if isinstance(node, (ast.ClassDef, ast.FunctionDef)) and node.name in ('CDP','spawn','stop','ready')]
@@ -78,8 +78,20 @@ def main():
                     for method in ('Page.enable','Runtime.enable','Network.enable'):c.call(method)
                     c.call('Fetch.enable',{'patterns':[{'urlPattern':'*'}]})
                     c.call('Emulation.setDeviceMetricsOverride',{'width':1440,'height':1000,'deviceScaleFactor':1,'mobile':False})
+                    def wait_document(loader_id, changed=False):
+                        deadline=time.monotonic()+55
+                        while time.monotonic()<deadline:
+                            current=c.call('Page.getFrameTree')['frameTree']['frame']['loaderId']
+                            if (current != loader_id) if changed else (current == loader_id):
+                                return
+                            time.sleep(.05)
+                        raise RuntimeError('Browser document commit timeout')
                     def visit(path):
-                        c.call('Page.navigate',{'url':frontend+path})
+                        result=c.call('Page.navigate',{'url':frontend+path})
+                        if result.get('loaderId'):wait_document(result['loaderId'])
+                    def reload():
+                        old=c.call('Page.getFrameTree')['frameTree']['frame']['loaderId']
+                        c.call('Page.reload');wait_document(old,changed=True)
                     def signed_in():
                         c.wait('document.querySelector("main")?.textContent.includes("Tuned XGBoost") && document.querySelectorAll(".recharts-bar-rectangle").length >= 16')
                     def signed_out():
@@ -116,11 +128,11 @@ def main():
                         session=db.scalar(select(AuthSession).where(AuthSession.user_id==user.id))
                         assert session.token_hash==token_digest(cookie['value']) and session.token_hash!=cookie['value']
                     assert not c.evaluate('Array.from(document.links).some(a => a.getAttribute("href")?.startsWith("/admin"))')
-                    c.call('Page.reload');signed_in()
+                    reload();signed_in()
                     print('Auth QA: signup, HttpOnly cookie, database hash and refresh passed',flush=True)
                     # Persistence also survives backend restart, not just React memory.
                     stop(backend);backend=spawn(backend_cmd,'backend_restart');ready(api+'/health',backend)
-                    c.call('Page.reload');signed_in()
+                    reload();signed_in()
                     for width in (1440,390):
                         c.call('Emulation.setDeviceMetricsOverride',{'width':width,'height':1000,'deviceScaleFactor':1,'mobile':width==390})
                         assert c.evaluate('document.documentElement.scrollWidth <= innerWidth+1')
@@ -131,7 +143,7 @@ def main():
                         assert 'Cross-tenant inventory' not in c.text()
                     visit('/dashboard');signed_in()
                     c.evaluate('Array.from(document.querySelectorAll("button")).find(b => b.getAttribute("aria-label") === "Sign out").click()');signed_out()
-                    c.call('Page.reload');signed_out();assert me()['status']==401
+                    reload();signed_out();assert me()['status']==401
                     visit('/login?next=%2Fsettings');signed_out()
                     submit({'email':email,'password':password+'wrong'})
                     c.wait('document.querySelector("[role=alert]")?.textContent.includes("Invalid email or password")')
@@ -139,7 +151,7 @@ def main():
                     c.wait('location.pathname === "/settings" && document.querySelector("main")?.textContent.includes("Browser verification user")')
                     with factory() as db:
                         user=db.scalar(select(User).where(User.email==email));user.is_active=False;db.commit()
-                    c.call('Page.reload');signed_out()
+                    reload();signed_out()
                     submit({'email':email,'password':password})
                     c.wait('document.querySelector("[role=alert]")?.textContent.includes("account inactive")')
                     with factory() as db:
@@ -153,7 +165,7 @@ def main():
                         for session in db.scalars(select(AuthSession).where(AuthSession.user_id==user.id)):
                             session.created_at=utc_now()-timedelta(hours=2);session.expires_at=utc_now()-timedelta(hours=1)
                         db.commit()
-                    c.call('Page.reload');signed_out()
+                    reload();signed_out()
                     submit({'email':admin_email,'password':admin_password})
                     c.wait('location.pathname === "/settings" && document.body.textContent.includes("Bootstrap verification admin")')
                     for path in ('/admin/','/admin/users','/admin/buildings'):
@@ -161,6 +173,15 @@ def main():
                         assert c.evaluate('Array.from(document.links).some(a => a.getAttribute("href") === "/admin/users")')
                     visit('/dashboard');signed_in()
                     print('Auth QA: expiry and bootstrap ADMIN shell passed',flush=True)
+                    building_verification = None
+                    if '--buildings' in sys.argv:
+                        from verify_buildings_browser import scenario
+                        def restart_for_buildings():
+                            nonlocal backend
+                            stop(backend);backend=spawn(backend_cmd,'buildings_restart');ready(api+'/health',backend)
+                        building_verification = scenario(c=c, visit=visit, submit=submit, signed_out=signed_out,
+                            signed_in=signed_in, api=api, user_email=email, user_password=password,
+                            admin_email=admin_email, admin_password=admin_password, restart=restart_for_buildings,reload=reload)
                     # Public research APIs still operate without cookies.
                     statuses={}
                     for path in ('/','/health','/model/info','/recommendations/thresholds','/analysis/model-comparison','/analysis/feature-importance','/docs','/openapi.json'):
@@ -191,6 +212,8 @@ def main():
                         'credentialed_CORS_passed':True,'cors_errors':c.cors,'runtime_errors':c.errors,
                         'responsive_widths':[1440,390],'public_research_GET_statuses':statuses,'public_forecast_helper_equivalence':True,
                         'public_recommendation_helper_equivalence':True,'dashboard_real_research_charts':True,'verification_processes_stopped':False}
+                    if building_verification is not None:
+                        evidence['building_management'] = building_verification
                     c.ws.close()
                 finally:
                     for process in reversed(processes):stop(process)
@@ -198,7 +221,7 @@ def main():
                     engine.dispose()
             evidence['verification_processes_stopped']=True
         evidence['temporary_database_and_profile_removed']=True
-    (g/'phase22_browser_evidence.json').write_text(json.dumps(evidence,indent=2)+'\n',encoding='utf-8')
+    (g/('phase23_browser_evidence.json' if '--buildings' in sys.argv else 'phase22_browser_evidence.json')).write_text(json.dumps(evidence,indent=2)+'\n',encoding='utf-8')
     print(json.dumps(evidence,indent=2))
 
 

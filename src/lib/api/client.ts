@@ -50,6 +50,7 @@ export async function apiRequest<T>(path: string, options: RequestInit = {}): Pr
     if (options.signal?.aborted) throw error;
     throw new ApiError("Backend unavailable. Check the API connection and base URL.");
   }
+  if (response.status === 204 && response.ok) return undefined as T;
   let payload: unknown;
   try {
     payload = await response.json();

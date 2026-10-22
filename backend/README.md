@@ -41,7 +41,7 @@ The caller must supply real origin-time readings and valid historical lags/rolli
 
 Resources load lazily and successful loads are cached per process, so imports and API docs remain available when model files are absent. Failed loads are not cached and can be retried after files are restored. Health reports 503 when either model or thresholds are unavailable; forecasting can still work if only thresholds are missing. Health checks cached usability; it does not continuously re-hash loaded artifacts. Restart after intentional artifact changes.
 
-CORS permits `http://localhost:3000`, `http://localhost:5173` and `http://localhost:8080` by default, with GET/POST, Content-Type and X-SmartEnergy-CSRF headers, and explicit credentialed origins for authentication. Optionally replace the list through comma-separated `SMARTENERGY_CORS_ORIGINS`; no `.env` is required. Wildcards are excluded.
+CORS permits `http://localhost:3000`, `http://localhost:5173` and `http://localhost:8080` by default, with GET/POST/PATCH/DELETE, Content-Type and X-SmartEnergy-CSRF headers, and explicit credentialed origins for authentication. Optionally replace the list through comma-separated `SMARTENERGY_CORS_ORIGINS`; no `.env` is required. Wildcards are excluded.
 
 Validation errors return 422. Unavailable/mismatched resources return 503. Unexpected inference/response failures return a generic 500 without filesystem paths or stack traces. Server logs retain diagnostic details.
 
@@ -59,3 +59,7 @@ For installation, artifact prerequisites and the ordered verification/research w
 ## Authentication (Phase 22)
 
 Run `python -m alembic upgrade head` before signup/login. `/auth/signup`, `/auth/login`, `/auth/me` and `/auth/logout` use database-backed opaque HttpOnly sessions; auth POST requests require `X-SmartEnergy-CSRF: 1`. Optional initial ADMIN: `python scripts/create_admin.py`. Use localhost consistently for frontend/API cookies. See [authentication](../docs/authentication.md) for expiry, Secure cookies, CSRF/CORS, role enforcement and limitations. Existing research endpoints/health remain public and unchanged.
+
+## Building metadata (Phase 23)
+
+Authenticated owner-only `GET/POST /buildings` and `GET/PATCH/DELETE /buildings/{id}` reuse current session/CSRF protections. ADMIN has no cross-owner bypass. Mutations require the CSRF header; deletion returns empty204 and cascades existing child history. No schema migration or model execution is added. See [building management](../docs/building-management.md).

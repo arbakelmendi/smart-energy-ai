@@ -168,7 +168,7 @@ Optional Windows Edge route/browser QA: `python tests/verify_phase18.py --browse
 - No reliable occupancy input or operational sensor/history feed. Temperatures/humidity alone cannot provide valid engineered forecast inputs.
 - Decision support, not automatic control; no validated intervention savings or calibrated prediction intervals.
 - One later chronological test period; model/climate/building transfer requires further evidence. Importance is predictive and period-specific.
-- Real cookie-backed authentication is implemented; email/reset services, building operations and account management remain unavailable. Explicit local-development CORS/loopback assumptions are not production-grade security.
+- Real cookie-backed authentication is implemented; email/reset services, measurement operations and account management remain unavailable. Explicit local-development CORS/loopback assumptions are not production-grade security.
 - Exact replay depends on input bytes, recorded libraries and serialization environment. Historical audits describe their phase snapshots, not immutable later application code.
 
 Committed artifacts are the source of truth. Do not retune/select on TEST, rewrite results for a different environment, present research observations as live telemetry, or replace API failures with mock values. Preserve Lovable history and unrelated worktree changes.
@@ -188,3 +188,7 @@ An independent SQLAlchemy/Alembic schema now supports users, owned buildings, ra
 ## Real authentication (Phase 22)
 
 Initialize/upgrade the database with `python -m alembic upgrade head`, optionally create the first administrator with `python scripts/create_admin.py` (hidden password prompt), then start FastAPI and the frontend as above. Use **localhost** consistently in browser/API URLs. Signup/login now establish persistent HttpOnly-cookie sessions; application pages require a session and admin routes require ADMIN. Public research APIs remain accessible without login. See [authentication configuration, security boundaries and verification](docs/authentication.md). Earlier phase demo/database documents describe historical scope; this authentication workflow supersedes their account-free application access.
+
+## Building management (Phase 23)
+
+Signed-in users can create, list, view, edit and delete their own building metadata at `/buildings`. ADMIN follows the same owner-only policy in this phase. Existing database schema/authentication are reused; run the normal migration/startup commands, then sign in. No measurements, reference building, building-specific forecasting or model validation are created by adding metadata. See [building management](docs/building-management.md) for endpoints, validation, deletion cascades and verification.

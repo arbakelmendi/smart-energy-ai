@@ -48,7 +48,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
   const value: AuthContext = {
     user: query.isError ? null : query.data ?? null,
-    ready: mounted && !query.isPending && !query.isFetching,
+    ready: mounted && !query.isPending,
     error: query.error,
     signIn: async (body) => { await login(body); await verifySession(); },
     signUp: async (body) => { await signup(body); await verifySession(); },

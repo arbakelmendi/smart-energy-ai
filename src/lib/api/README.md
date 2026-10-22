@@ -45,3 +45,5 @@ Phase 18 repeatable automated gates: `.venv\Scripts\python.exe tests/verify_phas
 Current architecture and complete setup/reproduction prerequisites are in the [architecture guide](../../../docs/system-architecture.md) and [reproducibility guide](../../../docs/reproducibility.md). The current endpoint/client additions are read-only analysis results, not a new live forecasting feed.
 
 Phase 22 adds typed `auth.ts` functions (`signup`, `login`, `logout`, `getCurrentUser`) over the same transport and ApiError. Account responses are validated without fallback; server state supplies USER/ADMIN roles. See [authentication](../../../docs/authentication.md).
+
+Phase 23 adds `buildings.ts` over the same transport, with credentialed owner-scoped metadata requests, CSRF mutation headers and strict response validation. Successful empty204 responses are supported for deletion; malformed200 JSON still fails. Existing QueryClient hooks partition building keys by user/id. See [building management](../../../docs/building-management.md).

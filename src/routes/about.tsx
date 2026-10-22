@@ -17,7 +17,7 @@ function AboutPage() {
       <p>Persistence, Linear Regression, Random Forest and XGBoost were considered. The dashboard separates validation comparisons from final held-out test performance.</p>
     </div></Panel><Panel title="Prototype limitations"><div className="space-y-4 text-sm text-muted-foreground">
       <p>No operational sensor stream is connected. Valid forecasts require already-engineered readings with genuine historical lag and rolling context.</p>
-      <p>No occupancy measurements, equipment-specific controls, calibrated prediction intervals, savings calculations or operational building services are provided. Account authentication uses persistent database sessions.</p>
+      <p>No occupancy measurements, equipment-specific controls, calibrated prediction intervals, savings calculations or live building feeds are provided. Account authentication and owned building metadata use persistent database records.</p>
       <p>Feature importance describes predictive behavior and does not establish causal effects or intervention savings.</p>
     </div></Panel></div><ModelPerformance /><FeatureImportance />
   </section></PublicLayout>;

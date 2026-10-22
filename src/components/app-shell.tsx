@@ -61,7 +61,7 @@ function AuthenticatedShell({
 
   useEffect(() => setMobileOpen(false), [pathname]);
 
-  const operationalUnavailable = pathname === "/data" || pathname.startsWith("/buildings") || pathname.startsWith("/admin");
+  const operationalUnavailable = pathname === "/data" || pathname.startsWith("/admin");
 
   const isAdmin = user?.role === "ADMIN";
   const [logoutError, setLogoutError] = useState("");
@@ -215,7 +215,7 @@ function AuthenticatedShell({
         <main key={pathname} className="rise-in min-w-0 flex-1 px-4 py-6 sm:px-6 lg:py-8">
           {logoutError ? <p role="alert" className="mb-4 text-sm text-destructive">{logoutError}</p> : null}
           {operationalUnavailable ? <Panel title="Not connected" subtitle="Operational capability unavailable">
-            <p className="text-sm text-muted-foreground">No verified operational readings, building records or management service is connected. This prototype does not provide live measurements or equipment control.</p>
+            <p className="text-sm text-muted-foreground">No verified operational readings or administrative management service is available on this page. Building metadata is managed separately in Buildings. This prototype does not provide live measurements or equipment control.</p>
             <Link to="/dashboard" className="mt-4 inline-block text-sm text-efficiency underline">View verified research results</Link>
           </Panel> : children}
         </main>
