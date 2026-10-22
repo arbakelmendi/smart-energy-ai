@@ -63,3 +63,7 @@ Run `python -m alembic upgrade head` before signup/login. `/auth/signup`, `/auth
 ## Building metadata (Phase 23)
 
 Authenticated owner-only `GET/POST /buildings` and `GET/PATCH/DELETE /buildings/{id}` reuse current session/CSRF protections. ADMIN has no cross-owner bypass. Mutations require the CSRF header; deletion returns empty204 and cascades existing child history. No schema migration or model execution is added. See [building management](../docs/building-management.md).
+
+## Measurement ingestion (Phase 24)
+
+Owned `GET/POST /buildings/{id}/measurements`, `DELETE /buildings/{id}/measurements/{measurement_id}` and `POST /buildings/{id}/measurements/import` retain active-session/CSRF protections and owner-only ADMIN behavior. Install `python-multipart` from requirements for UploadFile. CSV validation is atomic, bounded to 16 MiB / 25,000 rows, with 500-row bulk batches; no schema migration or ML execution. See [measurement import](../docs/measurement-import.md).

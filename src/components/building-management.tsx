@@ -2,6 +2,7 @@ import { Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { Panel } from "@/components/ui-kit";
 import { Button } from "@/components/ui/button";
+import { BuildingMeasurements } from "@/components/building-measurements";
 import { BuildingForm } from "@/components/building-form";
 import { useBuilding, useBuildings, useCreateBuilding, useDeleteBuilding, useUpdateBuilding } from "@/hooks/use-buildings";
 import { ApiError } from "@/lib/api/client";
@@ -18,12 +19,12 @@ export function BuildingsList() {
   const query = useBuildings(); const create = useCreateBuilding(); const navigate = useNavigate();
   const [adding, setAdding] = useState(false);
   return <div className="space-y-5">
-    <p className="text-sm text-muted-foreground">Buildings owned by your account. Metadata only; creating a building does not establish model validity for it.</p>
+    <p className="text-sm text-muted-foreground">Buildings owned by your account. Creating a building does not establish model validity for it.</p>
     {adding ? <Panel title="Add building"><BuildingForm pending={create.isPending} error={create.error} onCancel={() => {setAdding(false);create.reset();}}
       onSave={async body => { const building = await create.mutateAsync(body); await navigate({to:"/buildings/$id",params:{id:String(building.id)}}); }} /></Panel>
       : <Button variant="energy" onClick={() => {create.reset();setAdding(true);}}>Add building</Button>}
     {query.isError ? <BuildingError error={query.error} retry={() => {void query.refetch();}} /> : query.isPending ? <p role="status">Loading buildings...</p> : query.data.buildings.length === 0 ?
-      <Panel title="No buildings yet"><p className="text-sm text-muted-foreground">Add a building to store its metadata. Measurement data has not been configured yet.</p></Panel> :
+      <Panel title="No buildings yet"><p className="text-sm text-muted-foreground">Add a building to store metadata and raw measurement history.</p></Panel> :
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">{query.data.buildings.map(building => <Link key={building.id} to="/buildings/$id" params={{id:String(building.id)}} className="panel lift min-w-0 space-y-2 break-words p-5">
         <h2 className="font-semibold">{building.name}</h2><p className="text-sm text-muted-foreground">{building.building_type ?? "Type not specified"}</p>
         <p className="text-sm">{building.city ?? "City not specified"}</p><p className="text-sm">{building.floor_area_m2 === null ? "Area not specified" : `${building.floor_area_m2} m2`}</p>
@@ -53,6 +54,6 @@ function PersistedBuilding({ building }: { building: Building }) {
     {confirming ? <Panel title="Delete this building?"><p className="text-sm">Deleting this building permanently removes its metadata and any associated measurement and prediction history stored now or in the future. This cannot be undone.</p>
       {remove.error ? <p role="alert" className="mt-3 text-sm text-destructive">{remove.error.message}</p> : null}
       <div className="mt-4 flex gap-3"><Button variant="destructive" disabled={remove.isPending} onClick={async () => {try {await remove.mutateAsync();await navigate({to:"/buildings"});} catch {/* Error is shown by mutation state. */}}}>{remove.isPending ? "Deleting..." : "Confirm delete"}</Button><Button variant="ghost" disabled={remove.isPending} onClick={() => setConfirming(false)}>Cancel delete</Button></div></Panel> : null}
-    <Panel title="Measurement data has not been configured yet"><p className="text-sm text-muted-foreground">Measurement entry/import and building-specific predictions are not available. No operational metrics or history are calculated here. The research model was validated on the UCI reference dataset; validation for this building has not been established.</p></Panel>
+    <BuildingMeasurements buildingId={building.id} />
   </div>;
 }

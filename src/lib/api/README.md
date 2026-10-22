@@ -47,3 +47,5 @@ Current architecture and complete setup/reproduction prerequisites are in the [a
 Phase 22 adds typed `auth.ts` functions (`signup`, `login`, `logout`, `getCurrentUser`) over the same transport and ApiError. Account responses are validated without fallback; server state supplies USER/ADMIN roles. See [authentication](../../../docs/authentication.md).
 
 Phase 23 adds `buildings.ts` over the same transport, with credentialed owner-scoped metadata requests, CSRF mutation headers and strict response validation. Successful empty204 responses are supported for deletion; malformed200 JSON still fails. Existing QueryClient hooks partition building keys by user/id. See [building management](../../../docs/building-management.md).
+
+Phase 24 adds `measurements.ts`: typed credentialed list/create/delete and FormData CSV upload, strict response validation and a bounded longer import timeout. Existing QueryClient hooks partition measurement keys by user/building/page and invalidate after confirmed mutations. Building detail renders raw database history/counts with no readiness or prediction claims. See [measurement import](../../../docs/measurement-import.md).

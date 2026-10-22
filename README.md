@@ -168,7 +168,7 @@ Optional Windows Edge route/browser QA: `python tests/verify_phase18.py --browse
 - No reliable occupancy input or operational sensor/history feed. Temperatures/humidity alone cannot provide valid engineered forecast inputs.
 - Decision support, not automatic control; no validated intervention savings or calibrated prediction intervals.
 - One later chronological test period; model/climate/building transfer requires further evidence. Importance is predictive and period-specific.
-- Real cookie-backed authentication is implemented; email/reset services, measurement operations and account management remain unavailable. Explicit local-development CORS/loopback assumptions are not production-grade security.
+- Real cookie-backed authentication is implemented; email/reset services, building-specific inference and account management remain unavailable. Explicit local-development CORS/loopback assumptions are not production-grade security.
 - Exact replay depends on input bytes, recorded libraries and serialization environment. Historical audits describe their phase snapshots, not immutable later application code.
 
 Committed artifacts are the source of truth. Do not retune/select on TEST, rewrite results for a different environment, present research observations as live telemetry, or replace API failures with mock values. Preserve Lovable history and unrelated worktree changes.
@@ -192,3 +192,7 @@ Initialize/upgrade the database with `python -m alembic upgrade head`, optionall
 ## Building management (Phase 23)
 
 Signed-in users can create, list, view, edit and delete their own building metadata at `/buildings`. ADMIN follows the same owner-only policy in this phase. Existing database schema/authentication are reused; run the normal migration/startup commands, then sign in. No measurements, reference building, building-specific forecasting or model validation are created by adding metadata. See [building management](docs/building-management.md) for endpoints, validation, deletion cascades and verification.
+
+## Building measurement history (Phase 24)
+
+Owned buildings now support raw manual measurements, paginated persisted history and atomic CSV uploads. The explicit active-ADMIN reference importer reads the existing local UCI source without changing it. Install updated requirements for `python-multipart`. See [measurement import](docs/measurement-import.md) for fields/units, timezone-naive timestamp policy, CSV header, commands, ownership and verification. Counts do not establish ML readiness; building-specific feature construction and forecasting remain deferred.

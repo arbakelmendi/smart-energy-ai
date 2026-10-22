@@ -10,6 +10,7 @@ from fastapi.responses import JSONResponse
 from . import schemas, services
 from .auth import router as auth_router, allowed_origins
 from .buildings import router as buildings_router
+from .measurements import router as measurements_router
 from sqlalchemy.exc import SQLAlchemyError
 
 API_VERSION = "1.0.0"
@@ -19,6 +20,7 @@ app.add_middleware(CORSMiddleware, allow_origins=allowed_origins(),
                    allow_credentials=True, allow_methods=["GET", "POST", "PATCH", "DELETE"], allow_headers=["Content-Type", "X-SmartEnergy-CSRF"])
 app.include_router(auth_router)
 app.include_router(buildings_router)
+app.include_router(measurements_router)
 
 
 @app.middleware("http")
