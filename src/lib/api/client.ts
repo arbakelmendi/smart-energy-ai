@@ -1,6 +1,6 @@
 /** Native-fetch transport, safe during SSR import; hooks opt into browser-only calls. */
 export function normalizeApiBaseUrl(value: string | undefined): string {
-  const url = new URL(value?.trim() || "http://127.0.0.1:8000");
+  const url = new URL(value?.trim() || "http://localhost:8000");
   if (!["http:", "https:"].includes(url.protocol) || url.username || url.password || url.search || url.hash) {
     throw new Error("VITE_API_BASE_URL must be an HTTP(S) URL without credentials, query or fragment.");
   }
@@ -42,7 +42,7 @@ export async function apiRequest<T>(path: string, options: RequestInit = {}): Pr
   try {
     response = await fetch(`${API_BASE_URL}${path}`, {
       ...options,
-      credentials: "omit",
+      credentials: options.credentials ?? "omit",
       signal: options.signal ?? AbortSignal.timeout(10_000),
       headers: { Accept: "application/json", ...options.headers },
     });

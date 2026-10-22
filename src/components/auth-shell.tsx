@@ -34,7 +34,7 @@ export function AuthShell({
             Inspect verified energy forecasting results.
           </h2>
           <p className="mt-4 max-w-md text-sm text-muted-foreground">
-            The research dashboard shows verified model performance and decision-support thresholds. No account or live building connection is required.
+            The research dashboard shows verified model performance and decision-support thresholds. Sign in to access application pages; no live building connection is provided.
           </p>
           {aside}
         </div>

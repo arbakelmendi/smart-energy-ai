@@ -2,7 +2,7 @@
 
 React 19/TypeScript, TanStack Start SSR/file routes, the existing router QueryClient/root provider, Tailwind and the Lovable Vite wrapper are preserved. Native fetch and existing TanStack Query are used; no dependencies or routes were added.
 
-`VITE_API_BASE_URL` is a public Vite build-time variable. Default: `http://127.0.0.1:8000`. No environment file is required. Supply an HTTP(S) URL, optionally with a path prefix; trailing slashes are removed. Credentials, query strings and fragments are rejected. Never place secrets in VITE variables. A remote browser needs an API URL reachable from that browser; loopback defaults are for local development. Use HTTPS for the API when the frontend is served over HTTPS.
+`VITE_API_BASE_URL` is a public Vite build-time variable. Default: `http://localhost:8000`. No environment file is required. Supply an HTTP(S) URL, optionally with a path prefix; trailing slashes are removed. Credentials, query strings and fragments are rejected. Never place secrets in VITE variables. A remote browser needs an API URL reachable from that browser; loopback defaults are for local development. Use HTTPS for the API when the frontend is served over HTTPS.
 
 Start the backend from the project root (canonical local model artifact and matching metadata must exist):
 
@@ -18,7 +18,7 @@ Hooks: `useHealth`, `useModelInfo`, `useRecommendationThresholds`, `useForecast`
 
 The threshold hook/function retrieves the backend's TRAIN + VALIDATION thresholds; the frontend does not classify consumption or hardcode cutoffs. POST functions wrap a supplied feature mapping as `{ features }`. The backend enforces the exact 42-feature schema. Forecasts are Appliances Wh, 10 minutes ahead. The browser cannot construct valid lag_1/6/144/1008 or rolling history from temperature/humidity alone. No raw-sensor form, fabricated histories, development-row production UI, causal control actions or savings estimates are introduced. Recommendations are decision support only.
 
-Default FastAPI CORS origins are `http://localhost:3000`, `http://localhost:5173` and `http://localhost:8080`. Use a matching frontend origin (for example `npm run dev -- --host localhost --port 5173`) or configure the backend's comma-separated `SMARTENERGY_CORS_ORIGINS`. No credentialed cross-origin requests are used.
+Default FastAPI CORS origins are `http://localhost:3000`, `http://localhost:5173` and `http://localhost:8080`. Use a matching frontend origin (for example `npm run dev -- --host localhost --port 5173`) or configure the backend's comma-separated `SMARTENERGY_CORS_ORIGINS`. Auth functions use credentialed requests and X-SmartEnergy-CSRF; public research calls still omit credentials. FastAPI allows credentials with explicit origins. Use localhost consistently for cookie SameSite behavior.
 
 Focused client tests use the installed Node built-in runner without new packages:
 
@@ -43,3 +43,5 @@ Optional repeatable Windows browser regression: `.venv\Scripts\python.exe tests/
 Phase 18 repeatable automated gates: `.venv\Scripts\python.exe tests/verify_phase18.py`; add `--browser` for the full local Edge/API/route checks. The script records targeted formatting findings separately from semantic lint and does not reformat unrelated files.
 
 Current architecture and complete setup/reproduction prerequisites are in the [architecture guide](../../../docs/system-architecture.md) and [reproducibility guide](../../../docs/reproducibility.md). The current endpoint/client additions are read-only analysis results, not a new live forecasting feed.
+
+Phase 22 adds typed `auth.ts` functions (`signup`, `login`, `logout`, `getCurrentUser`) over the same transport and ApiError. Account responses are validated without fallback; server state supplies USER/ADMIN roles. See [authentication](../../../docs/authentication.md).

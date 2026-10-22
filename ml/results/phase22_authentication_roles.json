@@ -1,0 +1,587 @@
+{
+  "phase": 22,
+  "recorded_at_utc": "2026-10-20T12:01:31.672540+00:00",
+  "status": "Real authentication, persistent sessions and role guards implemented and verified. Phase23 not started.",
+  "authentication_architecture": "Browser host-only HttpOnly cookie -> FastAPI -> SHA-256 opaque token digest lookup -> active User. No JWT, localStorage identity or frontend secret persistence.",
+  "password_hashing": {
+    "algorithm": "Argon2id",
+    "library": "pwdlib[argon2]",
+    "pwdlib_version": "0.3.1",
+    "argon2_cffi_version": "25.1.0",
+    "password_policy": "Signup/bootstrap 12-128 characters; no password trimming/case normalization; login verifies supplied 1-128 characters.",
+    "request_redaction": "Pydantic SecretStr and validation error input omission",
+    "plaintext_password_persisted": false,
+    "dummy_verification_for_unknown_identity": true
+  },
+  "email_normalization": {
+    "library_version": "2.3.0",
+    "policy": "Trim, syntax validate without DNS/deliverability, ASCII IDNA domain conversion, lowercase entire email; SMTPUTF8/non-ASCII local parts rejected. Full name spelling unchanged except blank names rejected.",
+    "public_case_variation_duplicates_prevented": true,
+    "database_expression_unique_index": "uq_users_email_normalized on lower(trim(email))",
+    "legacy_migration": "Validate/collision-check all existing identities before updates. Refuse invalid/colliding accounts; do not merge/promote/change profile ownership."
+  },
+  "session_design": {
+    "randomness": "secrets.token_urlsafe(32), 32 random bytes",
+    "database_storage": "SHA-256 hex digest only; no raw token column",
+    "fields": [
+      {
+        "name": "id",
+        "type": "INTEGER",
+        "nullable": false
+      },
+      {
+        "name": "user_id",
+        "type": "INTEGER",
+        "nullable": false
+      },
+      {
+        "name": "token_hash",
+        "type": "VARCHAR(64)",
+        "nullable": false
+      },
+      {
+        "name": "created_at",
+        "type": "DATETIME",
+        "nullable": false
+      },
+      {
+        "name": "expires_at",
+        "type": "DATETIME",
+        "nullable": false
+      }
+    ],
+    "indexes": [
+      "unique token_hash",
+      "user_id",
+      "expires_at"
+    ],
+    "foreign_key": "user_id -> users.id ON DELETE CASCADE",
+    "checks": [
+      "length(token_hash)=64",
+      "expires_at>created_at"
+    ],
+    "login_signup_rotation": "New token replaces/revokes current browser token if supplied; independent other-device sessions remain.",
+    "logout": "Delete supplied DB session; clear cookie; idempotent.",
+    "expiration": "Absolute UTC expiry; default 24 hours; SMARTENERGY_SESSION_HOURS integer 1-720, no sliding renewal.",
+    "inactive": "Every authentication checks active User; observed inactivity rejects and deletes all user sessions.",
+    "raw_tokens_in_API_JSON_or_database": false,
+    "persistent_across_refresh_and_backend_restart": true
+  },
+  "cookie_policy": {
+    "name": "smartenergy_session",
+    "httpOnly": true,
+    "sameSite": "Lax",
+    "path": "/",
+    "domain": "unset (host-only)",
+    "secure": "SMARTENERGY_COOKIE_SECURE; false for local HTTP, true for HTTPS deployment",
+    "max_age_and_expiry": "Configured absolute session lifetime"
+  },
+  "CSRF_and_CORS": {
+    "auth_POST_header": "X-SmartEnergy-CSRF: 1 required; non-simple header forces preflight",
+    "origin_check": "Configured frontend origins or own API origin; explicit rejection of untrusted Origin; non-browser missing Origin still requires custom header.",
+    "allow_credentials": true,
+    "wildcard_origins_allowed": false,
+    "configuration": "SMARTENERGY_CORS_ORIGINS, explicit localhost defaults 3000/5173/8080",
+    "default_API_URL": "http://localhost:8000",
+    "hostname_policy": "Use localhost consistently; separate unrelated sites not supported by current Lax-cookie architecture.",
+    "public_research_fetch_credentials": "omit (unchanged)",
+    "auth_fetch_credentials": "include",
+    "live_credentialed_CORS_passed": true
+  },
+  "auth_endpoints": {
+    "POST /auth/signup": "201 active USER only; extra role/hash fields rejected; duplicate409, invalid422; establishes session.",
+    "POST /auth/login": "200 safe user/new session; generic401 for wrong/unknown/inactive credentials.",
+    "GET /auth/me": "Safe id/email/full_name/role/is_active; invalid/expired/revoked/inactive401 and stale cookie clear.",
+    "POST /auth/logout": "Revoke/delete supplied session and clear cookie, idempotent200."
+  },
+  "response_security": "All auth responses no-store; no password_hash, token_hash or raw session token in JSON. Database errors are sanitized; SQL bind parameters hidden.",
+  "role_enforcement": {
+    "roles": [
+      "USER",
+      "ADMIN"
+    ],
+    "public_signup_role": "USER only",
+    "backend_dependencies": [
+      "get_current_user",
+      "require_admin"
+    ],
+    "role_source": "Database User, never browser-supplied roles",
+    "ADMIN_private_API_probe": "Test-only dependency probe; no admin management API mounted."
+  },
+  "admin_bootstrap": {
+    "command": "python scripts/create_admin.py",
+    "password_input": "getpass with confirmation; refuse echoed-input fallback; no password command-line argument or hardcoded/default credentials.",
+    "identity": "Normalized/validated same as signup; hash with Argon2id; explicit ADMIN.",
+    "duplicates": "Refuse existing identity; no overwrite/promotion.",
+    "CLI_prompt_flow_unit_tested": true,
+    "browser_ADMIN_provisioned_using": "Same create_admin core function on disposable verification DB, not a default account."
+  },
+  "frontend_integration": {
+    "transport": "Existing apiRequest/native fetch/ApiError; checked auth response schema.",
+    "state": "Existing QueryClient; browser-only /auth/me; no second client, JWT, fake user or stored secret.",
+    "verification_triggers": [
+      "hydration",
+      "route changes",
+      "window focus",
+      "60-second foreground interval"
+    ],
+    "SSR": "Neutral checking state; authenticated children never SSR-rendered.",
+    "login_signup": "Existing visual components; basic client validation and server authority; pending/errors; signup confirmation; safe intended destination; verify cookie with /auth/me after mutation.",
+    "form_safety": "Native POST fallback; fieldset disabled until hydration; no credential GET URL fallback.",
+    "logout": "Server success then cancel queries, clear current-user/research cache and redirect; errors shown without fake revocation.",
+    "profile_settings": "Actual full_name/email/role; theme preserved; no fake account actions.",
+    "legacy_demo_session": "No auth use; old key removed/ignored. Historical parser retained unused by application auth for legacy regression tests.",
+    "unavailable_services": "Reset/verification/email/building setup notices remain truthful; no implementations added."
+  },
+  "protected_routes": [
+    "/dashboard",
+    "/predictions",
+    "/recommendations",
+    "/data",
+    "/settings",
+    "/buildings/",
+    "/buildings/ubt-campus-a",
+    "/admin/",
+    "/admin/users",
+    "/admin/buildings"
+  ],
+  "admin_routes": [
+    "/admin",
+    "/admin/",
+    "/admin/users",
+    "/admin/buildings"
+  ],
+  "public_routes": [
+    "/",
+    "/about",
+    "/contact",
+    "/login",
+    "/signup",
+    "truthful unavailable reset/verification/setup notices"
+  ],
+  "migration_verification": {
+    "commands": [
+      {
+        "command": "python -m alembic upgrade 0021_database_foundation",
+        "passed": true,
+        "stdout": "",
+        "expression_index_reflection_warning": false
+      },
+      {
+        "command": "python -m alembic upgrade head",
+        "passed": true,
+        "stdout": "",
+        "expression_index_reflection_warning": false
+      },
+      {
+        "command": "python -m alembic current",
+        "passed": true,
+        "stdout": "0022_authentication_sessions (head)",
+        "expression_index_reflection_warning": false
+      },
+      {
+        "command": "python -m alembic check",
+        "passed": true,
+        "stdout": "No new upgrade operations detected.",
+        "expression_index_reflection_warning": true
+      }
+    ],
+    "head": "0022_authentication_sessions",
+    "tables": [
+      "alembic_version",
+      "auth_sessions",
+      "buildings",
+      "measurements",
+      "predictions",
+      "users"
+    ],
+    "database": "Disposable SQLite, removed after check",
+    "developer_database_used": false,
+    "fresh_head_and_legacy_ownership_upgrade": "Also exercised in tests/test_database.py and tests/test_auth.py; collisions fail explicitly."
+  },
+  "tests": {
+    "new_backend_auth_tests": 29,
+    "existing_python_regressions": 95,
+    "python_total": 124,
+    "python_passed": 124,
+    "python_failed": 0,
+    "python_skipped": 0,
+    "python_warnings": 4,
+    "python_warning_classes": [
+      "Existing Starlette/httpx deprecation",
+      "SQLite expression-index reflection warnings (3); direct index SQL/duplicate rejection tested separately"
+    ],
+    "new_frontend_auth_tests": 13,
+    "existing_frontend_regressions": 20,
+    "frontend_total": 33,
+    "frontend_passed": 33,
+    "frontend_failed": 0,
+    "frontend_skipped": 0,
+    "isolation": "Per-test migrated temporary SQLite + overridden get_db; runtime-only generated credentials; no developer DB modifications.",
+    "commands": [
+      "python -m pytest",
+      "node --experimental-strip-types --test tests/frontend_api.test.mjs tests/frontend_auth.test.mjs",
+      "node node_modules/typescript/bin/tsc --noEmit",
+      "npm run build",
+      "python tests/verify_auth_browser.py"
+    ],
+    "gates": {
+      "python_tests": {
+        "return_code": 0,
+        "passed": true
+      },
+      "frontend_tests": {
+        "return_code": 0,
+        "passed": true
+      },
+      "typecheck": {
+        "return_code": 0,
+        "passed": true
+      },
+      "build": {
+        "return_code": 0,
+        "passed": true
+      },
+      "semantic_lint": {
+        "return_code": 0,
+        "passed": true
+      }
+    },
+    "semantic_lint_warning": "One nonblocking react-refresh/only-export-components warning for exporting useAuth from the auth provider module. Prettier rule disabled under established formatting policy; no repository-wide cleanup.",
+    "build_warnings": [
+      "The plugin \"vite-tsconfig-paths\" is detected. Vite now supports tsconfig paths resolution natively via the resolve.tsconfigPaths option. You can remove the plugin and set resolve.tsconfigPaths: true in your Vite config instead.",
+      " WARN  inlineDynamicImports option is ignored because the codeSplitting option is specified."
+    ]
+  },
+  "live_browser_verification": {
+    "passed": true,
+    "browser": "Installed Edge/CDP",
+    "frontend_origin": "http://localhost:56806",
+    "backend_origin": "http://localhost:56805",
+    "database": "Disposable migrated SQLite; no developer DB used",
+    "credentials": "Generated only in runtime memory; never emitted or committed",
+    "SSR_does_not_render_authenticated_content": true,
+    "unauthenticated_protected_routes": [
+      "/dashboard",
+      "/predictions",
+      "/recommendations",
+      "/data",
+      "/settings",
+      "/buildings/",
+      "/buildings/ubt-campus-a",
+      "/admin/",
+      "/admin/users",
+      "/admin/buildings"
+    ],
+    "forged_localstorage_ignored": true,
+    "signup_form_password_confirmation": true,
+    "signup_USER": true,
+    "cookie_flags": {
+      "name": "smartenergy_session",
+      "httpOnly": true,
+      "sameSite": "Lax",
+      "secure": false
+    },
+    "cookie_hidden_from_document_cookie": true,
+    "token_hash_only_in_database": true,
+    "refresh_persists_session": true,
+    "backend_restart_persists_session": true,
+    "logout_and_refresh_unauthenticated": true,
+    "invalid_login_error": true,
+    "normalized_login": true,
+    "intended_destination_settings": true,
+    "inactive_login_and_session_blocked": true,
+    "expired_session_blocked": true,
+    "USER_admin_routes_forbidden": true,
+    "bootstrap_ADMIN_admin_shell_allowed": true,
+    "no_admin_management_implemented": true,
+    "credentialed_CORS_passed": true,
+    "cors_errors": [],
+    "runtime_errors": [],
+    "responsive_widths": [
+      1440,
+      390
+    ],
+    "public_research_GET_statuses": {
+      "/": 200,
+      "/health": 200,
+      "/model/info": 200,
+      "/recommendations/thresholds": 200,
+      "/analysis/model-comparison": 200,
+      "/analysis/feature-importance": 200,
+      "/docs": 200,
+      "/openapi.json": 200
+    },
+    "public_forecast_helper_equivalence": true,
+    "public_recommendation_helper_equivalence": true,
+    "dashboard_real_research_charts": true,
+    "verification_processes_stopped": true,
+    "temporary_database_and_profile_removed": true
+  },
+  "verification_findings_and_fixes": [
+    "SSR form controls now disabled until hydration and native form method is POST.",
+    "Redirect guard does not overwrite intended destinations during public-route transitions.",
+    "Browser harness selector quoting and canonical trailing-slash assertions corrected; final full run passed."
+  ],
+  "research_regression": {
+    "public_GET_endpoints": {
+      "/": 200,
+      "/health": 200,
+      "/model/info": 200,
+      "/recommendations/thresholds": 200,
+      "/analysis/model-comparison": 200,
+      "/analysis/feature-importance": 200,
+      "/docs": 200,
+      "/openapi.json": 200
+    },
+    "forecast_and_recommendation_helper_equivalence": "Passed on first real TRAIN observation; no TEST demo fixture.",
+    "dashboard_actual_KPIs_charts_thresholds": "Verified after real authentication at 1440/390 widths.",
+    "unchanged_contract_and_dashboard_sources": [
+      "backend/services.py",
+      "backend/schemas.py",
+      "src/components/research-dashboard.tsx",
+      "src/routes/dashboard.tsx",
+      "src/routes/predictions.tsx",
+      "src/routes/recommendations.tsx"
+    ]
+  },
+  "protected_research_artifacts_unchanged": {
+    "passed": true,
+    "files": 68,
+    "checksums": {
+      "data/processed/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "data/processed/energydata_cleaned.csv": "d4d5964a61a5a6ddfc1148012abb77f14f826dfa0ebd6f9b5e52d93a6c705a19",
+      "data/processed/energydata_features.csv": "f69480c282e32601920f0820cdf9d2530ecfc5b053c4cefa4de2d15c73c2077f",
+      "data/processed/energy_test.csv": "227efb785588e32e297acdbbb7595102c210b25b30492e8acef5effddc520600",
+      "data/processed/energy_train.csv": "b4e74536ad61bce5a75b044066f9012348a12cbd69095a0e5a801642fc7ebbe4",
+      "data/processed/energy_validation.csv": "5b93ccdb622696544eb3abb7d59b59445bf37c5ff6dfe2f8449b4b1282e41533",
+      "data/processed/README.md": "0cf63db83709d25e2db9f8200aa48bf73f2b289c96d8cb3ed904255e419d17db",
+      "data/raw/energydata_complete.csv": "2820bf712ad0275cb18b85a05250926100d8e65ebb9f4d2d016ca91ea152a25d",
+      "data/raw/README.md": "dcf82702ced3149e8a8bba0c97550553e5c5b3279b204fed008d2fd49cf61173",
+      "ml/models/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "ml/models/final_xgboost_model.json": "6418bca4fd34b120928bdcc7c37c72e32f2cb6b8e5fd48d6164441aa1a9f7404",
+      "ml/models/README.md": "d2f9f28f27957117b8991b06c362b9539596bb11fde360c7a43630f0e1703fb4",
+      "ml/results/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "ml/results/feature_schema.json": "0b1038f2d41ddff90921867bfc4d6ea5bbe0195e122e1d7cf96a05eaef2fcdff",
+      "ml/results/final_model_metadata.json": "c712ab6d3823ee40750bc0ad8a30f31901fe3b98862b844177df8d993ec7da3a",
+      "ml/results/phase10_tuning_cv_results.json": "0fe9df7e4887dacb64ca03b1723efe1710f44e26ea06bdf08890bda01a9f01af",
+      "ml/results/phase10_tuning_summary.json": "7c9b87bd663f5045ecdb94f12f23529a7339c8c91091d2736a376069fa559a7f",
+      "ml/results/phase11_final_test_evaluation.json": "00af469b8ee4270ba85c92c77832e89929715acdfe802efe7df84dcb1ac534d9",
+      "ml/results/phase11_reproducibility.json": "e2b9b0eb588121df5382e61a919bbf29af6ad168b71eef51e1085b9ea1ec1b96",
+      "ml/results/phase11_selection_lock.json": "d184f3034c2952a0befafe69bea70f5977db39256d43380f681c752ab6e1e9f2",
+      "ml/results/phase12_feature_importance.json": "f1c0ce2cb196accd00c78ce6a0d1158716dc03967ff7e963a11a4e207101a5b0",
+      "ml/results/phase12_reproducibility.json": "95a6d57ddb0613b75df72b06fe98b5d1be219d6c7b84272f07ac0ee5e65a31cf",
+      "ml/results/phase13_model_persistence.json": "d66f097e23b2e06ef70f85fb412924025cef0a9093760ff9f72eb49d6764b41d",
+      "ml/results/phase14_recommendation_engine.json": "16c2fb20c9fee04e9606f6a120b6356ecbe38fa94f5e0a62b5d03dfba4cd99d2",
+      "ml/results/phase14_recommendation_thresholds.json": "673707f8ec93d8599d1dac25990d876cec751efd955a941d25e307d8c7ceab86",
+      "ml/results/phase15_api_backend.json": "a1a0c9b8a9b3cf262d7f82c3ea2c9efaf4234b02890271f11c37a558eea0cf82",
+      "ml/results/phase16_frontend_api_integration.json": "d318dfac7e32c8746918f754d3b185641df211ed751025046e9bba7b49083360",
+      "ml/results/phase17_dashboard_real_data_integration.json": "7a985d324f06a2247f78f6d9335ce65b611cac727ba858478589fe79346e7e33",
+      "ml/results/phase18_quality_assurance.json": "9d1cf8f60bcf9fb26d4bf015bcb8a4fd1491a6cd18927c4305905e540716cb73",
+      "ml/results/phase19_documentation_audit.json": "f8517f6533b88802d7ab29dd170357d52146596d7063d6fd761824e1d7438596",
+      "ml/results/phase20_final_audit.json": "8fa6f2d1cf6a87901644799fd281f0bb135cbf2c5fd26cb65ec8348f92704429",
+      "ml/results/phase21_database_foundation.json": "b4b8502bf9443ab423fab3685ab9c2cbee851527e391ea35d93cc9536c3b34b5",
+      "ml/results/phase7_validation_metrics.json": "35a6fdb36a52cff7873d0fe20969d564cdc23add94816aec720cbde11d7bc9b8",
+      "ml/results/phase8_random_forest_validation_metrics.json": "9ab2cb0717baa0cd95813ecc582377c8f431640ac3c658f7def889e84810156f",
+      "ml/results/phase9_xgboost_validation_metrics.json": "d523cd81ef67c71d7f28fc88f1f1e683b9f50e11c5db816221eccfc351d0584a",
+      "ml/results/split_metadata.json": "0bd0caa2ab2d159969e3e1744492ce47c6d6778ba488ed5bb816c209525b395f",
+      "ml/notebooks/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "ml/notebooks/01_data_exploration.ipynb": "6d60155ce7151d6719baa3ea644e50601a53c2055ce9af40ca6f150e6f12e711",
+      "ml/notebooks/02_exploratory_data_analysis.ipynb": "d0087a1f8060d319804560439c110d43934d0fe79758b8889d4cb54ffcc1477f",
+      "ml/notebooks/03_preprocessing.ipynb": "c72529c84d2e7900c2b6e68242dde1316a498059be530ba3d1d47de7b705f747",
+      "ml/notebooks/04_feature_engineering.ipynb": "a611599109d625a08898de38c8d26d828dba098bd8b453bdc92e9d2abdf4da70",
+      "ml/notebooks/05_train_validation_test_split.ipynb": "35371b82d8d386c40473d696ba1d92dec2445414044e709544b5a6dba57fca60",
+      "ml/notebooks/06_baseline_linear_regression.ipynb": "29915d5e41e8439f8575fa61c8b901c77905792e3b55c557d2e11c633249e45a",
+      "ml/notebooks/07_random_forest.ipynb": "940d03f07b4f73f623c5fedd94f32e7d178ff69f6294c13b8eae1a9dfa2cf791",
+      "ml/notebooks/08_xgboost.ipynb": "f034d7b109401d42f52dba1d824d68f00e53c8a1e346f5fe6c28de2a2167a811",
+      "ml/notebooks/09_hyperparameter_tuning.ipynb": "abbfcac4392ed513cb674b163e5d1b18cf2958573bb9d419051e058c4d5143e1",
+      "ml/notebooks/10_final_model_evaluation.ipynb": "a59e5d1f31c35eca9dca174e576b8e7fda9af4c06102313faa4447efe7942527",
+      "ml/notebooks/11_model_explainability.ipynb": "9a80fb5603aa0ae415a98567f6e96eb9a7877efe47d6cbce1a15d68d731ddd1b",
+      "ml/notebooks/12_model_persistence.ipynb": "872f58307059715be63b9d834571c3420746d6fc9b2ebc7324f0ec7b56b64c47",
+      "ml/notebooks/13_recommendation_engine.ipynb": "6e2021325037ecaa0e1e9162fa5f7154a5d504fa61614a64bd027b9d19a23197",
+      "ml/src/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "ml/src/check_dataset.py": "0a076dea43edc068a6481ac2ba330e5fb2654be32ccf0d6610b8270c4bf90ec3",
+      "ml/src/evaluate_final_model.py": "20e09ae37bc4c45c6b562d1ab14c38b2db6dccb2b8a91e2ef4c1d9f701e66731",
+      "ml/src/explain_final_model.py": "936b99da17fdb720dada7cc13ac0ac5674480643fd0b2d2c2d2a02aab2950076",
+      "ml/src/feature_engineering.py": "bc3ab4690fef669809a811da5152dd29791ac959815bf95a8f3c90d6e27aef54",
+      "ml/src/model_inference.py": "4b01eda9c7d13b27d935ec0a4ccd988fd951bed8ea8091035743b546bbc880ef",
+      "ml/src/preprocess.py": "b9a863b2b7d31d0e285db5778e420f1a79abcfa70bb1d86e6222b34df1fb2c6d",
+      "ml/src/recommendation_engine.py": "5c284e98a411a0fd7675109cf9586e2c8615bb92862d2905f9f34337a9be4c17",
+      "ml/src/save_final_model.py": "04a912f544f774a931cc8d247dce675faa693d1a220bf46382b61f4aa2661b94",
+      "ml/src/split_data.py": "d01284831ba55a07fc9f4186a44db845fce2a0855917678837c9f787bed93a03",
+      "ml/src/train_baselines.py": "20d3106c5165ffb2e7530da3f1376684c475302d4bcbaee447dbb7c62e4d16d5",
+      "ml/src/train_random_forest.py": "38b02d666e781c98175ab9d2605cfd3fde286b8fe75cfe8ed2f30caad868400c",
+      "ml/src/train_xgboost.py": "06345dc878da7775b754aaa496da2ebff1e78009c2f5860d6903c9b8bb5178c8",
+      "ml/src/tune_models.py": "34d451bac2de7abe52cd83ffddd0f91877715aed0c437c292d67dec3987eb47d",
+      "backend/migrations/versions/0021_database_foundation.py": "ef7e0fbae582f0fe02cacc4e7efe7a29522503264d83882e5018562d3907b3cd",
+      "src/routeTree.gen.ts": "c5f7acf36348efb97cf18ba381d1dcf1b5beed16cce7c3f4c3ea549725d518af",
+      "bun.lock": "7183239bf3c5721bc5908924f24695adbd24d9109e2127eaa0e7d0b72527b24a",
+      "package.json": "da6d358a8fb396f0ac1578b167d7e7432746a195ad68c54c352262c14b3e779b"
+    },
+    "final_model_sha256": "6418bca4fd34b120928bdcc7c37c72e32f2cb6b8e5fd48d6164441aa1a9f7404",
+    "retraining": false,
+    "retuning": false,
+    "new_held_out_evaluation": false,
+    "prior_phase7_through21_results_or_audits_modified": false
+  },
+  "documentation": "docs/authentication.md; current root/backend/API READMEs minimally updated. Historical research documentation not rewritten.",
+  "secret_path_sanity": {
+    "files_scanned": 34,
+    "obvious_secret_findings": [],
+    "user_absolute_paths": [],
+    "scope": "Lightweight Phase22 text scan, not security certification. Standard installed Edge path is a platform fallback, not a user-specific path."
+  },
+  "files_created": [
+    "backend/auth.py",
+    "backend/auth_schemas.py",
+    "backend/migrations/versions/0022_authentication_sessions.py",
+    "docs/authentication.md",
+    "ml/results/phase22_authentication_roles.json",
+    "scripts/create_admin.py",
+    "src/components/auth-form.tsx",
+    "src/components/auth-guard.tsx",
+    "src/lib/api/auth.ts",
+    "src/lib/auth-policy.ts",
+    "tests/frontend_auth.test.mjs",
+    "tests/test_auth.py",
+    "tests/verify_auth_browser.py"
+  ],
+  "files_modified": [
+    "README.md",
+    "backend/README.md",
+    "backend/db_models.py",
+    "backend/main.py",
+    "requirements.txt",
+    "src/components/app-shell.tsx",
+    "src/components/auth-shell.tsx",
+    "src/components/public-layout.tsx",
+    "src/lib/api/README.md",
+    "src/lib/api/client.ts",
+    "src/lib/auth.tsx",
+    "src/routes/about.tsx",
+    "src/routes/forgot-password.tsx",
+    "src/routes/login.tsx",
+    "src/routes/onboarding.tsx",
+    "src/routes/reset-password.tsx",
+    "src/routes/settings.tsx",
+    "src/routes/signup.tsx",
+    "src/routes/verify-email.tsx",
+    "tests/frontend_api.test.mjs",
+    "tests/test_api.py",
+    "tests/test_database.py"
+  ],
+  "file_purposes": {
+    "backend/auth.py": "Opaque sessions, Argon2id verification, auth routes, CSRF/origin checks and current-user/admin dependencies.",
+    "backend/auth_schemas.py": "Explicit redacted-password request and allowlisted safe-user response schemas; email normalization.",
+    "backend/migrations/versions/0022_authentication_sessions.py": "New session table and legacy email normalization/index migration; Phase21 revision preserved.",
+    "scripts/create_admin.py": "Explicit local admin bootstrap with hidden password confirmation and no implicit promotion.",
+    "src/lib/api/auth.ts": "Typed validated native-fetch auth functions with included credentials and CSRF header.",
+    "src/lib/auth-policy.ts": "Pure protected/admin route decisions and allowlisted intended destination.",
+    "src/components/auth-form.tsx": "Shared real login/signup form with loading/errors and safe hydration/POST behavior.",
+    "src/components/auth-guard.tsx": "Neutral SSR/check state, login redirect and ADMIN denial; no protected children before verification.",
+    "tests/test_auth.py": "29 isolated runtime-credential auth, role, bootstrap and migration tests.",
+    "tests/frontend_auth.test.mjs": "13 native Node auth transport/guard/form safety tests.",
+    "tests/verify_auth_browser.py": "Disposable-database Edge live auth and research regression verifier.",
+    "docs/authentication.md": "Authentication/session/role architecture, operation, security boundaries and verification.",
+    "ml/results/phase22_authentication_roles.json": "This phase audit and exact staging manifest.",
+    "backend/db_models.py": "AuthSession model, User session relationship and normalized email unique expression index.",
+    "backend/main.py": "Register auth router, credentialed explicit CORS, no-store auth responses and sanitized database errors.",
+    "requirements.txt": "Only pwdlib[argon2] and email-validator auth dependencies added.",
+    "src/lib/api/client.ts": "Localhost API default; honor explicit credential requests while public research defaults remain omit.",
+    "src/lib/auth.tsx": "Replace fake/localStorage identity with current-user query in existing QueryClient; real mutation/logout cache lifecycle.",
+    "src/components/app-shell.tsx": "Shared auth guard, real account profile/role, ADMIN navigation and real logout/error handling.",
+    "src/components/auth-shell.tsx": "Truthful sign-in requirement text; existing visual layout retained.",
+    "src/components/public-layout.tsx": "Real sign-in/signup navigation labels.",
+    "src/routes/login.tsx": "Real login form and safe intended-destination search contract.",
+    "src/routes/signup.tsx": "Real USER signup form.",
+    "src/routes/settings.tsx": "Actual authenticated account information alongside retained theme controls.",
+    "src/routes/about.tsx": "Remove now-stale no-auth/database limitation while preserving research scope.",
+    "src/routes/forgot-password.tsx": "Truthful unavailable-service notice now distinguishes working authentication.",
+    "src/routes/reset-password.tsx": "Truthful unavailable-service notice now distinguishes working authentication.",
+    "src/routes/verify-email.tsx": "Truthful unavailable-service notice now distinguishes working authentication.",
+    "src/routes/onboarding.tsx": "Truthful building-setup-unavailable notice now distinguishes working authentication.",
+    "tests/frontend_api.test.mjs": "Update deliberate default-host expectation; retain all prior public research tests.",
+    "tests/test_api.py": "Update deliberate credentialed-CORS expectation; all research payload tests retained.",
+    "tests/test_database.py": "Expect new migration head; all prior foundation tests retained.",
+    "README.md": "Minimal current-auth capability/default-host/startup-order changes and documentation link.",
+    "backend/README.md": "Current localhost/CORS/auth startup and endpoint notes.",
+    "src/lib/api/README.md": "Current localhost/credentials/auth transport notes."
+  },
+  "exact_files_to_stage": [
+    "README.md",
+    "backend/README.md",
+    "backend/auth.py",
+    "backend/auth_schemas.py",
+    "backend/db_models.py",
+    "backend/main.py",
+    "backend/migrations/versions/0022_authentication_sessions.py",
+    "docs/authentication.md",
+    "ml/results/phase22_authentication_roles.json",
+    "requirements.txt",
+    "scripts/create_admin.py",
+    "src/components/app-shell.tsx",
+    "src/components/auth-form.tsx",
+    "src/components/auth-guard.tsx",
+    "src/components/auth-shell.tsx",
+    "src/components/public-layout.tsx",
+    "src/lib/api/README.md",
+    "src/lib/api/auth.ts",
+    "src/lib/api/client.ts",
+    "src/lib/auth-policy.ts",
+    "src/lib/auth.tsx",
+    "src/routes/about.tsx",
+    "src/routes/forgot-password.tsx",
+    "src/routes/login.tsx",
+    "src/routes/onboarding.tsx",
+    "src/routes/reset-password.tsx",
+    "src/routes/settings.tsx",
+    "src/routes/signup.tsx",
+    "src/routes/verify-email.tsx",
+    "tests/frontend_api.test.mjs",
+    "tests/frontend_auth.test.mjs",
+    "tests/test_api.py",
+    "tests/test_auth.py",
+    "tests/test_database.py",
+    "tests/verify_auth_browser.py"
+  ],
+  "routeTree_status": {
+    "bytes_unchanged_in_phase22": true,
+    "preexisting_diff": "Ten appended type-import/Register augmentation lines from TanStack Start generator; no route table/path changes.",
+    "new_generated_changes": false,
+    "recommendation": "Exclude historical local routeTree diff from Phase22 staging. No new routes or generated route changes require committing it. Review separately; not overwritten/reset/staged."
+  },
+  "worktree_safety": {
+    "staged": false,
+    "committed": false,
+    "package_lock_created_or_updated": false,
+    "frontend_dependencies_upgraded": false,
+    "default_developer_database_created_or_modified": false,
+    "temporary_browser_ports_released": {
+      "127.0.0.1:56806": true,
+      "::1:56806": true,
+      "127.0.0.1:56805": true,
+      "::1:56805": true
+    }
+  },
+  "known_limitations": [
+    "No production security certification; no rate limiting/lockout/MFA, email ownership verification, password reset/change or external identity provider.",
+    "No admin management, building CRUD, measurement entry/import, building-specific prediction or prediction persistence APIs; existing admin shell remains unavailable.",
+    "Absolute sessions, no session-management UI or scheduled cleanup; unvisited expired rows remain until future housekeeping.",
+    "UI revalidation occurs on navigation/focus/foreground interval; server dependencies reject invalid/inactive/expired sessions on every request. Other tabs can retain old UI until their next check.",
+    "SameSite Lax requires consistent same-site hostnames; Secure must be explicitly enabled with HTTPS for deployment; trusted proxy/host handling needs deployment review.",
+    "Duplicate signup409 intentionally exposes identity existence; login errors stay generic.",
+    "SQLite/Alembic cannot reflect expression-index definitions here; actual index SQL and uniqueness tested. Future schema changes must review this index explicitly.",
+    "Online migration refuses invalid or colliding legacy identities. Offline SQL requires independent identity prevalidation/normalization before execution.",
+    "PostgreSQL offline DDL compilation only, not real PostgreSQL deployment verification; SQLite concurrency limits remain.",
+    "Windows Edge verifier depends on installed Edge/websocket-client; external page assets blocked during QA. No large frontend testing framework introduced.",
+    "Existing research domain/formatting/environment limitations remain; accounts do not establish multi-building model validity."
+  ],
+  "next_phase_readiness": "Phase22 complete; reusable active-user/admin dependencies and persisted sessions ready for separately authorized application work. Phase23 not started.",
+  "documentation_link_check": {
+    "passed": true,
+    "documents": 11,
+    "relative_links": 121,
+    "broken": []
+  },
+  "git_diff_check_passed": true
+}

@@ -21,6 +21,7 @@ import { BackendStatus } from "@/components/backend-status";
 import { Logo } from "@/components/public-layout";
 import { useAuth } from "@/lib/auth";
 import { Panel } from "@/components/ui-kit";
+import { AuthGuard } from "@/components/auth-guard";
 import { cn } from "@/lib/utils";
 
 const mainNav = [
@@ -37,7 +38,11 @@ const adminNav = [
   { to: "/admin/buildings", label: "All buildings", icon: LayoutGrid },
 ] as const;
 
-export function AppShell({
+export function AppShell(props: { title: string; subtitle?: string; actions?: ReactNode; children: ReactNode }) {
+  return <AuthGuard><AuthenticatedShell {...props} /></AuthGuard>;
+}
+
+function AuthenticatedShell({
   title,
   subtitle,
   actions,
@@ -58,7 +63,9 @@ export function AppShell({
 
   const operationalUnavailable = pathname === "/data" || pathname.startsWith("/buildings") || pathname.startsWith("/admin");
 
-  const isAdmin = user?.role === "Platform Admin";
+  const isAdmin = user?.role === "ADMIN";
+  const [logoutError, setLogoutError] = useState("");
+  const [loggingOut, setLoggingOut] = useState(false);
 
   const NavList = () => (
     <>
@@ -171,12 +178,12 @@ export function AppShell({
               <div className="ml-1 hidden items-center gap-2 border-l border-border pl-3 sm:flex">
                 <div className="text-right">
                   <p className="max-w-[140px] truncate text-xs font-medium">
-                    {user?.name ?? "Demo User"}
+                    {user?.full_name}
                   </p>
-                  <p className="text-[10px] text-muted-foreground">{user ? "Local demo session" : "Prototype visitor"}</p>
+                  <p className="text-[10px] text-muted-foreground">{user?.role}</p>
                 </div>
                 <span className="grid size-8 place-items-center rounded-full bg-efficiency/15 font-display text-xs font-bold text-efficiency">
-                  {(user?.name ?? "DU")
+                  {(user?.full_name ?? "")
                     .split(" ")
                     .map((p) => p[0])
                     .slice(0, 2)
@@ -187,9 +194,12 @@ export function AppShell({
                 variant="ghost"
                 size="icon"
                 aria-label="Sign out"
-                onClick={() => {
-                  signOut();
-                  navigate({ to: "/login", replace: true });
+                disabled={loggingOut}
+                onClick={async () => {
+                  setLoggingOut(true); setLogoutError("");
+                  try { await signOut(); await navigate({ to: "/login", search: { next: "/dashboard" }, replace: true }); }
+                  catch (error) { setLogoutError(error instanceof Error ? error.message : "Unable to sign out."); }
+                  finally { setLoggingOut(false); }
                 }}
               >
                 <LogOut className="size-4" />
@@ -203,6 +213,7 @@ export function AppShell({
           ) : null}
         </header>
         <main key={pathname} className="rise-in min-w-0 flex-1 px-4 py-6 sm:px-6 lg:py-8">
+          {logoutError ? <p role="alert" className="mb-4 text-sm text-destructive">{logoutError}</p> : null}
           {operationalUnavailable ? <Panel title="Not connected" subtitle="Operational capability unavailable">
             <p className="text-sm text-muted-foreground">No verified operational readings, building records or management service is connected. This prototype does not provide live measurements or equipment control.</p>
             <Link to="/dashboard" className="mt-4 inline-block text-sm text-efficiency underline">View verified research results</Link>

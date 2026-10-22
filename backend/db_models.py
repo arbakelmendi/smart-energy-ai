@@ -3,7 +3,7 @@ from datetime import datetime, timezone
 import math
 from numbers import Real
 
-from sqlalchemy import Boolean, CheckConstraint, DateTime, Float, ForeignKey, Integer, String, Text, UniqueConstraint
+from sqlalchemy import Boolean, CheckConstraint, DateTime, Float, ForeignKey, Index, Integer, String, Text, UniqueConstraint, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.types import TypeDecorator
 
@@ -50,7 +50,24 @@ class User(AuditTimestamps, Base):
     full_name: Mapped[str] = mapped_column(String(200))
     role: Mapped[str] = mapped_column(String(5), default="USER", server_default="USER")
     is_active: Mapped[bool] = mapped_column(Boolean(create_constraint=True, name="active_boolean"), default=True, server_default="1")
+    auth_sessions: Mapped[list["AuthSession"]] = relationship(back_populates="user", lazy="raise", cascade="all, delete-orphan", passive_deletes=True)
     buildings: Mapped[list["Building"]] = relationship(back_populates="owner", lazy="raise", passive_deletes="all")
+
+
+# Database-level ASCII canonical identity uniqueness, including direct SQL writes.
+Index("uq_users_email_normalized", func.lower(func.trim(User.email)), unique=True)
+
+
+class AuthSession(Base):
+    __tablename__ = "auth_sessions"
+    __table_args__ = (CheckConstraint("length(token_hash) = 64", name="hash_length"),
+                      CheckConstraint("expires_at > created_at", name="valid_lifetime"))
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), index=True)
+    token_hash: Mapped[str] = mapped_column(String(64), unique=True, index=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=utc_now)
+    expires_at: Mapped[datetime] = mapped_column(DateTime, index=True)
+    user: Mapped[User] = relationship(back_populates="auth_sessions", lazy="raise")
 
 
 class Building(AuditTimestamps, Base):

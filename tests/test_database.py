@@ -80,7 +80,7 @@ class DatabaseTests(unittest.TestCase):
         with self.engine.connect() as connection:
             self.assertEqual(compare_metadata(MigrationContext.configure(connection), Base.metadata), [])
         self.assertEqual(check_database(self.engine), {'connected': True, 'schema_present': True,
-                                                      'migration_revision': '0021_database_foundation'})
+                                                      'migration_revision': '0022_authentication_sessions'})
 
     def test_migration_downgrade_and_reupgrade(self):
         self.session.close()

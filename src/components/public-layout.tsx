@@ -49,10 +49,10 @@ export function PublicHeader() {
           </nav>
           <ThemeToggle />
           <Button asChild variant="ghost" size="sm" className="hidden sm:inline-flex">
-            <Link to="/login">Prototype access</Link>
+            <Link to="/login">Sign in</Link>
           </Button>
           <Button asChild size="sm" variant="energy">
-            <Link to="/signup">View prototype</Link>
+            <Link to="/signup">Create account</Link>
           </Button>
           <Button
             variant="ghost"
@@ -67,7 +67,7 @@ export function PublicHeader() {
       </div>
       {open ? (
         <nav className="border-t border-border bg-surface px-4 py-2 md:hidden">
-          {[...nav, { to: "/login", label: "Prototype access" }].map((n) => (
+          {[...nav, { to: "/login", label: "Sign in" }].map((n) => (
             <Link
               key={n.to}
               to={n.to}
@@ -112,7 +112,7 @@ export function PublicFooter() {
             { to: "/about", label: "About the project" },
             { to: "/contact", label: "Contact & support" },
             { to: "/signup", label: "Account availability" },
-            { to: "/login", label: "Prototype access" },
+            { to: "/login", label: "Sign in" },
           ]}
         />
         <div className="space-y-3 text-sm text-muted-foreground">

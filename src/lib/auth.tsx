@@ -1,104 +1,63 @@
-import { parseDemoSession } from "./demo-session";
-import { createContext, useCallback, useContext, useEffect, useState, type ReactNode } from "react";
+import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useRouterState } from "@tanstack/react-router";
+import { ApiError } from "./api/client";
+import { getCurrentUser, login, signup, logout, type AuthUser, type LoginRequest, type SignupRequest } from "./api/auth";
 
-export type Role = "Building Admin" | "Analyst" | "Viewer" | "Platform Admin";
-
-export type SessionUser = {
-  name: string;
-  email: string;
-  role: Role;
-  onboarded: boolean;
+const KEY = ["auth", "me"] as const;
+type AuthContext = {
+  user: AuthUser | null; ready: boolean; error: Error | null;
+  signIn: (body: LoginRequest) => Promise<void>;
+  signUp: (body: SignupRequest) => Promise<void>;
+  signOut: () => Promise<void>;
+  retry: () => void;
 };
-
-type AuthCtx = {
-  user: SessionUser | null;
-  ready: boolean;
-  signIn: (email: string, role?: Role) => SessionUser;
-  signUp: (name: string, email: string, role: Role) => SessionUser;
-  signOut: () => void;
-  update: (patch: Partial<SessionUser>) => void;
-};
-
-const KEY = "sea-session";
-
-const DEMO: SessionUser = {
-  name: "Prototype visitor",
-  email: "demo@example.invalid",
-  role: "Platform Admin",
-  onboarded: true,
-};
-
-const Ctx = createContext<AuthCtx>(null as unknown as AuthCtx);
-
-function nameFromEmail(email: string) {
-  const raw = email.split("@")[0] ?? "user";
-  return raw
-    .split(/[._-]/)
-    .filter(Boolean)
-    .map((p) => p[0]!.toUpperCase() + p.slice(1))
-    .join(" ");
-}
+const Context = createContext<AuthContext | null>(null);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<SessionUser | null>(null);
-  const [ready, setReady] = useState(false);
-
+  const client = useQueryClient();
+  const [mounted, setMounted] = useState(false);
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
   useEffect(() => {
-    try {
-      const raw = window.localStorage.getItem(KEY);
-      if (raw) setUser(parseDemoSession(raw));
-    } catch {
-      /* ignore corrupt session */
-    }
-    setReady(true);
+    // Retire the old demo key; its contents never establish authentication.
+    try { window.localStorage.removeItem("sea-session"); } catch { /* Storage may be disabled. */ }
+    setMounted(true);
   }, []);
-
-  const persist = useCallback((u: SessionUser | null) => {
-    setUser(u);
-    if (u) window.localStorage.setItem(KEY, JSON.stringify(u));
-    else window.localStorage.removeItem(KEY);
-  }, []);
-
-  const signIn = useCallback(
-    (email: string, role: Role = "Platform Admin") => {
-      const u: SessionUser =
-        email.trim().toLowerCase() === DEMO.email
-          ? DEMO
-          : { name: nameFromEmail(email), email, role, onboarded: true };
-      persist(u);
-      return u;
+  const query = useQuery({ queryKey: KEY, enabled: mounted, retry: false,
+    staleTime: 0, refetchOnWindowFocus: true, refetchInterval: 60_000,
+    queryFn: async ({ signal }) => {
+      try { return await getCurrentUser(signal); }
+      catch (error) { if (error instanceof ApiError && error.status === 401) return null; throw error; }
     },
-    [persist],
-  );
+  });
+  useEffect(() => {
+    if (mounted) void client.invalidateQueries({ queryKey: KEY });
+  }, [pathname, mounted, client]);
 
-  const signUp = useCallback(
-    (name: string, email: string, role: Role) => {
-      const u: SessionUser = { name: name || nameFromEmail(email), email, role, onboarded: false };
-      persist(u);
-      return u;
-    },
-    [persist],
-  );
-
-  const signOut = useCallback(() => persist(null), [persist]);
-
-  const update = useCallback(
-    (patch: Partial<SessionUser>) => {
-      setUser((prev) => {
-        if (!prev) return prev;
-        const next = { ...prev, ...patch };
-        window.localStorage.setItem(KEY, JSON.stringify(next));
-        return next;
-      });
-    },
-    [],
-  );
-
-  return (
-    <Ctx.Provider value={{ user, ready, signIn, signUp, signOut, update }}>{children}</Ctx.Provider>
-  );
+  async function verifySession() {
+    await client.cancelQueries({ queryKey: KEY });
+    // The cookie must work: successful POST JSON alone does not establish UI auth.
+    const user = await getCurrentUser();
+    client.setQueryData(KEY, user);
+  }
+  async function signOut() {
+    await logout();
+    await client.cancelQueries();
+    client.setQueryData(KEY, null);
+    client.removeQueries({ predicate: (query) => query.queryKey[0] !== "auth" });
+  }
+  const value: AuthContext = {
+    user: query.isError ? null : query.data ?? null,
+    ready: mounted && !query.isPending && !query.isFetching,
+    error: query.error,
+    signIn: async (body) => { await login(body); await verifySession(); },
+    signUp: async (body) => { await signup(body); await verifySession(); },
+    signOut, retry: () => { void query.refetch(); },
+  };
+  return <Context.Provider value={value}>{children}</Context.Provider>;
 }
-
 export function useAuth() {
-  return useContext(Ctx);
+  const value = useContext(Context);
+  if (!value) throw new Error("AuthProvider is required");
+  return value;
 }

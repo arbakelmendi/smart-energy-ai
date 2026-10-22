@@ -8,7 +8,7 @@ Run from the project root:
 .venv\Scripts\python.exe -m uvicorn backend.main:app --reload
 ```
 
-Default address: `http://127.0.0.1:8000`. Swagger: `http://127.0.0.1:8000/docs`; OpenAPI: `/openapi.json`. API title/version: SmartEnergyAI API / 1.0.0.
+Default address: `http://localhost:8000`. Swagger: `http://localhost:8000/docs`; OpenAPI: `/openapi.json`. API title/version: SmartEnergyAI API / 1.0.0.
 
 | Method | Endpoint | Purpose |
 | --- | --- | --- |
@@ -37,11 +37,11 @@ payload = {"features": row[schema["model_feature_columns"]].iloc[0].to_dict()}
 
 Forecast response fields: `prediction_wh`, `forecast_horizon_minutes`, `target`, `unit`. The target is `target_appliances_next`, Appliances energy in **Wh, 10 minutes ahead**. Predictions are not clipped and no confidence intervals are invented. Recommendation response contains `prediction`, `thresholds_wh`, `trend`, `recommendation` and `scope`, matching Phase 14 directly. Phase 14 rejects negative forecasts; such a model-output failure returns a generic 500 rather than changing the model or clipping its result.
 
-The caller must supply real origin-time readings and valid historical lags/rolling statistics. The API does not create a time-series buffer, infer missing history, or expose a raw-sensor forecast endpoint. Recommendations are decision support only, with no automatic equipment control, causal sensor attribution, estimated savings or guaranteed savings. No database or authentication is included. The server defaults to loopback access.
+The caller must supply real origin-time readings and valid historical lags/rolling statistics. The API does not create a time-series buffer, infer missing history, or expose a raw-sensor forecast endpoint. Recommendations are decision support only, with no automatic equipment control, causal sensor attribution, estimated savings or guaranteed savings. Research endpoints do not depend on authentication/database sessions; separate Phase 22 auth endpoints are described below. The server defaults to loopback access.
 
 Resources load lazily and successful loads are cached per process, so imports and API docs remain available when model files are absent. Failed loads are not cached and can be retried after files are restored. Health reports 503 when either model or thresholds are unavailable; forecasting can still work if only thresholds are missing. Health checks cached usability; it does not continuously re-hash loaded artifacts. Restart after intentional artifact changes.
 
-CORS permits `http://localhost:3000`, `http://localhost:5173` and `http://localhost:8080` by default, with GET/POST and Content-Type only, without credentials. Optionally replace the list through comma-separated `SMARTENERGY_CORS_ORIGINS`; no `.env` is required. Wildcards are excluded.
+CORS permits `http://localhost:3000`, `http://localhost:5173` and `http://localhost:8080` by default, with GET/POST, Content-Type and X-SmartEnergy-CSRF headers, and explicit credentialed origins for authentication. Optionally replace the list through comma-separated `SMARTENERGY_CORS_ORIGINS`; no `.env` is required. Wildcards are excluded.
 
 Validation errors return 422. Unavailable/mismatched resources return 503. Unexpected inference/response failures return a generic 500 without filesystem paths or stack traces. Server logs retain diagnostic details.
 
@@ -55,3 +55,7 @@ Tests use FastAPI TestClient (`httpx` is required for tests):
 Phase 17 adds read-only `/analysis/model-comparison` (committed Phase 10 VALIDATION metrics and the existing Phase 11 selection lock) and `/analysis/feature-importance` (saved Phase 12 gain/permutation results). These endpoints do not load datasets or models, compute new rankings, refit, evaluate, or recompute importance. Normalized gain is a predictive fraction, not an energy share or causal effect. Permutation mean/std retain their recorded Wh interpretation; std is not a confidence interval.
 
 For installation, artifact prerequisites and the ordered verification/research workflows, see the [reproducibility guide](../docs/reproducibility.md) and [architecture](../docs/system-architecture.md).
+
+## Authentication (Phase 22)
+
+Run `python -m alembic upgrade head` before signup/login. `/auth/signup`, `/auth/login`, `/auth/me` and `/auth/logout` use database-backed opaque HttpOnly sessions; auth POST requests require `X-SmartEnergy-CSRF: 1`. Optional initial ADMIN: `python scripts/create_admin.py`. Use localhost consistently for frontend/API cookies. See [authentication](../docs/authentication.md) for expiry, Secure cookies, CSRF/CORS, role enforcement and limitations. Existing research endpoints/health remain public and unchanged.

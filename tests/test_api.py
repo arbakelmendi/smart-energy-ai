@@ -196,7 +196,7 @@ class ApiTests(unittest.TestCase):
         response = self.client.options("/forecast", headers=headers)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.headers["access-control-allow-origin"], headers["Origin"])
-        self.assertNotIn("access-control-allow-credentials", response.headers)
+        self.assertEqual(response.headers["access-control-allow-credentials"], "true")
         headers["Origin"] = "https://untrusted.example"
         response = self.client.options("/forecast", headers=headers)
         self.assertEqual(response.status_code, 400)

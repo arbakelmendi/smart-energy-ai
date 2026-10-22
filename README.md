@@ -14,7 +14,7 @@ The objective is to compare forecasting approaches chronologically, estimate lat
 - Return deterministic recommendations calibrated on TRAIN + VALIDATION only.
 - Present API-sourced research results with explicit loading/error/unavailable states.
 
-No operational sensor/history stream is connected. The browser cannot fabricate historical lag/rolling context for a live forecast. No real authentication, account/email service, occupancy inference or equipment control is implemented. The independent Phase 21 database foundation is described below; research routes do not use it. No guaranteed energy, monetary or CO2 savings or calibrated prediction intervals are claimed.
+No operational sensor/history stream is connected. The browser cannot fabricate historical lag/rolling context for a live forecast. Phase 22 provides real account authentication over the Phase 21 database foundation. Email delivery, occupancy inference and equipment control are unavailable; research endpoints remain database-independent. No guaranteed energy, monetary or CO2 savings or calibrated prediction intervals are claimed.
 
 ## Dataset and methodology
 
@@ -123,7 +123,7 @@ Start FastAPI in one terminal:
 .venv\Scripts\python.exe -m uvicorn backend.main:app --reload
 ```
 
-Swagger: [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs); OpenAPI: `/openapi.json`. See [backend usage](backend/README.md).
+Swagger: [http://localhost:8000/docs](http://localhost:8000/docs); OpenAPI: `/openapi.json`. See [backend usage](backend/README.md).
 
 The existing frontend scripts are `dev: vite dev` and `build: vite build`. Phase 18 used installed dependencies and npm because Bun was unavailable. If `node_modules` is absent, `npm install --package-lock=false` is an npm fallback that resolves package ranges, not the Bun lock. It is not a claim of exact locked-tree reproduction. Preserve the existing package-management files; no install is needed for an existing dependency tree.
 
@@ -131,7 +131,7 @@ The existing frontend scripts are `dev: vite dev` and `build: vite build`. Phase
 npm run dev -- --host localhost --port 5173 --strictPort
 ```
 
-Open [http://localhost:5173/dashboard](http://localhost:5173/dashboard). Public build-time `VITE_API_BASE_URL` defaults to `http://127.0.0.1:8000`; no environment file is required. See [frontend/API notes](src/lib/api/README.md).
+Open [http://localhost:5173/dashboard](http://localhost:5173/dashboard). Public build-time `VITE_API_BASE_URL` defaults to `http://localhost:8000`; no environment file is required. See [frontend/API notes](src/lib/api/README.md).
 
 ### API overview
 
@@ -168,7 +168,7 @@ Optional Windows Edge route/browser QA: `python tests/verify_phase18.py --browse
 - No reliable occupancy input or operational sensor/history feed. Temperatures/humidity alone cannot provide valid engineered forecast inputs.
 - Decision support, not automatic control; no validated intervention savings or calibrated prediction intervals.
 - One later chronological test period; model/climate/building transfer requires further evidence. Importance is predictive and period-specific.
-- No real authentication, operational account service or email; the Phase 21 database is an independent schema foundation only. Explicit local-development CORS/loopback assumptions are not production-grade security.
+- Real cookie-backed authentication is implemented; email/reset services, building operations and account management remain unavailable. Explicit local-development CORS/loopback assumptions are not production-grade security.
 - Exact replay depends on input bytes, recorded libraries and serialization environment. Historical audits describe their phase snapshots, not immutable later application code.
 
 Committed artifacts are the source of truth. Do not retune/select on TEST, rewrite results for a different environment, present research observations as live telemetry, or replace API failures with mock values. Preserve Lovable history and unrelated worktree changes.
@@ -184,3 +184,7 @@ UCI Machine Learning Repository. *Appliances Energy Prediction*. DOI: [10.24432/
 ## Application database foundation (Phase 21)
 
 An independent SQLAlchemy/Alembic schema now supports users, owned buildings, raw measurements and prediction/recommendation snapshots. See [database architecture and initialization](docs/database-architecture.md). SQLite defaults to an ignored repository-local `smartenergy.db`; initialize an empty schema with `python -m alembic upgrade head`. This adds no authentication, import or CRUD/persistence endpoints. Existing research routes/dashboard remain database-independent. Earlier phase documents describe their verified historical scope.
+
+## Real authentication (Phase 22)
+
+Initialize/upgrade the database with `python -m alembic upgrade head`, optionally create the first administrator with `python scripts/create_admin.py` (hidden password prompt), then start FastAPI and the frontend as above. Use **localhost** consistently in browser/API URLs. Signup/login now establish persistent HttpOnly-cookie sessions; application pages require a session and admin routes require ADMIN. Public research APIs remain accessible without login. See [authentication configuration, security boundaries and verification](docs/authentication.md). Earlier phase demo/database documents describe historical scope; this authentication workflow supersedes their account-free application access.

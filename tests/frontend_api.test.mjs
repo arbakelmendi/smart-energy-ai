@@ -36,8 +36,8 @@ function respond(payload, status = 200) {
 }
 
 test("base URL defaults, whitespace, trailing slash and path prefixes", () => {
-  assert.equal(normalizeApiBaseUrl(undefined), "http://127.0.0.1:8000");
-  assert.equal(normalizeApiBaseUrl("  "), "http://127.0.0.1:8000");
+  assert.equal(normalizeApiBaseUrl(undefined), "http://localhost:8000");
+  assert.equal(normalizeApiBaseUrl("  "), "http://localhost:8000");
   assert.equal(normalizeApiBaseUrl("https://example.invalid/api/// "), "https://example.invalid/api");
   for (const bad of ["invalid", "ftp://example.invalid", "https://user:pass@example.invalid", "https://example.invalid/?a=1", "https://example.invalid/#fragment"]) {
     assert.throws(() => normalizeApiBaseUrl(bad));
