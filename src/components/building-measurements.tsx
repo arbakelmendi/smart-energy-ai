@@ -179,7 +179,7 @@ export function BuildingMeasurements({ buildingId }: { buildingId: number }) {
         <p className="text-sm text-muted-foreground">
           Stored raw observations. Prediction readiness is checked separately from the latest
           continuous history; a row count alone does not establish readiness or model validity
-          for this building. Forecast execution is not enabled.
+          for this building. Forecasts run only when explicitly requested.
         </p>
         {adding ? (
           <MeasurementForm

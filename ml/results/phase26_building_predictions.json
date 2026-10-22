@@ -1,0 +1,569 @@
+{
+  "phase": 26,
+  "title": "Building-Specific Forecasting, Recommendation Execution, and Prediction Persistence",
+  "status": "complete",
+  "date": "2026-10-23",
+  "endpoints": {
+    "POST /buildings/{building_id}/predictions": {
+      "status": 200,
+      "body": "Absent or empty object; extra/engineered input forbidden",
+      "result": "Persisted/reused CreatedBuildingPrediction with reused_existing_prediction flag"
+    },
+    "GET /buildings/{building_id}/predictions": {
+      "status": 200,
+      "default_limit": 50,
+      "maximum_limit": 500,
+      "offset": "Nonnegative signed64-bit bounded integer",
+      "ordering": [
+        "created_at DESC",
+        "id DESC"
+      ],
+      "response": [
+        "items",
+        "total",
+        "limit",
+        "offset",
+        "current_source_timestamp",
+        "current_history_ready"
+      ]
+    }
+  },
+  "ownership": "Existing active USER and ADMIN session owner-only policy; uniform404 for missing/non-owned buildings; POST uses existing CSRF/trusted-origin guard; private responses no-store",
+  "architecture": {
+    "service": "backend/building_prediction_service.py",
+    "features": "Unchanged Phase25 assess_prediction_readiness -> feature_row.as_frame, exact42 canonical ordered columns; no frontend features or duplication",
+    "readiness": "Reassessed on every POST before model load, and after inference before persistence; expected not-ready409 with structured reason/count/continuity/timestamp; changed identity409 HISTORY_CHANGED",
+    "model": "Existing backend.services.model_bundle cache -> ml/src/model_inference.py native verified artifact; no alternative construction/load path",
+    "recommendation": "Existing cached thresholds + ml/src/recommendation_engine.predict_and_recommend, same integrated helper as generic research recommendation API",
+    "resource_behavior": "Existing process-lifetime caches reused; repeated identical request invokes prediction helper once in test; history uses metadata/feature assessment only, never model/threshold loads"
+  },
+  "model": {
+    "artifact": "ml/models/final_xgboost_model.json",
+    "sha256": "6418bca4fd34b120928bdcc7c37c72e32f2cb6b8e5fd48d6164441aa1a9f7404",
+    "name": "Tuned XGBoost",
+    "feature_count": 42,
+    "horizon_minutes": 10,
+    "unit": "Wh",
+    "no_fitting_tuning_selection": true
+  },
+  "prediction_semantics": {
+    "source_timestamp": "Latest stored feature-compatible origin t, naive building-local",
+    "forecast_timestamp": "source + stored horizon10minutes, returned from persisted context",
+    "prediction_wh": "Appliances energy for next ten-minute interval; not measured consumption or instantaneous power",
+    "created_at": "Naive UTC audit timestamp",
+    "current_appliances_wh": "Recovered from exact stored snapshot; labels source measurement, not necessarily current building latest"
+  },
+  "persistence": {
+    "table": "Existing predictions, no duplicate prediction table",
+    "new_fields": [
+      "feature_hash",
+      "feature_snapshot_json"
+    ],
+    "stored_fields": [
+      "building_id",
+      "source_timestamp",
+      "prediction_wh",
+      "horizon_minutes",
+      "model_name",
+      "model_checksum",
+      "feature_hash",
+      "feature_snapshot_json",
+      "recommendation_level",
+      "recommendation_code",
+      "recommendation_priority",
+      "recommendation_text",
+      "created_at"
+    ],
+    "recommendation_mapping": {
+      "level": "Integrated result prediction.level",
+      "code": "recommendation.code",
+      "priority": "recommendation.priority",
+      "text": "recommendation.message"
+    },
+    "atomicity": "One row contains prediction plus complete recommendation and exact feature snapshot; flush/response validation before single commit; DB failures rollback and return safe503, no success claim",
+    "trend": "Not persisted; no extra trend schema"
+  },
+  "fingerprint": {
+    "snapshot": "Ordered feature_names and feature_values only; no user/session/owner metadata",
+    "canonicalization": "json.dumps(sort_keys=True,separators=(comma,colon),ensure_ascii=True,allow_nan=False), UTF8",
+    "hash": "SHA256 of canonical snapshot bytes",
+    "unique_key": [
+      "building_id",
+      "source_timestamp",
+      "model_checksum",
+      "feature_hash"
+    ],
+    "same_inputs": "Return existing persisted row; reused_existing_prediction=true",
+    "new_latest": "New source creates new history row, preserving old forecasts",
+    "historical_correction": "Changed consumed features create new fingerprint/version even at same source/model; original retained; restoring identical inputs reuses old result",
+    "irrelevant_history_change": "No new record when model input unchanged",
+    "concurrency": "Database uniqueness enforces one record; loser returns winner after rollback; concurrent two-request test returns one shared ID",
+    "legacy": "Nullable paired hash/snapshot preserve old predictions; no guessed inputs/fingerprint/recommendations, never labeled current"
+  },
+  "migration": {
+    "revision": "0026_prediction_feature_snapshots",
+    "previous": "0022_authentication_sessions",
+    "reason": "Reliable concurrent and historical-edit-aware idempotency plus per-prediction audit inputs",
+    "command": "python -m alembic upgrade head",
+    "prior_migrations": "Unchanged",
+    "tests": "Metadata comparison, legacy upgrade/downgrade/reupgrade preservation, snapshot pair/unique constraints and offline PostgreSQL DDL compilation pass; no live PostgreSQL server test",
+    "downgrade": "Preserves scalar rows but removes added input-audit columns/context"
+  },
+  "history_current_context": {
+    "strategy": "Read-only Phase25 assessment and metadata checksum plus per-row source/hash/model/horizon comparison; no model or recommendation execution",
+    "matches_current_history": "Only true for a snapshot matching currently assessed compatible inputs and model identity; legacy/unverifiable rows false",
+    "measurement_changes": "Invalidate history/context alongside measurements/readiness; preserve old records and mark historical, including changed fingerprint at same source",
+    "availability": "History remains readable when model artifact cannot be loaded; invalid metadata disables current-match confirmation, not historical rows"
+  },
+  "frontend": {
+    "types": [
+      "BuildingPrediction",
+      "PredictionRecommendation",
+      "PredictionListResponse",
+      "CreatedBuildingPrediction"
+    ],
+    "api": [
+      "createBuildingPrediction",
+      "getBuildingPredictions"
+    ],
+    "hooks": [
+      "useBuildingPredictions",
+      "useCreateBuildingPrediction"
+    ],
+    "cache": "Existing QueryClient; account/building/page keys, scoped confirmed-success invalidation, 401 session/409 readiness revalidation",
+    "ui": "Explicit Predict next10minutes button disabled during not-ready/loading/recheck; no auto POST; stored predicted Wh/source/target/horizon/recommendation, measured-at-source label, paginated newest-first history and safe errors",
+    "historical_label": "Latest stored forecast distinct from current matching context; later page says stored snapshot; background rechecks do not affirm current match",
+    "validation_notice": "The forecasting model was validated on the UCI reference building. Predictions for other buildings are experimental.",
+    "reference_label": "Existing explicit UCI Reference Building import name/provenance/ADMIN ownership retained",
+    "no_savings_confidence_control": true,
+    "routing": "Existing building detail only; no new route files or dashboard redesign"
+  },
+  "direct_helper_parity": {
+    "passed": true,
+    "TRAIN_observation": {
+      "source_timestamp": "2016-01-18T17:00:00",
+      "forecast_timestamp": "2016-01-18T17:10:00",
+      "prediction_wh": 55.505409240722656,
+      "absolute_inference_difference": 0.0,
+      "recommendation_exact_match": true,
+      "feature_count": 42,
+      "model_checksum": "6418bca4fd34b120928bdcc7c37c72e32f2cb6b8e5fd48d6164441aa1a9f7404",
+      "snapshot_persisted": true
+    },
+    "UCI_reference": {
+      "source_timestamp": "2016-05-27T18:00:00",
+      "forecast_timestamp": "2016-05-27T18:10:00",
+      "prediction_wh": 339.7279052734375,
+      "absolute_inference_difference": 0.0,
+      "recommendation_exact_match": true,
+      "feature_count": 42,
+      "model_checksum": "6418bca4fd34b120928bdcc7c37c72e32f2cb6b8e5fd48d6164441aa1a9f7404",
+      "snapshot_persisted": true
+    },
+    "UCI_rows_imported": 19735,
+    "reference_ready": true,
+    "idempotent_repeat_one_history_row": true,
+    "reference_owner_isolation": true,
+    "history_persisted": true,
+    "nonreference_validation_notice": "The forecasting model was validated on the UCI reference building. Predictions for other buildings are experimental.",
+    "unit": "Wh",
+    "horizon_minutes": 10,
+    "temporary_database_removed": true
+  },
+  "verification": {
+    "gates": {
+      "python_tests": {
+        "passed": true,
+        "return_code": 0
+      },
+      "frontend_tests": {
+        "passed": true,
+        "return_code": 0
+      },
+      "typecheck": {
+        "passed": true,
+        "return_code": 0
+      },
+      "semantic_lint": {
+        "passed": true,
+        "return_code": 0
+      },
+      "build": {
+        "passed": true,
+        "return_code": 0
+      }
+    },
+    "python": {
+      "passed": 216,
+      "existing": 194,
+      "new": 22,
+      "warnings": 135,
+      "warning_notes": "Existing Starlette/httpx deprecation and SQLite expression-index reflection warnings; reflection repeats during the new batched migration across isolated fixtures"
+    },
+    "frontend": {
+      "passed": 82,
+      "existing": 71,
+      "new": 11,
+      "failed": 0
+    },
+    "semantic_lint": {
+      "errors": 0,
+      "warnings": 0,
+      "scope": "Touched source only; no repository-wide formatting cleanup"
+    },
+    "production_build": "Pass with existing Vite plugin/inlineDynamicImports/codeSplitting notices",
+    "browser": {
+      "passed": true,
+      "browser": "Installed Edge/CDP",
+      "frontend_origin": "http://localhost:51885",
+      "backend_origin": "http://localhost:51884",
+      "database": "Disposable migrated SQLite; no developer DB used",
+      "credentials": "Generated only in runtime memory; never emitted or committed",
+      "SSR_does_not_render_authenticated_content": true,
+      "unauthenticated_protected_routes": [
+        "/dashboard",
+        "/predictions",
+        "/recommendations",
+        "/data",
+        "/settings",
+        "/buildings/",
+        "/buildings/ubt-campus-a",
+        "/admin/",
+        "/admin/users",
+        "/admin/buildings"
+      ],
+      "forged_localstorage_ignored": true,
+      "signup_form_password_confirmation": true,
+      "signup_USER": true,
+      "cookie_flags": {
+        "name": "smartenergy_session",
+        "httpOnly": true,
+        "sameSite": "Lax",
+        "secure": false
+      },
+      "cookie_hidden_from_document_cookie": true,
+      "token_hash_only_in_database": true,
+      "refresh_persists_session": true,
+      "backend_restart_persists_session": true,
+      "logout_and_refresh_unauthenticated": true,
+      "invalid_login_error": true,
+      "normalized_login": true,
+      "intended_destination_settings": true,
+      "inactive_login_and_session_blocked": true,
+      "expired_session_blocked": true,
+      "USER_admin_routes_forbidden": true,
+      "bootstrap_ADMIN_admin_shell_allowed": true,
+      "no_admin_management_implemented": true,
+      "credentialed_CORS_passed": true,
+      "cors_errors": [],
+      "runtime_errors": [],
+      "responsive_widths": [
+        1440,
+        390
+      ],
+      "public_research_GET_statuses": {
+        "/": 200,
+        "/health": 200,
+        "/model/info": 200,
+        "/recommendations/thresholds": 200,
+        "/analysis/model-comparison": 200,
+        "/analysis/feature-importance": 200,
+        "/docs": 200,
+        "/openapi.json": 200
+      },
+      "public_forecast_helper_equivalence": true,
+      "public_recommendation_helper_equivalence": true,
+      "dashboard_real_research_charts": true,
+      "verification_processes_stopped": true,
+      "building_management": {
+        "passed": true,
+        "USER_A_create_list_view_edit": true,
+        "refresh_and_backend_restart_persistence": true,
+        "edit_form_survives_background_auth_revalidation": true,
+        "USER_B_direct_url_and_API_isolation": true,
+        "owner_injection_rejected": true,
+        "USER_B_create_and_own_list_only": true,
+        "USER_A_confirm_and_cancel_delete": true,
+        "USER_B_building_preserved": true,
+        "ADMIN_owner_only_policy": true,
+        "actual_DELETE_204_handled": true,
+        "no_fake_operational_metrics": true,
+        "responsive_widths": [
+          1440,
+          390
+        ],
+        "cache_updates_after_server_confirmation": true
+      },
+      "measurements": {
+        "passed": true,
+        "manual_entry_all_raw_fields": true,
+        "refresh_and_restart_persistence": true,
+        "actual_FormData_upload": true,
+        "confirmed_count_and_history": true,
+        "invalid_csv_no_partial_insert": true,
+        "structured_row_error_rendered": true,
+        "csv_and_manual_duplicates_rejected": true,
+        "delete_and_cancel": true,
+        "cross_owner_read_create_import_delete_denied": true,
+        "responsive_widths": [
+          1440,
+          390
+        ],
+        "no_fake_readiness_or_metrics": true
+      },
+      "prediction_readiness": {
+        "passed": true,
+        "states": [
+          "NO_MEASUREMENTS",
+          "INSUFFICIENT_HISTORY",
+          "READY",
+          "LATEST_WINDOW_HAS_GAPS",
+          "READY"
+        ],
+        "manual_create_updates_readiness_without_refresh": true,
+        "CSV_import_updates_readiness_without_refresh": true,
+        "delete_required_history_updates_readiness_without_refresh": true,
+        "restore_returns_ready": true,
+        "new_latest_gap_does_not_fall_back": true,
+        "actual_measurement_history_pagination": true,
+        "second_USER_and_ADMIN_owner_policy": true,
+        "user_building_cache_isolation": true,
+        "full_reference_building_ready": true,
+        "reference_measurements": 19735,
+        "no_forecast_requests_during_readiness_flow": true,
+        "responsive_widths": [
+          1440,
+          390
+        ],
+        "no_prediction_records_created": true
+      },
+      "building_predictions": {
+        "passed": true,
+        "insufficient_history_button_disabled": true,
+        "server_not_ready409": true,
+        "explicit_forecast_and_recommendation": true,
+        "current_vs_predicted_labels": true,
+        "experimental_warning": true,
+        "refresh_restart_persistence": true,
+        "same_inputs_reused_one_row": true,
+        "new_latest_old_snapshot_marked_historical": true,
+        "new_latest_creates_second_forecast": true,
+        "history_newest_first": true,
+        "USER_B_and_ADMIN_owner_isolation": true,
+        "full_reference_UI_forecast": true,
+        "responsive_widths": [
+          1440,
+          390
+        ],
+        "no_savings_confidence_actuation_UI": true
+      },
+      "temporary_database_and_profile_removed": true
+    },
+    "backend_coverage": [
+      "Own ready USER/ADMIN forecast",
+      "Uniform ownership and anonymous denial",
+      "Stale frontend readiness and intervening history change",
+      "Exact helper/recommendation parity and persisted snapshot",
+      "Timestamps/unit/horizon/model SHA",
+      "Repeated/new latest/historical correction idempotency",
+      "Concurrent unique-input requests",
+      "Missing model and threshold resources",
+      "Invalid/nonfinite/negative model output and existing current-energy policy",
+      "Inference/recommendation and commit failures with no partial rows",
+      "Pagination/order/no-store/CSRF/body allowlist",
+      "Safe legacy history and migration preservation"
+    ],
+    "frontend_coverage": [
+      "No engineered request body",
+      "Credentials and CSRF",
+      "Strict prediction/history parsing",
+      "Idempotent reuse",
+      "Structured readiness conflict",
+      "Failure propagation and no fallback",
+      "Pagination and abort signal",
+      "Per-user/building cache isolation and measurement invalidation"
+    ],
+    "prior_regressions": "Authentication, roles/sessions, building CRUD, measurement/import, readiness, full reference import, feature parity/research CSV identity, public research model/recommendation APIs all passed",
+    "diff_check": true,
+    "syntax_secret_path_scan": "Pass",
+    "relative_document_links": "Pass",
+    "developer_database_used": false,
+    "temporary_accounts_databases_profiles_and_own_processes": "Cleaned"
+  },
+  "integrity": {
+    "baseline_files": 82,
+    "byte_unchanged_files": 81,
+    "baseline_sha256": {
+      "data/processed/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "data/processed/energydata_cleaned.csv": "d4d5964a61a5a6ddfc1148012abb77f14f826dfa0ebd6f9b5e52d93a6c705a19",
+      "data/processed/energydata_features.csv": "f69480c282e32601920f0820cdf9d2530ecfc5b053c4cefa4de2d15c73c2077f",
+      "data/processed/energy_test.csv": "227efb785588e32e297acdbbb7595102c210b25b30492e8acef5effddc520600",
+      "data/processed/energy_train.csv": "b4e74536ad61bce5a75b044066f9012348a12cbd69095a0e5a801642fc7ebbe4",
+      "data/processed/energy_validation.csv": "5b93ccdb622696544eb3abb7d59b59445bf37c5ff6dfe2f8449b4b1282e41533",
+      "data/processed/README.md": "0cf63db83709d25e2db9f8200aa48bf73f2b289c96d8cb3ed904255e419d17db",
+      "data/raw/energydata_complete.csv": "2820bf712ad0275cb18b85a05250926100d8e65ebb9f4d2d016ca91ea152a25d",
+      "data/raw/README.md": "dcf82702ced3149e8a8bba0c97550553e5c5b3279b204fed008d2fd49cf61173",
+      "ml/models/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "ml/models/final_xgboost_model.json": "6418bca4fd34b120928bdcc7c37c72e32f2cb6b8e5fd48d6164441aa1a9f7404",
+      "ml/models/README.md": "d2f9f28f27957117b8991b06c362b9539596bb11fde360c7a43630f0e1703fb4",
+      "ml/results/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "ml/results/feature_schema.json": "0b1038f2d41ddff90921867bfc4d6ea5bbe0195e122e1d7cf96a05eaef2fcdff",
+      "ml/results/final_model_metadata.json": "c712ab6d3823ee40750bc0ad8a30f31901fe3b98862b844177df8d993ec7da3a",
+      "ml/results/phase10_tuning_cv_results.json": "0fe9df7e4887dacb64ca03b1723efe1710f44e26ea06bdf08890bda01a9f01af",
+      "ml/results/phase10_tuning_summary.json": "7c9b87bd663f5045ecdb94f12f23529a7339c8c91091d2736a376069fa559a7f",
+      "ml/results/phase11_final_test_evaluation.json": "00af469b8ee4270ba85c92c77832e89929715acdfe802efe7df84dcb1ac534d9",
+      "ml/results/phase11_reproducibility.json": "e2b9b0eb588121df5382e61a919bbf29af6ad168b71eef51e1085b9ea1ec1b96",
+      "ml/results/phase11_selection_lock.json": "d184f3034c2952a0befafe69bea70f5977db39256d43380f681c752ab6e1e9f2",
+      "ml/results/phase12_feature_importance.json": "f1c0ce2cb196accd00c78ce6a0d1158716dc03967ff7e963a11a4e207101a5b0",
+      "ml/results/phase12_reproducibility.json": "95a6d57ddb0613b75df72b06fe98b5d1be219d6c7b84272f07ac0ee5e65a31cf",
+      "ml/results/phase13_model_persistence.json": "d66f097e23b2e06ef70f85fb412924025cef0a9093760ff9f72eb49d6764b41d",
+      "ml/results/phase14_recommendation_engine.json": "16c2fb20c9fee04e9606f6a120b6356ecbe38fa94f5e0a62b5d03dfba4cd99d2",
+      "ml/results/phase14_recommendation_thresholds.json": "673707f8ec93d8599d1dac25990d876cec751efd955a941d25e307d8c7ceab86",
+      "ml/results/phase15_api_backend.json": "a1a0c9b8a9b3cf262d7f82c3ea2c9efaf4234b02890271f11c37a558eea0cf82",
+      "ml/results/phase16_frontend_api_integration.json": "d318dfac7e32c8746918f754d3b185641df211ed751025046e9bba7b49083360",
+      "ml/results/phase17_dashboard_real_data_integration.json": "7a985d324f06a2247f78f6d9335ce65b611cac727ba858478589fe79346e7e33",
+      "ml/results/phase18_quality_assurance.json": "9d1cf8f60bcf9fb26d4bf015bcb8a4fd1491a6cd18927c4305905e540716cb73",
+      "ml/results/phase19_documentation_audit.json": "f8517f6533b88802d7ab29dd170357d52146596d7063d6fd761824e1d7438596",
+      "ml/results/phase20_final_audit.json": "8fa6f2d1cf6a87901644799fd281f0bb135cbf2c5fd26cb65ec8348f92704429",
+      "ml/results/phase21_database_foundation.json": "b4b8502bf9443ab423fab3685ab9c2cbee851527e391ea35d93cc9536c3b34b5",
+      "ml/results/phase22_authentication_roles.json": "3deba18b0c30d0a3587c5975a37bbe5d4273f779285264f3d6e5cd7c97ece3bf",
+      "ml/results/phase23_building_management.json": "476437c1555030dc4e1606c5e3123e9736675c533df8adc5599f215ef56269d0",
+      "ml/results/phase24_measurements_import.json": "bb46b9c60a0516ae45b6f88e9d7bbd9b1b3e34a226022d63e33824a91c0340c6",
+      "ml/results/phase25_feature_construction_readiness.json": "b7d509709f1e3eb9d255c1106dab6c729980b3c8fa10b3b08786785ffed2557d",
+      "ml/results/phase7_validation_metrics.json": "35a6fdb36a52cff7873d0fe20969d564cdc23add94816aec720cbde11d7bc9b8",
+      "ml/results/phase8_random_forest_validation_metrics.json": "9ab2cb0717baa0cd95813ecc582377c8f431640ac3c658f7def889e84810156f",
+      "ml/results/phase9_xgboost_validation_metrics.json": "d523cd81ef67c71d7f28fc88f1f1e683b9f50e11c5db816221eccfc351d0584a",
+      "ml/results/split_metadata.json": "0bd0caa2ab2d159969e3e1744492ce47c6d6778ba488ed5bb816c209525b395f",
+      "ml/src/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "ml/src/check_dataset.py": "0a076dea43edc068a6481ac2ba330e5fb2654be32ccf0d6610b8270c4bf90ec3",
+      "ml/src/evaluate_final_model.py": "20e09ae37bc4c45c6b562d1ab14c38b2db6dccb2b8a91e2ef4c1d9f701e66731",
+      "ml/src/explain_final_model.py": "936b99da17fdb720dada7cc13ac0ac5674480643fd0b2d2c2d2a02aab2950076",
+      "ml/src/feature_engineering.py": "46945622b1f8f5bc9a7a3874bfd7b96659be125620c04d48801c7c2ae7072193",
+      "ml/src/model_inference.py": "4b01eda9c7d13b27d935ec0a4ccd988fd951bed8ea8091035743b546bbc880ef",
+      "ml/src/preprocess.py": "b9a863b2b7d31d0e285db5778e420f1a79abcfa70bb1d86e6222b34df1fb2c6d",
+      "ml/src/recommendation_engine.py": "5c284e98a411a0fd7675109cf9586e2c8615bb92862d2905f9f34337a9be4c17",
+      "ml/src/save_final_model.py": "04a912f544f774a931cc8d247dce675faa693d1a220bf46382b61f4aa2661b94",
+      "ml/src/split_data.py": "d01284831ba55a07fc9f4186a44db845fce2a0855917678837c9f787bed93a03",
+      "ml/src/train_baselines.py": "20d3106c5165ffb2e7530da3f1376684c475302d4bcbaee447dbb7c62e4d16d5",
+      "ml/src/train_random_forest.py": "38b02d666e781c98175ab9d2605cfd3fde286b8fe75cfe8ed2f30caad868400c",
+      "ml/src/train_xgboost.py": "06345dc878da7775b754aaa496da2ebff1e78009c2f5860d6903c9b8bb5178c8",
+      "ml/src/tune_models.py": "34d451bac2de7abe52cd83ffddd0f91877715aed0c437c292d67dec3987eb47d",
+      "ml/notebooks/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "ml/notebooks/01_data_exploration.ipynb": "6d60155ce7151d6719baa3ea644e50601a53c2055ce9af40ca6f150e6f12e711",
+      "ml/notebooks/02_exploratory_data_analysis.ipynb": "d0087a1f8060d319804560439c110d43934d0fe79758b8889d4cb54ffcc1477f",
+      "ml/notebooks/03_preprocessing.ipynb": "c72529c84d2e7900c2b6e68242dde1316a498059be530ba3d1d47de7b705f747",
+      "ml/notebooks/04_feature_engineering.ipynb": "a611599109d625a08898de38c8d26d828dba098bd8b453bdc92e9d2abdf4da70",
+      "ml/notebooks/05_train_validation_test_split.ipynb": "35371b82d8d386c40473d696ba1d92dec2445414044e709544b5a6dba57fca60",
+      "ml/notebooks/06_baseline_linear_regression.ipynb": "29915d5e41e8439f8575fa61c8b901c77905792e3b55c557d2e11c633249e45a",
+      "ml/notebooks/07_random_forest.ipynb": "940d03f07b4f73f623c5fedd94f32e7d178ff69f6294c13b8eae1a9dfa2cf791",
+      "ml/notebooks/08_xgboost.ipynb": "f034d7b109401d42f52dba1d824d68f00e53c8a1e346f5fe6c28de2a2167a811",
+      "ml/notebooks/09_hyperparameter_tuning.ipynb": "abbfcac4392ed513cb674b163e5d1b18cf2958573bb9d419051e058c4d5143e1",
+      "ml/notebooks/10_final_model_evaluation.ipynb": "a59e5d1f31c35eca9dca174e576b8e7fda9af4c06102313faa4447efe7942527",
+      "ml/notebooks/11_model_explainability.ipynb": "9a80fb5603aa0ae415a98567f6e96eb9a7877efe47d6cbce1a15d68d731ddd1b",
+      "ml/notebooks/12_model_persistence.ipynb": "872f58307059715be63b9d834571c3420746d6fc9b2ebc7324f0ec7b56b64c47",
+      "ml/notebooks/13_recommendation_engine.ipynb": "6e2021325037ecaa0e1e9162fa5f7154a5d504fa61614a64bd027b9d19a23197",
+      "backend/migrations/env.py": "45be7d17e33dc8d8f6c261209fa6b7dcd838382d375fb09be220f25f0c3b2faa",
+      "backend/migrations/script.py.mako": "29a33ca0495490f045b3846836347ae894dcba95533d59a7aa100e9e5cba6510",
+      "backend/migrations/versions/0021_database_foundation.py": "ef7e0fbae582f0fe02cacc4e7efe7a29522503264d83882e5018562d3907b3cd",
+      "backend/migrations/versions/0022_authentication_sessions.py": "b270b9e83fc585ad17265adbfa9ad30ce79a2d271e625a923922e7ae97312d90",
+      "src/routeTree.gen.ts": "c5f7acf36348efb97cf18ba381d1dcf1b5beed16cce7c3f4c3ea549725d518af",
+      "package.json": "da6d358a8fb396f0ac1578b167d7e7432746a195ad68c54c352262c14b3e779b",
+      "bun.lock": "7183239bf3c5721bc5908924f24695adbd24d9109e2127eaa0e7d0b72527b24a",
+      "requirements.txt": "3044a58eea5c7d0392fadfe716ca40e19e259ba1642103541df95a3c19361127",
+      "backend/services.py": "3938e2821f0e6ec76f7b5b1c3edb9c1eb132fe564142e5ace5d56c3fd4f23117",
+      "backend/prediction_features.py": "3746364b7fe33f609fca811d6e9514f166ef5c3b3acce93c66e2c852c66c3ffd",
+      "backend/auth.py": "0375a9dfcaad320b9dac1b56aec95d60c11f1ed07f6310d0f803d8304af5877e",
+      "src/routes/dashboard.tsx": "f9fca63cdc7c87d6bde35320272dc5e22900a4ff5d80fe284f30058af767a93f",
+      "src/routes/predictions.tsx": "44355107d4f4490804447f56ea875a203b3105a7ddeb869ce85eb2b05811c56b",
+      "src/routes/recommendations.tsx": "d5e1d7a6b5740f34ed47537950c915af1801a074fe5c0292967d6d4088756459"
+    },
+    "authorized_source_wording_change": {
+      "path": "backend/prediction_features.py",
+      "before_sha256": "3746364b7fe33f609fca811d6e9514f166ef5c3b3acce93c66e2c852c66c3ffd",
+      "after_sha256": "39fa9234d1b3b4f5ae08a7bcd494eae70cf478d01779aa4c1ce3e445c789d51a",
+      "reason": "READY message now explains explicit forecast requests; all feature math and retrieval semantics unchanged"
+    },
+    "datasets_processed_splits_feature_schema_metadata_model_parameters_metrics_importance_thresholds_prior_audits": "Unchanged",
+    "feature_engineering_code": "Unchanged",
+    "generic_research_services": "Unchanged",
+    "dependencies_lockfiles": "Unchanged; no package-lock.json",
+    "routeTree": "Pre-existing diff preserved byte-for-byte; exclude from Phase26 staging"
+  },
+  "documentation": [
+    "docs/building-predictions.md",
+    "README.md",
+    "backend/README.md",
+    "src/lib/api/README.md"
+  ],
+  "known_limitations": [
+    "Other buildings remain experimental; compatible inputs do not establish external validation",
+    "Naive-local timestamps retain timezone/DST ambiguity",
+    "Rechecks are not a serializable reservation; snapshots record consumed inputs, and concurrent later changes can make a result historical",
+    "Existing verified model/threshold cache lasts until process restart; no dummy fallback for unavailable uncached resources",
+    "Concurrent SQLite contention/lost responses can require idempotent retry/history inspection",
+    "Offset pagination can shift under writes; legacy rows have no new input provenance",
+    "Tiny feature/runtime serialization differences after a future environment change may intentionally produce a new fingerprint",
+    "Threshold rules remain fixed Phase14; idempotency does not version thresholds separately",
+    "No scheduler, final cross-building dashboard redesign, admin management, IoT, automatic actuation, savings or confidence intervals"
+  ],
+  "phase27_readiness": "Authenticated persisted forecasts/recommendations and private history are available for later authorized dashboard integration; Phase27 not started",
+  "created_files": {
+    "backend/building_prediction_schemas.py": "Empty request and explicit persisted forecast/recommendation/history responses",
+    "backend/building_prediction_service.py": "Authoritative readiness/inference/recommendation orchestration, fingerprinting, transactional persistence and history matching",
+    "backend/building_predictions.py": "Thin owner-only POST/GET building prediction routes",
+    "backend/migrations/versions/0026_prediction_feature_snapshots.py": "Add paired nullable input snapshot/hash and fingerprint-aware database uniqueness, preserving legacy rows",
+    "docs/building-predictions.md": "Flow, sources, migration, idempotency, semantics, validation domain, reproducibility and limitations",
+    "ml/results/phase26_building_predictions.json": "Phase 26 implementation/evidence/integrity audit",
+    "src/components/building-predictions.tsx": "Explicit readiness-gated action, persisted result/recommendation and paginated historical UI",
+    "src/hooks/use-building-predictions.ts": "Private account/building/page queries and confirmed prediction mutation invalidation",
+    "src/lib/api/building-predictions.ts": "Typed credentialed no-feature-body POST/history client with strict response parsing",
+    "tests/frontend_predictions.test.mjs": "11 native Node request/response/idempotency/error/cache tests",
+    "tests/test_building_predictions.py": "21 isolated real-helper forecast/persistence/ownership/failure/concurrency tests",
+    "tests/test_prediction_migration.py": "Legacy upgrade/downgrade/reupgrade preservation and uniqueness verification",
+    "tests/verify_building_predictions.py": "TRAIN direct-helper parity and full UCI reference end-to-end persistence/idempotency verification",
+    "tests/verify_predictions_browser.py": "Live explicit forecast, history, persistence, cache and ownership scenario"
+  },
+  "modified_files": {
+    "README.md": "Phase 26 migration/capability overview and documentation link",
+    "backend/README.md": "Application prediction endpoints and generic research distinction",
+    "backend/db_models.py": "Prediction snapshot/hash fields and paired-presence/unique-input constraints",
+    "backend/main.py": "Register building prediction router without changing generic research routes",
+    "backend/prediction_features.py": "Readiness message only: explicit forecasts now enabled; feature logic unchanged",
+    "src/components/building-management.tsx": "Integrate forecast/history panel into existing owned building detail",
+    "src/components/building-measurements.tsx": "Update obsolete no-forecast wording",
+    "src/components/prediction-readiness.tsx": "Update explicit-action wording and clarify that compatibility alone is not validation, without denying the reference dataset validation",
+    "src/lib/api/README.md": "Typed prediction client/hooks and current-versus-history invalidation documentation",
+    "src/lib/measurement-cache.ts": "Invalidate prediction current-history assessments after confirmed measurement mutations",
+    "tests/test_database.py": "Update expected migration head; retain existing schema/regression checks",
+    "tests/verify_auth_browser.py": "Optional forecast scenario and evidence after earlier no-prediction readiness QA"
+  },
+  "exact_phase26_staging_files": [
+    "README.md",
+    "backend/README.md",
+    "backend/building_prediction_schemas.py",
+    "backend/building_prediction_service.py",
+    "backend/building_predictions.py",
+    "backend/db_models.py",
+    "backend/main.py",
+    "backend/migrations/versions/0026_prediction_feature_snapshots.py",
+    "backend/prediction_features.py",
+    "docs/building-predictions.md",
+    "ml/results/phase26_building_predictions.json",
+    "src/components/building-management.tsx",
+    "src/components/building-measurements.tsx",
+    "src/components/building-predictions.tsx",
+    "src/components/prediction-readiness.tsx",
+    "src/hooks/use-building-predictions.ts",
+    "src/lib/api/README.md",
+    "src/lib/api/building-predictions.ts",
+    "src/lib/measurement-cache.ts",
+    "tests/frontend_predictions.test.mjs",
+    "tests/test_building_predictions.py",
+    "tests/test_database.py",
+    "tests/test_prediction_migration.py",
+    "tests/verify_auth_browser.py",
+    "tests/verify_building_predictions.py",
+    "tests/verify_predictions_browser.py"
+  ],
+  "git_actions": "Nothing staged, committed or pushed; unrelated routeTree change excluded"
+}

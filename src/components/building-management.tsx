@@ -2,6 +2,7 @@ import { Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { Panel } from "@/components/ui-kit";
 import { Button } from "@/components/ui/button";
+import { BuildingPredictions } from "@/components/building-predictions";
 import { PredictionReadinessPanel } from "@/components/prediction-readiness";
 import { BuildingMeasurements } from "@/components/building-measurements";
 import { BuildingForm } from "@/components/building-form";
@@ -56,6 +57,7 @@ function PersistedBuilding({ building }: { building: Building }) {
       {remove.error ? <p role="alert" className="mt-3 text-sm text-destructive">{remove.error.message}</p> : null}
       <div className="mt-4 flex gap-3"><Button variant="destructive" disabled={remove.isPending} onClick={async () => {try {await remove.mutateAsync();await navigate({to:"/buildings"});} catch {/* Error is shown by mutation state. */}}}>{remove.isPending ? "Deleting..." : "Confirm delete"}</Button><Button variant="ghost" disabled={remove.isPending} onClick={() => setConfirming(false)}>Cancel delete</Button></div></Panel> : null}
     <PredictionReadinessPanel buildingId={building.id} />
+    <BuildingPredictions buildingId={building.id} />
     <BuildingMeasurements buildingId={building.id} />
   </div>;
 }

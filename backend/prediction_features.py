@@ -136,7 +136,7 @@ def assess_history(observations: Sequence[Mapping], *, building_id=0, measuremen
         feature = LatestFeatureRow(latest, names, tuple(float(value) for value in values[0]))
     except (ValueError, TypeError, OverflowError, RuntimeWarning):
         return result("INVALID_RAW_DATA", "The latest raw history cannot produce a valid feature row.")
-    return result("READY", "History is compatible with a ten-minute forecast input. Forecast execution is not enabled in this phase.", feature=feature)
+    return result("READY", "History is compatible with a ten-minute forecast input. Forecasts run only when explicitly requested.", feature=feature)
 
 
 def build_latest_feature_row(observations):

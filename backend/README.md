@@ -71,3 +71,7 @@ Owned `GET/POST /buildings/{id}/measurements`, `DELETE /buildings/{id}/measureme
 ## Prediction readiness (Phase 25)
 
 Authenticated owner-only `GET /buildings/{id}/prediction-readiness` verifies the latest continuous 1,009-observation window and its exact 42-feature input using shared research formulas. The service fetches at most 1,010 rows and returns factual reason codes, not feature previews or forecasts. No model invocation, feature storage, migration or new dependency. See [prediction readiness](../docs/prediction-readiness.md).
+
+## Building predictions (Phase 26)
+
+After `python -m alembic upgrade head`, owner-only `POST /buildings/{id}/predictions` accepts no feature body, rechecks readiness, uses existing cached inference/recommendation helpers and transactionally persists/reuses a fingerprinted result. `GET /buildings/{id}/predictions` provides paginated history without loading the model. Existing research APIs remain unchanged. See [building predictions](../docs/building-predictions.md).

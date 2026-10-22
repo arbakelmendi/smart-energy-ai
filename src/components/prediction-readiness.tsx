@@ -75,8 +75,8 @@ export function PredictionReadinessPanel({ buildingId }: { buildingId: number })
           </div>
         )}
         <p className="text-muted-foreground">
-          This checks feature compatibility only. Forecast execution is not enabled, and model
-          validity for this building has not been established. No missing observations are filled or
+          This checks feature compatibility only. Forecasts run only when explicitly requested. Feature
+          compatibility alone does not establish model validity for a building. No missing observations are filled or
           interpolated.
         </p>
       </div>

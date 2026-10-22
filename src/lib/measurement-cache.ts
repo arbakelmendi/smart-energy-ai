@@ -1,4 +1,5 @@
 import type { QueryClient } from "@tanstack/react-query";
+import { predictionKeys } from "./api/building-predictions.ts";
 import { readinessKeys } from "./api/prediction-readiness.ts";
 export const measurementKeys = {
   building: (userId: number | undefined, buildingId: number) =>
@@ -13,5 +14,6 @@ export async function invalidateMeasurementDependents(
   await Promise.all([
     client.invalidateQueries({ queryKey: measurementKeys.building(userId, buildingId) }),
     client.invalidateQueries({ queryKey: readinessKeys.building(userId, buildingId) }),
+    client.invalidateQueries({ queryKey: predictionKeys.building(userId, buildingId) }),
   ]);
 }

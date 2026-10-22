@@ -124,6 +124,8 @@ class Measurement(Base):
 class Prediction(Base):
     __tablename__ = "predictions"
     __table_args__ = (
+        UniqueConstraint("building_id", "source_timestamp", "model_checksum", "feature_hash", name="uq_predictions_input"),
+        CheckConstraint("(feature_hash IS NULL AND feature_snapshot_json IS NULL) OR (feature_hash IS NOT NULL AND length(feature_hash) = 64 AND feature_snapshot_json IS NOT NULL)", name="complete_feature_snapshot"),
         finite_check("prediction_wh"),
         CheckConstraint("horizon_minutes > 0", name="positive_horizon"),
         CheckConstraint("recommendation_level IN ('NORMAL', 'ELEVATED', 'HIGH', 'VERY HIGH')", name="valid_recommendation_level"),
@@ -138,6 +140,9 @@ class Prediction(Base):
     horizon_minutes: Mapped[int] = mapped_column(Integer, default=10, server_default="10")
     model_name: Mapped[str] = mapped_column(String(200))
     model_checksum: Mapped[str] = mapped_column(String(64))
+    # Nullable only to preserve legacy records; Phase26 always supplies both fields.
+    feature_hash: Mapped[str | None] = mapped_column(String(64))
+    feature_snapshot_json: Mapped[str | None] = mapped_column(Text)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=utc_now)
     recommendation_level: Mapped[str | None] = mapped_column(String(20))
     recommendation_code: Mapped[str | None] = mapped_column(String(100))

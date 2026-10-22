@@ -200,3 +200,7 @@ Owned buildings now support raw manual measurements, paginated persisted history
 ## Automatic feature construction and readiness (Phase 25)
 
 Building detail now checks the latest required ten-minute history and constructs the exact 42-feature input internally using shared finalized research formulas. Readiness requires 1,009 observations, not a count-only threshold. The owner-only readiness API runs no model and stores no features or predictions. See [prediction readiness](docs/prediction-readiness.md) for continuity policy, parity evidence and verification. Building forecasts remain deferred.
+
+## Stored building forecasts (Phase 26)
+
+Run `python -m alembic upgrade head` for input-snapshot/idempotency fields. Owned buildings now support explicit ten-minute Appliances forecasts, authoritative recommendations and persisted paginated history. Features come from server-side stored history, never frontend feature payloads. Predictions for non-reference buildings remain experimental. See [building predictions](docs/building-predictions.md). No model retraining, new dependency, automatic scheduling or control is added.
