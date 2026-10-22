@@ -1,15 +1,29 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { AppShell } from "@/components/app-shell";
-import { ModelPerformance, ValidationComparison, FeatureImportance, RecommendationBands, LiveDataState } from "@/components/research-dashboard";
-
+import { buildingSearch } from "@/lib/dashboard-view";
+import { BuildingHistoryExplorer } from "@/components/building-history-explorer";
 export const Route = createFileRoute("/recommendations")({
-  head: () => ({ meta: [{ title: "Decision support | SmartEnergyAI" },
-    { name: "description", content: "Verified research results and forecast-based decision support. Live sensor history is not connected." }] }),
-  component: RecommendationsPage,
+  validateSearch: buildingSearch,
+  head: () => ({ meta: [{ title: "Saved recommendations | SmartEnergyAI" }] }),
+  component: Page,
 });
-
-function RecommendationsPage() {
-  return <AppShell title="Decision support" subtitle="Verified research prototype | operational feed not connected">
-    <div className="space-y-6"><LiveDataState /><RecommendationBands /></div>
-  </AppShell>;
+function Page() {
+  const search = Route.useSearch();
+  const navigate = Route.useNavigate();
+  return (
+    <AppShell
+      title="Saved recommendations"
+      subtitle="Your persisted building data | manually entered or CSV imported"
+    >
+      <div className="space-y-6">
+        <BuildingHistoryExplorer
+          selected={search.building}
+          onSelect={(id) => {
+            void navigate({ search: { building: id } });
+          }}
+          mode="recommendations"
+        />
+      </div>
+    </AppShell>
+  );
 }

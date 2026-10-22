@@ -29,7 +29,7 @@ def main():
     api = f'http://localhost:{backend_port}'
     frontend = f'http://localhost:{frontend_port}'
     original = (root / 'tests/verify_dashboard_browser.py').read_text(encoding='utf-8')
-    original = original.replace('8000',str(backend_port)).replace('5173',str(frontend_port)).replace('phase17_', 'phase26_' if '--predictions' in sys.argv else 'phase25_' if '--readiness' in sys.argv else 'phase24_' if '--measurements' in sys.argv else ('phase23_' if '--buildings' in sys.argv else 'phase22_'))
+    original = original.replace('8000',str(backend_port)).replace('5173',str(frontend_port)).replace('phase17_', 'phase27_' if '--dashboard' in sys.argv else 'phase26_' if '--predictions' in sys.argv else 'phase25_' if '--readiness' in sys.argv else 'phase24_' if '--measurements' in sys.argv else ('phase23_' if '--buildings' in sys.argv else 'phase22_'))
     original = original.replace(f'127.0.0.1:{backend_port}', f'localhost:{backend_port}')
     tree = ast.parse(original)
     helpers = [node for node in tree.body if isinstance(node, (ast.ClassDef, ast.FunctionDef)) and node.name in ('CDP','spawn','stop','ready')]
@@ -93,7 +93,7 @@ def main():
                         old=c.call('Page.getFrameTree')['frameTree']['frame']['loaderId']
                         c.call('Page.reload');wait_document(old,changed=True)
                     def signed_in():
-                        c.wait('document.querySelector("main")?.textContent.includes("Tuned XGBoost") && document.querySelectorAll(".recharts-bar-rectangle").length >= 16')
+                        c.wait('!!document.querySelector("main [data-user-dashboard]")')
                     def signed_out():
                         c.wait('location.pathname === "/login" && !!document.querySelector("input[name=password]") && document.querySelector("fieldset")?.disabled === false')
                     def submit(values):
@@ -119,6 +119,7 @@ def main():
                     submit({'full_name':'Browser verification user','email':email,'password':password,'confirm_password':password})
                     signed_in()
                     assert me()['status']==200
+                    c.wait('document.querySelector("main")?.textContent.includes("No buildings yet")')
                     cookies=c.call('Network.getCookies',{'urls':[api]})['cookies']
                     cookie=next(item for item in cookies if item['name']==COOKIE_NAME)
                     assert cookie['httpOnly'] and cookie['sameSite']=='Lax' and not cookie['secure']
@@ -211,6 +212,20 @@ def main():
                         prediction_verification = prediction_scenario(c=c,visit=visit,submit=submit,signed_out=signed_out,
                             signed_in=signed_in,api=api,user_email=email,user_password=password,admin_email=admin_email,
                             admin_password=admin_password,reference_id=reference['building_id'],reload=reload,restart=restart_for_buildings)
+                    dashboard_verification = None
+                    if '--dashboard' in sys.argv:
+                        from verify_user_dashboard_browser import scenario as dashboard_scenario
+                        dashboard_verification = dashboard_scenario(c=c,visit=visit,submit=submit,signed_out=signed_out,
+                            signed_in=signed_in,api=api,user_email=email,user_password=password,reload=reload,restart=restart_for_buildings)
+                    # Preserved research information is explicitly opened and verified, not treated as KPIs.
+                    visit('/dashboard');signed_in()
+                    c.evaluate('document.querySelector("[data-research-information] summary").click()')
+                    c.wait('document.querySelector("[data-research-information]")?.textContent.includes("Tuned XGBoost") && document.querySelectorAll(".recharts-bar-rectangle").length >= 16')
+                    with urllib.request.urlopen(api+'/model/info') as source:
+                        verified_model=json.load(source)
+                    research_text=c.evaluate('document.querySelector("[data-research-information]").textContent')
+                    for metric in ('mae','rmse','r2'):
+                        assert f"{verified_model['final_held_out_metrics'][metric]:.3f}" in research_text
                     # Public research APIs still operate without cookies.
                     statuses={}
                     for path in ('/','/health','/model/info','/recommendations/thresholds','/analysis/model-comparison','/analysis/feature-importance','/docs','/openapi.json'):
@@ -249,6 +264,8 @@ def main():
                         evidence['prediction_readiness'] = readiness_verification
                     if prediction_verification is not None:
                         evidence['building_predictions'] = prediction_verification
+                    if dashboard_verification is not None:
+                        evidence['user_dashboard'] = dashboard_verification
                     c.ws.close()
                 finally:
                     for process in reversed(processes):stop(process)
@@ -256,7 +273,7 @@ def main():
                     engine.dispose()
             evidence['verification_processes_stopped']=True
         evidence['temporary_database_and_profile_removed']=True
-    (g/('phase26_browser_evidence.json' if '--predictions' in sys.argv else 'phase25_browser_evidence.json' if '--readiness' in sys.argv else 'phase24_browser_evidence.json' if '--measurements' in sys.argv else ('phase23_browser_evidence.json' if '--buildings' in sys.argv else 'phase22_browser_evidence.json'))).write_text(json.dumps(evidence,indent=2)+'\n',encoding='utf-8')
+    (g/('phase27_browser_evidence.json' if '--dashboard' in sys.argv else 'phase26_browser_evidence.json' if '--predictions' in sys.argv else 'phase25_browser_evidence.json' if '--readiness' in sys.argv else 'phase24_browser_evidence.json' if '--measurements' in sys.argv else ('phase23_browser_evidence.json' if '--buildings' in sys.argv else 'phase22_browser_evidence.json'))).write_text(json.dumps(evidence,indent=2)+'\n',encoding='utf-8')
     print(json.dumps(evidence,indent=2))
 
 

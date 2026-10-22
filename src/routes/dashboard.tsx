@@ -1,15 +1,30 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { AppShell } from "@/components/app-shell";
-import { ModelPerformance, ValidationComparison, FeatureImportance, RecommendationBands, LiveDataState } from "@/components/research-dashboard";
-
+import { buildingSearch } from "@/lib/dashboard-view";
+import { UserDashboard } from "@/components/user-dashboard";
+import { ResearchInformation } from "@/components/research-information";
 export const Route = createFileRoute("/dashboard")({
-  head: () => ({ meta: [{ title: "Research dashboard | SmartEnergyAI" },
-    { name: "description", content: "Verified research results and forecast-based decision support. Live sensor history is not connected." }] }),
-  component: DashboardPage,
+  validateSearch: buildingSearch,
+  head: () => ({ meta: [{ title: "Your building dashboard | SmartEnergyAI" }] }),
+  component: Page,
 });
-
-function DashboardPage() {
-  return <AppShell title="Research dashboard" subtitle="Verified research prototype | operational feed not connected">
-    <div className="space-y-6"><ModelPerformance /><div className="grid min-w-0 gap-4 xl:grid-cols-2"><ValidationComparison /><FeatureImportance /></div><RecommendationBands /><LiveDataState /></div>
-  </AppShell>;
+function Page() {
+  const search = Route.useSearch();
+  const navigate = Route.useNavigate();
+  return (
+    <AppShell
+      title="Your building dashboard"
+      subtitle="Your persisted building data | manually entered or CSV imported"
+    >
+      <div className="space-y-6">
+        <UserDashboard
+          selected={search.building}
+          onSelect={(id) => {
+            void navigate({ search: { building: id } });
+          }}
+        />
+        <ResearchInformation />
+      </div>
+    </AppShell>
+  );
 }

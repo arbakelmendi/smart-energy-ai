@@ -1,3 +1,4 @@
+import { dashboardKeys } from "@/lib/api/dashboard";
 import { useEffect } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/lib/auth";
@@ -29,12 +30,12 @@ export function useCreateBuildingPrediction(id: number) {
     mutationFn: () => createBuildingPrediction(id),
     retry: false,
     onSuccess: async () => {
-      await client.invalidateQueries({ queryKey: predictionKeys.building(user?.id, id) });
+      await Promise.all([client.invalidateQueries({ queryKey: predictionKeys.building(user?.id, id) }),client.invalidateQueries({ queryKey: dashboardKeys.building(user?.id, id) })]);
     },
     onError: (error) => {
       if (error instanceof ApiError && error.status === 401) retry();
       if (error instanceof ApiError && error.status === 409)
-        void client.invalidateQueries({ queryKey: readinessKeys.building(user?.id, id) });
+        void Promise.all([client.invalidateQueries({ queryKey: readinessKeys.building(user?.id,id) }),client.invalidateQueries({ queryKey: dashboardKeys.building(user?.id,id) })]);
     },
   });
 }

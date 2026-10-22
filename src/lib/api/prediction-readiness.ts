@@ -18,7 +18,7 @@ const gapSchema = z
     actual_interval_seconds: z.number().finite().positive(),
   })
   .strict();
-const readinessSchema = z
+export const readinessSchema = z
   .object({
     building_id: z.number().int().positive().safe(),
     ready: z.boolean(),

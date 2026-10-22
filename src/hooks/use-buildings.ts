@@ -1,3 +1,7 @@
+import { measurementKeys } from "@/lib/measurement-cache";
+import { readinessKeys } from "@/lib/api/prediction-readiness";
+import { predictionKeys } from "@/lib/api/building-predictions";
+import { dashboardKeys } from "@/lib/api/dashboard";
 import { useEffect } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/lib/auth";
@@ -36,14 +40,14 @@ export function useCreateBuilding() {
 export function useUpdateBuilding(id: number) {
   const client = useQueryClient(); const { user, retry } = useAuth();
   return useMutation({ mutationFn: (body: UpdateBuildingRequest) => updateBuilding(id, body), retry: false,
-    onSuccess: async (building) => { client.setQueryData(buildingKeys.detail(user?.id, id), building); await client.invalidateQueries({ queryKey: buildingKeys.list(user?.id) }); },
+    onSuccess: async (building) => { client.setQueryData(buildingKeys.detail(user?.id, id), building); await Promise.all([client.invalidateQueries({ queryKey: buildingKeys.list(user?.id) }),client.invalidateQueries({queryKey:dashboardKeys.building(user?.id,id)})]); },
     onError: (error) => { if (error instanceof ApiError && error.status === 401) retry(); },
   });
 }
 export function useDeleteBuilding(id: number) {
   const client = useQueryClient(); const { user, retry } = useAuth();
   return useMutation({ mutationFn: () => deleteBuilding(id), retry: false,
-    onSuccess: async () => { client.removeQueries({ queryKey: buildingKeys.detail(user?.id, id), exact: true }); await client.invalidateQueries({ queryKey: buildingKeys.list(user?.id) }); },
+    onSuccess: async () => { const keys=[buildingKeys.detail(user?.id,id),dashboardKeys.building(user?.id,id),measurementKeys.building(user?.id,id),readinessKeys.building(user?.id,id),predictionKeys.building(user?.id,id)]; await Promise.all(keys.map(queryKey=>client.cancelQueries({queryKey}))); keys.forEach(queryKey=>client.removeQueries({queryKey})); await client.invalidateQueries({ queryKey: buildingKeys.list(user?.id) }); },
     onError: (error) => { if (error instanceof ApiError && error.status === 401) retry(); },
   });
 }

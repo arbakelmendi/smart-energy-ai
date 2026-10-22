@@ -13,6 +13,7 @@ from .buildings import router as buildings_router
 from .measurements import router as measurements_router
 from .prediction_readiness import router as readiness_router
 from .building_predictions import router as building_predictions_router
+from .dashboard import router as dashboard_router
 from sqlalchemy.exc import SQLAlchemyError
 
 API_VERSION = "1.0.0"
@@ -25,6 +26,7 @@ app.include_router(buildings_router)
 app.include_router(measurements_router)
 app.include_router(readiness_router)
 app.include_router(building_predictions_router)
+app.include_router(dashboard_router)
 
 
 @app.middleware("http")

@@ -204,3 +204,7 @@ Building detail now checks the latest required ten-minute history and constructs
 ## Stored building forecasts (Phase 26)
 
 Run `python -m alembic upgrade head` for input-snapshot/idempotency fields. Owned buildings now support explicit ten-minute Appliances forecasts, authoritative recommendations and persisted paginated history. Features come from server-side stored history, never frontend feature payloads. Predictions for non-reference buildings remain experimental. See [building predictions](docs/building-predictions.md). No model retraining, new dependency, automatic scheduling or control is added.
+
+## User building dashboard (Phase 27)
+
+`/dashboard` now presents owned-building measurements, observed energy history, backend readiness and explicitly requested persisted forecasts/recommendations. Selection is carried in the URL; stale forecasts remain historical. Research metrics remain separately labeled in an expandable section. `/predictions` and `/recommendations` provide private building ledgers, and `/data` links to real measurement management. See [user dashboard](docs/user-dashboard.md) for API, timestamp semantics, limitations and verification. No new migration, dependency or automatic scheduling is introduced.

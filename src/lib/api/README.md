@@ -53,3 +53,7 @@ Phase 24 adds `measurements.ts`: typed credentialed list/create/delete and FormD
 Phase 25 adds typed `getPredictionReadiness` and the account/building-scoped `usePredictionReadiness` hook. Confirmed create/import/delete measurement mutations invalidate history and readiness together. The building panel renders backend states and gaps without percentages, fallbacks or frontend feature engineering. See [prediction readiness](../../../docs/prediction-readiness.md).
 
 Phase 26 adds `createBuildingPrediction`/`getBuildingPredictions` and private query/mutation hooks over the same credentialed transport. POST sends CSRF with no feature body; server-confirmed results invalidate history. Measurement changes also invalidate current-history matching. The building detail action is explicit and readiness-gated; history is distinguished from current matching inputs. See [building predictions](../../../docs/building-predictions.md).
+
+## Current user dashboard (Phase 27)
+
+`dashboard.ts` validates the owner-scoped summary over the existing credentialed transport. `useBuildingDashboard` partitions requests by user/building/window. Confirmed measurement, prediction and building mutations invalidate affected summaries; errors hide operational values. `/dashboard` selects only owned buildings through its URL and preserves research panels separately; `/predictions` and `/recommendations` are persisted building ledgers and `/data` is measurement guidance. This supersedes the historical Phase17 presentation above. See [user dashboard](../../../docs/user-dashboard.md).

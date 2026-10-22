@@ -1,5 +1,6 @@
 """Stored-history inference with shared resources, atomic snapshots and idempotency."""
-from datetime import timedelta
+from dataclasses import dataclass
+from datetime import datetime, timedelta
 import hashlib
 import json
 import logging
@@ -131,15 +132,40 @@ def list_predictions(db, building_id, limit, offset):
     total = db.scalar(select(func.count(Prediction.id)).where(Prediction.building_id == building_id))
     rows = db.scalars(select(Prediction).where(Prediction.building_id == building_id)
         .order_by(Prediction.created_at.desc(),Prediction.id.desc()).limit(limit).offset(offset)).all()
-    latest, fingerprint, checksum, ready = None, None, None, False
+    context = prediction_context(db, building_id)
+    return {"items":[response(row,matches=context.matches(row)) for row in rows],
+        "total":total,"limit":limit,"offset":offset,"current_source_timestamp":context.latest,
+        "current_history_ready":context.ready}
+
+@dataclass(frozen=True)
+class PredictionContext:
+    latest: datetime | None = None
+    fingerprint: str | None = None
+    checksum: str | None = None
+    ready: bool = False
+
+    def matches(self, row):
+        return bool(self.ready and row.feature_hash is not None and row.source_timestamp == self.latest
+            and row.feature_hash == self.fingerprint and row.model_checksum == self.checksum and row.horizon_minutes == 10)
+
+
+def prediction_context(db, building_id, assessment=None):
+    """Shared read-only current-input identity; never load or execute the model."""
+    latest = None
     try:
-        assessed = assess_prediction_readiness(db,building_id)
-        latest, ready = assessed.readiness.latest_measurement_timestamp, assessed.readiness.ready
-        if ready:
+        assessed = assessment if assessment is not None else assess_prediction_readiness(db,building_id)
+        latest = assessed.readiness.latest_measurement_timestamp
+        if assessed.readiness.ready:
             fingerprint = feature_snapshot(assessed.feature_row)[1]
-            checksum = services.inference.load_metadata()["model_artifact_sha256"]  # Metadata only; artifact may be absent.
+            checksum = services.inference.load_metadata()["model_artifact_sha256"]
+            return PredictionContext(latest,fingerprint,checksum,True)
     except (FeatureContractUnavailable,OSError,ValueError,KeyError):
-        ready = False
-    return {"items":[response(row,matches=bool(ready and row.feature_hash is not None and
-        row.source_timestamp==latest and row.feature_hash==fingerprint and row.model_checksum==checksum and row.horizon_minutes==10)) for row in rows],
-        "total":total,"limit":limit,"offset":offset,"current_source_timestamp":latest,"current_history_ready":ready}
+        pass
+    return PredictionContext(latest=latest)
+
+
+def current_prediction(db, building_id, context):
+    if not context.ready:
+        return None
+    row = find_existing(db,building_id,context.latest,context.checksum,context.fingerprint)
+    return row if row is not None and context.matches(row) else None

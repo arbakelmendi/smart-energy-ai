@@ -61,7 +61,7 @@ function AuthenticatedShell({
 
   useEffect(() => setMobileOpen(false), [pathname]);
 
-  const operationalUnavailable = pathname === "/data" || pathname.startsWith("/admin");
+  const operationalUnavailable = pathname.startsWith("/admin");
 
   const isAdmin = user?.role === "ADMIN";
   const [logoutError, setLogoutError] = useState("");

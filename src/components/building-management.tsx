@@ -44,7 +44,7 @@ function PersistedBuilding({ building }: { building: Building }) {
   const [editing,setEditing] = useState(false); const [confirming,setConfirming] = useState(false);
   const update = useUpdateBuilding(building.id); const remove = useDeleteBuilding(building.id); const navigate = useNavigate();
   return <div className="space-y-5">
-    <Link to="/buildings" className="text-sm underline">All buildings</Link>
+    <div className="flex flex-wrap gap-4"><Link to="/buildings" className="text-sm underline">All buildings</Link><Link to="/dashboard" search={{building:String(building.id)}} className="text-sm underline">Open building dashboard</Link></div>
     {editing ? <Panel title="Edit building"><BuildingForm initial={building} pending={update.isPending} error={update.error}
       onCancel={() => {setEditing(false);update.reset();}} onSave={async body => {await update.mutateAsync(body);setEditing(false);}} /></Panel> :
       <Panel title="Building overview"><dl className="grid gap-3 break-words text-sm sm:grid-cols-2">

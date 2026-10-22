@@ -13,7 +13,7 @@ const recommendation = z
     text: z.string().min(1),
   })
   .strict();
-const prediction = z
+export const predictionSchema = z
   .object({
     id: z.number().int().positive().safe(),
     building_id: z.number().int().positive().safe(),
@@ -32,10 +32,10 @@ const prediction = z
     validation_notice: z.string().min(1),
   })
   .strict();
-const created = prediction.extend({ reused_existing_prediction: z.boolean() });
+const created = predictionSchema.extend({ reused_existing_prediction: z.boolean() });
 const list = z
   .object({
-    items: z.array(prediction),
+    items: z.array(predictionSchema),
     total: z.number().int().nonnegative(),
     limit: z.number().int().positive().max(500),
     offset: z.number().int().nonnegative(),
@@ -43,7 +43,7 @@ const list = z
     current_history_ready: z.boolean(),
   })
   .strict();
-export type BuildingPrediction = z.infer<typeof prediction>;
+export type BuildingPrediction = z.infer<typeof predictionSchema>;
 export type PredictionRecommendation = z.infer<typeof recommendation>;
 export type PredictionListResponse = z.infer<typeof list>;
 export type CreatedBuildingPrediction = z.infer<typeof created>;

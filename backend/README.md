@@ -75,3 +75,7 @@ Authenticated owner-only `GET /buildings/{id}/prediction-readiness` verifies the
 ## Building predictions (Phase 26)
 
 After `python -m alembic upgrade head`, owner-only `POST /buildings/{id}/predictions` accepts no feature body, rechecks readiness, uses existing cached inference/recommendation helpers and transactionally persists/reuses a fingerprinted result. `GET /buildings/{id}/predictions` provides paginated history without loading the model. Existing research APIs remain unchanged. See [building predictions](../docs/building-predictions.md).
+
+## User dashboard summary (Phase 27)
+
+Owner-only `GET /buildings/{id}/dashboard-summary?limit=144` (maximum500) returns bounded stored observations, counts, shared readiness and exact matching persisted forecast context. This is read-only and invokes no model or recommendation engine. Shared Phase26 fingerprint semantics distinguish current from historical results. No new migration/dependency. See [user dashboard](../docs/user-dashboard.md).

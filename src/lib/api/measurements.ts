@@ -38,7 +38,7 @@ const timestamp = z
   .datetime({ local: true })
   .refine((value) => !/[Zz]|[+-][0-9]{2}:[0-9]{2}$/.test(value), "Use local time without timezone");
 export const createMeasurementSchema = z.object({ timestamp, ...numericShape }).strict();
-const measurementSchema = createMeasurementSchema.extend({
+export const measurementSchema = createMeasurementSchema.extend({
   id: z.number().int().positive().safe(),
   building_id: z.number().int().positive().safe(),
 });
