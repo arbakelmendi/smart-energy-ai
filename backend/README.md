@@ -83,3 +83,7 @@ Owner-only `GET /buildings/{id}/dashboard-summary?limit=144` (maximum500) return
 ## Dedicated administration (Phase 28)
 
 The `/admin/overview`, `/admin/users`, `/admin/users/{id}`, `/admin/users/{id}/status`, `/admin/buildings`, `/admin/buildings/{id}` and `/admin/predictions` APIs enforce existing active ADMIN authentication. Status PATCH requires CSRF, revokes all deactivated account sessions and protects self/final-admin access. Lists are server-paginated and safe schemas exclude authentication/feature internals. Ordinary owner APIs are unchanged. See [admin panel](../docs/admin-panel.md).
+
+## Security and reliability audit (Phase 29)
+
+Session issuance now uses an atomic active-account guard in its session transaction, preventing login from issuing a revivable token after concurrent deactivation. Existing ownership, CSRF/CORS and safe-error policies are reverified with migration, rollback and concurrency tests. No migration/dependency/research change. See [security and QA](../docs/security-and-quality-assurance.md).

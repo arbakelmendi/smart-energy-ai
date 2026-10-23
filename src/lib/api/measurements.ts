@@ -138,7 +138,6 @@ export async function importMeasurementsCsv(buildingId: number, file: File) {
       credentials: "include",
       headers,
       body,
-      signal: AbortSignal.timeout(120_000),
-    }),
+    }, 120_000),
   );
 }

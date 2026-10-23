@@ -35,26 +35,32 @@ function errorMessage(status: number, payload: unknown): string {
   return `API request failed (HTTP ${status}).`;
 }
 
-export async function apiRequest<T>(path: string, options: RequestInit = {}): Promise<T> {
+export async function apiRequest<T>(path: string, options: RequestInit = {}, timeoutMs = 10_000): Promise<T> {
   // Reject ambiguous URLs so endpoint functions always stay under the configured base.
   if (!path.startsWith("/") || path.startsWith("//")) throw new Error("API path must start with one slash.");
+  if (!Number.isSafeInteger(timeoutMs) || timeoutMs < 1) throw new TypeError("Invalid request timeout");
+  const deadline = AbortSignal.timeout(timeoutMs);
+  const signal = options.signal ? AbortSignal.any([options.signal, deadline]) : deadline;
   let response: Response;
   try {
     response = await fetch(`${API_BASE_URL}${path}`, {
       ...options,
       credentials: options.credentials ?? "omit",
-      signal: options.signal ?? AbortSignal.timeout(10_000),
+      signal,
       headers: { Accept: "application/json", ...options.headers },
     });
   } catch (error) {
     if (options.signal?.aborted) throw error;
+    if (deadline.aborted) throw new ApiError("Backend request timed out. Retry when the API is available.");
     throw new ApiError("Backend unavailable. Check the API connection and base URL.");
   }
   if (response.status === 204 && response.ok) return undefined as T;
   let payload: unknown;
   try {
     payload = await response.json();
-  } catch {
+  } catch (error) {
+    if (options.signal?.aborted) throw error;
+    if (deadline.aborted) throw new ApiError("Backend request timed out. Retry when the API is available.");
     throw new ApiError(response.ok ? "Backend returned invalid JSON." : `API request failed (HTTP ${response.status}).`, response.status);
   }
   if (!response.ok) throw new ApiError(errorMessage(response.status, payload), response.status, payload);

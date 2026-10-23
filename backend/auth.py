@@ -7,7 +7,7 @@ import secrets
 
 from fastapi import APIRouter, Depends, Header, HTTPException, Request, Response
 from pwdlib import PasswordHash
-from sqlalchemy import delete, func, select
+from sqlalchemy import delete, func, select, update
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
@@ -104,6 +104,16 @@ def require_admin(user: User = Depends(get_current_user)) -> User:
 
 def establish_session(request: Request, response: Response, db: Session, user: User):
     secure = secure_cookie()
+    # Serialize issuance with status updates. A prior password check may have
+    # observed an active account before an administrator deactivated it.
+    # This no-op guarded write takes SQLite's write lock (and a row lock on
+    # databases supporting it), held until session persistence commits.
+    active = db.execute(update(User).where(User.id == user.id, User.is_active.is_(True))
+                        .values(is_active=User.is_active, updated_at=User.updated_at)
+                        .execution_options(synchronize_session=False))
+    if active.rowcount != 1:
+        db.rollback()
+        raise HTTPException(401, "Invalid email or password, or account inactive")
     old = request.cookies.get(COOKIE_NAME)
     if old:
         db.execute(delete(AuthSession).where(AuthSession.token_hash == token_digest(old)))

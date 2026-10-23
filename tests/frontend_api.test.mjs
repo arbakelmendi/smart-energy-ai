@@ -119,7 +119,7 @@ test("query cancellation signal is preserved", async () => {
   const calls = respond(health);
   const controller = new AbortController();
   await getHealth(controller.signal);
-  assert.equal(calls[0].options.signal, controller.signal);
+  controller.abort();assert.equal(calls[0].options.signal.aborted,true);
 });
 
 test("ambiguous endpoint URLs are rejected", async () => {

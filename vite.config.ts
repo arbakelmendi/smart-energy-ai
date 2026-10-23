@@ -7,6 +7,26 @@
 import { defineConfig } from "@lovable.dev/vite-tanstack-config";
 
 export default defineConfig({
+  vite: {
+    server: {
+      fs: {
+        // Git ignore rules do not prevent HTTP access through the dev server.
+        // Preserve Vite's own sensitive-file deny list and protect local app data.
+        deny: [
+          ".env",
+          ".env.*",
+          "*.{crt,pem,key,p12,pfx,cer,der}",
+          ".npmrc",
+          ".yarnrc.yml",
+          "**/.git/**",
+          "**/*.{db,db-journal,db-wal,db-shm,sqlite,sqlite-journal,sqlite-wal,sqlite-shm,sqlite3,sqlite3-journal,sqlite3-wal,sqlite3-shm}",
+          "**/ml/results/generated/**",
+          "**/backend/**",
+          "**/.venv/**",
+        ],
+      },
+    },
+  },
   tanstackStart: {
     // Redirect TanStack Start's bundled server entry to src/server.ts (our SSR error wrapper).
     // nitro/vite builds from this

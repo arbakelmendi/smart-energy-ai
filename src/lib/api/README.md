@@ -61,3 +61,7 @@ Phase 26 adds `createBuildingPrediction`/`getBuildingPredictions` and private qu
 ## Administration (Phase 28)
 
 `admin.ts` adds strictly validated, credentialed native-fetch functions for admin counts, filtered paginated lists, details and explicit status changes. `use-admin.ts` uses acting-user-scoped admin keys separate from owner caches; confirmed status changes invalidate admin user/overview data. Existing admin routes now show real data and URL-selected details, superseding the historical unavailable shell. See [admin panel](../../../docs/admin-panel.md).
+
+## Reliability hardening (Phase 29)
+
+The shared transport combines caller cancellation with its10-second request deadline; CSV upload explicitly retains120 seconds. Cancellation propagates and timeout errors are controlled ApiErrors. Strict response schemas, private query keys and account isolation remain unchanged. See [security and QA](../../../docs/security-and-quality-assurance.md) for offline/multi-tab/route verification and limitations.

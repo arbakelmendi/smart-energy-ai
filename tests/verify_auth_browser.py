@@ -29,7 +29,7 @@ def main():
     api = f'http://localhost:{backend_port}'
     frontend = f'http://localhost:{frontend_port}'
     original = (root / 'tests/verify_dashboard_browser.py').read_text(encoding='utf-8')
-    original = original.replace('8000',str(backend_port)).replace('5173',str(frontend_port)).replace('phase17_', 'phase28_' if '--admin' in sys.argv else 'phase27_' if '--dashboard' in sys.argv else 'phase26_' if '--predictions' in sys.argv else 'phase25_' if '--readiness' in sys.argv else 'phase24_' if '--measurements' in sys.argv else ('phase23_' if '--buildings' in sys.argv else 'phase22_'))
+    original = original.replace('8000',str(backend_port)).replace('5173',str(frontend_port)).replace('phase17_', 'phase29_smoke_' if '--hardening-smoke' in sys.argv else 'phase29_' if '--hardening' in sys.argv else 'phase28_' if '--admin' in sys.argv else 'phase27_' if '--dashboard' in sys.argv else 'phase26_' if '--predictions' in sys.argv else 'phase25_' if '--readiness' in sys.argv else 'phase24_' if '--measurements' in sys.argv else ('phase23_' if '--buildings' in sys.argv else 'phase22_'))
     original = original.replace(f'127.0.0.1:{backend_port}', f'localhost:{backend_port}')
     tree = ast.parse(original)
     helpers = [node for node in tree.body if isinstance(node, (ast.ClassDef, ast.FunctionDef)) and node.name in ('CDP','spawn','stop','ready')]
@@ -59,8 +59,10 @@ def main():
             password, admin_password = secrets.token_urlsafe(24), secrets.token_urlsafe(24)
             with factory() as db:
                 create_admin(admin_email, 'Bootstrap verification admin', admin_password, db)
-            with tempfile.TemporaryDirectory(prefix='phase22-profile-',dir=g) as profile:
-                assert Path(profile).resolve().is_relative_to(g.resolve())
+            # Browser component HTML must stay outside Vite's watched repository.
+            with tempfile.TemporaryDirectory(prefix='smartenergy-browser-qa-') as profile:
+                assert Path(profile).resolve().is_relative_to(Path(tempfile.gettempdir()).resolve())
+                assert not Path(profile).resolve().is_relative_to(root.resolve())
                 try:
                     backend_cmd=[sys.executable,'-m','uvicorn','backend.main:app','--host','127.0.0.1','--port',str(backend_port),'--log-level','warning']
                     backend=spawn(backend_cmd,'backend')
@@ -98,7 +100,7 @@ def main():
                         c.wait('location.pathname === "/login" && !!document.querySelector("input[name=password]") && document.querySelector("fieldset")?.disabled === false')
                     def submit(values):
                         c.wait('document.querySelector("fieldset")?.disabled === false')
-                        c.evaluate('(() => { const values='+json.dumps(values)+'; for (const [name,value] of Object.entries(values)) { const input=document.querySelector(`[name="${name}"]`); input.value=value; input.dispatchEvent(new Event("input",{bubbles:true})); } document.querySelector("form").requestSubmit(); return true; })()')
+                        c.evaluate('(() => { const values='+json.dumps(values)+'; for (const [name,value] of Object.entries(values)) { const input=document.querySelector(`form [name="${name}"]`); input.value=value; input.dispatchEvent(new Event("input",{bubbles:true})); } document.querySelector("form").requestSubmit(); return true; })()')
                     def me():
                         return c.evaluate('(async()=>{const r=await fetch('+json.dumps(api+'/auth/me')+', {credentials:"include"});return {status:r.status,body:await r.json()};})()')
                     protected=['/dashboard','/predictions','/recommendations','/data','/settings','/buildings/','/buildings/ubt-campus-a','/admin/','/admin/users','/admin/buildings']
@@ -223,6 +225,24 @@ def main():
                         admin_verification = admin_scenario(c=c,visit=visit,submit=submit,signed_out=signed_out,
                             signed_in=signed_in,api=api,user_email=email,user_password=password,
                             admin_email=admin_email,admin_password=admin_password,factory=factory)
+                    hardening_verification = None
+                    if '--hardening' in sys.argv:
+                        def pause_backend():
+                            stop(backend)
+                        def resume_backend():
+                            nonlocal backend
+                            backend=spawn(backend_cmd,'offline_recovery');ready(api+'/health',backend)
+                        from verify_fullstack_browser import scenario as hardening_scenario
+                        hardening_verification = hardening_scenario(c=c,visit=visit,submit=submit,
+                            signed_in=signed_in,signed_out=signed_out,api=api,frontend=frontend,
+                            user_email=email,user_password=password,admin_email=admin_email,
+                            admin_password=admin_password,reload=reload,pause=pause_backend,resume=resume_backend)
+                    hardening_smoke_verification = None
+                    if '--hardening-smoke' in sys.argv:
+                        from verify_fullstack_browser import scenario_smoke
+                        hardening_smoke_verification = scenario_smoke(c=c,visit=visit,submit=submit,
+                            signed_in=signed_in,signed_out=signed_out,api=api,
+                            admin_email=admin_email,admin_password=admin_password)
                     # Preserved research information is explicitly opened and verified, not treated as KPIs.
                     visit('/dashboard');signed_in()
                     c.evaluate('document.querySelector("[data-research-information] summary").click()')
@@ -274,6 +294,11 @@ def main():
                         evidence['user_dashboard'] = dashboard_verification
                     if admin_verification is not None:
                         evidence['administration'] = admin_verification
+                    if hardening_verification is not None:
+                        evidence['fullstack_hardening'] = hardening_verification
+                    if hardening_smoke_verification is not None:
+                        evidence['hardening_profile_and_text_smoke'] = hardening_smoke_verification
+                        evidence['browser_profile_outside_repository'] = True
                     c.ws.close()
                 finally:
                     for process in reversed(processes):stop(process)
@@ -281,7 +306,7 @@ def main():
                     engine.dispose()
             evidence['verification_processes_stopped']=True
         evidence['temporary_database_and_profile_removed']=True
-    (g/('phase28_browser_evidence.json' if '--admin' in sys.argv else 'phase27_browser_evidence.json' if '--dashboard' in sys.argv else 'phase26_browser_evidence.json' if '--predictions' in sys.argv else 'phase25_browser_evidence.json' if '--readiness' in sys.argv else 'phase24_browser_evidence.json' if '--measurements' in sys.argv else ('phase23_browser_evidence.json' if '--buildings' in sys.argv else 'phase22_browser_evidence.json'))).write_text(json.dumps(evidence,indent=2)+'\n',encoding='utf-8')
+    (g/('phase29_smoke_browser_evidence.json' if '--hardening-smoke' in sys.argv else 'phase29_browser_evidence.json' if '--hardening' in sys.argv else 'phase28_browser_evidence.json' if '--admin' in sys.argv else 'phase27_browser_evidence.json' if '--dashboard' in sys.argv else 'phase26_browser_evidence.json' if '--predictions' in sys.argv else 'phase25_browser_evidence.json' if '--readiness' in sys.argv else 'phase24_browser_evidence.json' if '--measurements' in sys.argv else ('phase23_browser_evidence.json' if '--buildings' in sys.argv else 'phase22_browser_evidence.json'))).write_text(json.dumps(evidence,indent=2)+'\n',encoding='utf-8')
     print(json.dumps(evidence,indent=2))
 
 

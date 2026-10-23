@@ -212,3 +212,7 @@ Run `python -m alembic upgrade head` for input-snapshot/idempotency fields. Owne
 ## Administrator oversight (Phase 28)
 
 ADMIN can inspect real application-wide counts, paginated users/buildings and saved prediction activity through dedicated `/admin` APIs/pages. Account deactivation revokes sessions while retaining domain history, with self/final-admin protection. Ordinary building APIs remain owner-only for every role. No new migration or dependency; see [admin panel](docs/admin-panel.md) for filters, status behavior, privacy boundaries and verification.
+
+## Full-stack hardening (Phase 29)
+
+The security/reliability audit adds adversarial migration, authorization, transaction, concurrency and browser checks. It fixes a login/deactivation race, preserves request deadlines alongside query cancellation, labels the mobile navigation close action, and blocks development HTTP access to private SQLite/QA files. See [security and QA](docs/security-and-quality-assurance.md) for the authorization matrix, exact behavior, reproducible checks and remaining prototype limitations. No schema/dependency/model change is introduced.

@@ -138,7 +138,7 @@ function AuthenticatedShell({
           <div className="relative flex h-full w-[272px] flex-col border-r border-sidebar-border bg-sidebar">
             <div className="flex h-16 items-center justify-between border-b border-sidebar-border px-4">
               <Logo />
-              <Button variant="ghost" size="icon" onClick={() => setMobileOpen(false)}>
+              <Button variant="ghost" size="icon" aria-label="Close navigation" onClick={() => setMobileOpen(false)}>
                 <X className="size-4" />
               </Button>
             </div>
