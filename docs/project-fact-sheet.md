@@ -18,6 +18,21 @@
 | Top normalized gain features | Appliances 0.38923386017745365; appliances_lag_1 0.05394192425510965; T6 0.0424866940672054; appliances_roll_mean_1h 0.03499040190676228; hour 0.0302585806120196 |
 | Backend/research | Python, Pandas, NumPy, scikit-learn, XGBoost native JSON, FastAPI/Pydantic/Uvicorn; shared strict inference/recommendation helpers |
 | Frontend | React/TypeScript, TanStack Start SSR/file routes, Vite, Tailwind, TanStack Query and existing Recharts components |
-| Scope/limits | January-May single-building evidence and one later TEST period; no reliable occupancy input, operational sensor/history feed, automatic control, verified intervention savings, calibrated intervals, real authentication/database or demonstrated external portability. Live inference needs all 42 engineered values. Exact regeneration is environment-sensitive with unpinned dependencies; historical formatting findings remain. |
+| Scope/limits | One UCI building, January-May; experimental transfer to new buildings; no occupancy/IoT/control/verified savings/calibrated intervals; environment-sensitive exact regeneration. |
+
+## Final full-stack application facts
+
+| Item | Verified implementation |
+| --- | --- |
+| Database | SQLAlchemy 2 / Alembic; SQLite locally; PostgreSQL-compatible constructs, no live PostgreSQL concurrency validation |
+| Authentication | Salted Argon2id passwords; opaque HttpOnly/SameSite cookie sessions; hash-only token storage; absolute expiry |
+| Roles | USER owns ordinary resources; ADMIN uses dedicated cross-owner oversight APIs |
+| Buildings/data | Persistent metadata, manual 26-value measurements, atomic CSV import, explicit ADMIN UCI reference import |
+| Readiness/features | Latest continuous 1,009 ten-minute observations; 42 ordered shared research features, no future inputs |
+| Forecasting | Explicit building-specific execution; persisted recommendation/checksum/input fingerprint; identical-input reuse |
+| UI | Selected-building dashboard, observed-history charts, saved ledgers; separated research evidence |
+| Admin | Overview, users/buildings/activity, deactivate/reactivate with session revocation and self/final-admin protections |
+| Security | Ownership/role checks, trusted-Origin/header CSRF, credentialed CORS and controlled failures; no production certification |
+
 
 Numerical sources: [schema](../ml/results/feature_schema.json), [splits](../ml/results/split_metadata.json), [tuning](../ml/results/phase10_tuning_summary.json), [final evaluation](../ml/results/phase11_final_test_evaluation.json), [importance](../ml/results/phase12_feature_importance.json), [metadata](../ml/results/final_model_metadata.json), [bands](../ml/results/phase14_recommendation_thresholds.json). Raw dimensions/coverage are recorded in [inspection](../ml/notebooks/01_data_exploration.ipynb) and [provenance](../data/raw/README.md). Importance is predictive, not causal; Wh is interval energy, not power; R-squared is not percentage accuracy. A known development-data POST example is a historical demonstration, not live telemetry or a new evaluation.

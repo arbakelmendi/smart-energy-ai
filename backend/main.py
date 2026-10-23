@@ -19,7 +19,7 @@ from sqlalchemy.exc import SQLAlchemyError
 
 API_VERSION = "1.0.0"
 app = FastAPI(title="SmartEnergyAI API", version=API_VERSION,
-              description="Single-observation Appliances forecasting in Wh, 10 minutes ahead. Requires 42 already-engineered features. Recommendations are decision support only; no automatic control or guaranteed savings.")
+              description="Appliances forecasting in Wh, 10 minutes ahead. Public research forecasts accept 42 engineered features; authenticated building forecasts construct them from owned stored history. Persistent accounts, measurements, predictions and dedicated ADMIN oversight. Recommendations are decision support only; no automatic control or guaranteed savings.")
 app.add_middleware(CORSMiddleware, allow_origins=allowed_origins(),
                    allow_credentials=True, allow_methods=["GET", "POST", "PATCH", "DELETE"], allow_headers=["Content-Type", "X-SmartEnergy-CSRF"])
 app.include_router(auth_router)

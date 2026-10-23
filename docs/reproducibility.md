@@ -34,7 +34,7 @@ Copied from [final model metadata](../ml/results/final_model_metadata.json):
 | scikit-learn | 1.9.1 |
 | xgboost | 3.4.1 |
 
-`requirements.txt` is intentionally unpinned in the existing repository. A generic install may resolve a different environment; it does **not** establish exact research reproducibility. Provision the recorded Python first, and, when available, match the recorded numerical packages:
+`requirements.txt` is partly unpinned in the existing repository. A generic install may resolve a different environment; it does **not** establish exact research reproducibility. Provision the recorded Python first, and, when available, match the recorded numerical packages:
 
 ```powershell
 python -m pip install "numpy==2.5.4" "pandas==3.0.6" "scikit-learn==1.9.1" "xgboost==3.4.1"
@@ -138,7 +138,7 @@ Backend, from the root:
 .venv\Scripts\python.exe -m uvicorn backend.main:app --reload
 ```
 
-On an activated environment/POSIX, `python -m uvicorn backend.main:app --reload` is equivalent. Swagger is [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs); schema is [http://127.0.0.1:8000/openapi.json](http://127.0.0.1:8000/openapi.json).
+On an activated environment/POSIX, `python -m uvicorn backend.main:app --reload` is equivalent. Swagger is [http://localhost:8000/docs](http://localhost:8000/docs); schema is [http://localhost:8000/openapi.json](http://localhost:8000/openapi.json).
 
 Frontend, in a second terminal:
 
@@ -148,7 +148,7 @@ npm run dev -- --host localhost --port 5173 --strictPort
 
 Visit [http://localhost:5173/dashboard](http://localhost:5173/dashboard). The Vite scripts are taken from current `package.json`, not assumed SPA scaffolding. Keep TanStack Start SSR, root layout, server middleware and the Lovable wrapper intact. Do not intentionally regenerate or hand-edit `src/routeTree.gen.ts` for documentation.
 
-Public build-time `VITE_API_BASE_URL` defaults to `http://127.0.0.1:8000`. No environment file is needed for that default. Backend local CORS allows localhost ports 3000/5173/8080 without credentials. For another browser origin, configure the existing comma-separated `SMARTENERGY_CORS_ORIGINS`; a remote browser also needs a reachable API and compatible HTTPS. This is not production-grade security or an authenticated service.
+Public build-time `VITE_API_BASE_URL` defaults to `http://localhost:8000`. No environment file is needed for that default. Backend local CORS allows listed localhost origins with credentials. For another browser origin, configure the existing comma-separated `SMARTENERGY_CORS_ORIGINS`; a remote browser also needs a reachable API and compatible HTTPS. The application uses cookie authentication, but is not production-certified software.
 
 ## Tests and QA
 
@@ -173,3 +173,11 @@ This uses installed Edge, `websocket-client` available in the recorded Jupyter e
 [Phase 18 audit](../ml/results/phase18_quality_assurance.json) records 66 Python and 20 frontend passes, 19 routes at 1440px/390px, successful build/TypeScript and safe E2E failures. It also records 956 targeted formatting findings. Semantic lint and whitespace checks passed; broad formatting was intentionally excluded. The existing Starlette/httpx deprecation and Vite build warnings are recorded, not hidden.
 
 These are historical verified QA results. Phase 19 validates documentation paths/commands/links and integrity; it does not claim another full research or browser run. Exact byte equality remains environment-sensitive. Keep the initial held-out evaluation authoritative, never tune to TEST, and investigate discrepancies rather than rewriting reference outputs.
+
+## Final full-stack operation (Phase30)
+
+The root [README](../README.md#local-installation-and-startup), [demo guide](thesis-demo-guide.md) and [checklist](final-demo-checklist.md) supersede historical account-free demo instructions. Normal operation needs the matching native model plus installed dependencies, then explicit `python -m alembic upgrade head`, `python scripts/create_admin.py` and documented localhost server commands. It does **not** need processed CSVs; raw UCI CSV is required only for explicit reference import/research. Preflight defaults to no dataset reads or DB connections; its optional development-request mode alone needs TRAIN.
+
+A fresh evaluator can supply the original matching ignored artifact privately. Without it, follow the preparation commands above in an isolated copy, verify recorded split/schema bytes, then `python ml/src/save_final_model.py`. This is deliberate locked-model reconstruction, not model development; exact gates may reject a different environment. Phase30 does not run fit/tuning/held-out evaluation merely for release preparation.
+
+Full Python QA: `python -m unittest discover -s tests -p "test_*.py" -v`; all native frontend tests: `node --experimental-strip-types --test tests/frontend_*.test.mjs`. Optional pytest requires a separate test-tool installation. Current release browser QA is `python tests/verify_final_application.py` with installed Edge and websocket-client, a local raw UCI file/model and free dynamically selected localhost ports. It performs supported workflows against a new migrated disposable DB, not prior developer state. Historical verifier commands/audits above describe their original phase and are not the preferred current full-stack demo.

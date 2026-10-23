@@ -2,7 +2,7 @@
 
 **Artificial Intelligence for Prediction and Optimization of Energy Consumption in Smart Buildings**
 
-SmartEnergyAI is a Bachelor-thesis research prototype for **10-minute-ahead Appliances energy prediction in Wh** and transparent **forecast-based decision support**. It combines a reproducible Python workflow, a persisted Tuned XGBoost model, FastAPI, and the existing React/TypeScript TanStack Start dashboard.
+SmartEnergyAI is a full-stack Bachelor-thesis research/application prototype for **10-minute-ahead Appliances energy prediction in Wh** and transparent **forecast-based decision support**. It combines a reproducible Python workflow, a persisted Tuned XGBoost model, FastAPI, and the existing React/TypeScript TanStack Start dashboard.
 
 The objective is to compare forecasting approaches chronologically, estimate later-period performance and turn forecasts into conservative review recommendations. Optimization means decision support here, not automatic building control or validated intervention savings.
 
@@ -14,7 +14,9 @@ The objective is to compare forecasting approaches chronologically, estimate lat
 - Return deterministic recommendations calibrated on TRAIN + VALIDATION only.
 - Present API-sourced research results with explicit loading/error/unavailable states.
 
-No operational sensor/history stream is connected. The browser cannot fabricate historical lag/rolling context for a live forecast. Phase 22 provides real account authentication over the Phase 21 database foundation. Email delivery, occupancy inference and equipment control are unavailable; research endpoints remain database-independent. No guaranteed energy, monetary or CO2 savings or calibrated prediction intervals are claimed.
+USER accounts manage owned buildings, persist manual/CSV measurements, check continuity-based readiness, explicitly generate building forecasts/recommendations and inspect real dashboards/history. ADMIN has dedicated cross-owner overview, user/building/activity inspection and guarded deactivation/reactivation. Passwords, sessions and operational data persist in the relational database. Research evidence remains separately labeled.
+
+There is no live IoT stream, automatic forecasting scheduler, occupancy inference, equipment control, verified intervention savings or calibrated prediction interval. Predictions for user-created buildings are experimental; the model was validated on one UCI reference building. [Final overview](docs/final-application-overview.md) is the evaluator entry point.
 
 ## Dataset and methodology
 
@@ -95,124 +97,109 @@ The research path is dataset -> preprocessing -> origin-time features -> chronol
 
 ## Local installation and startup
 
-From the project root, on Windows:
+Run from repository root using Python compatible with the recorded model environment (Python 3.13.14), Node supporting native TypeScript stripping, and npm or the existing Bun package workflow. Phase 30 verifies a separate tracked-file copy and new dependency installation; exact numerical versions are recorded in [reproduction](docs/reproducibility.md). Dependencies are partly unpinned, so a generic install is not an exact environment lock.
 
 ```powershell
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
 python -m pip install -r requirements.txt
+python -m pip install "numpy==2.5.4" "pandas==3.0.6" "scikit-learn==1.9.1" "xgboost==3.4.1"
 ```
 
-Download the dataset separately to **`data/raw/energydata_complete.csv`**; do not commit it. Use the [ordered reproduction guide](docs/reproducibility.md) to generate processed data. Requirements are unpinned: a generic install does not guarantee exact replay. The guide lists recorded versions and separates verification from commands that refit models.
+Use the recorded numerical versions for matching artifact loading/regeneration; do not weaken version/checksum guards. For absent frontend dependencies, the verified npm fallback is:
 
-Inference requires **`ml/models/final_xgboost_model.json`**, ignored by Git. Once processed splits and committed records exist, its generator is:
+```powershell
+npm install --package-lock=false
+```
+
+This resolves package ranges, not `bun.lock`; it does not promise the identical original tree. Preserve both package-management state and the Lovable wrapper. Do not regenerate/delete lockfiles.
+
+### Required local artifacts
+
+| Item | Required for | Provisioning / Git policy |
+| --- | --- | --- |
+| `ml/models/final_xgboost_model.json` | Forecasting and healthy model resources | Ignored; restore matching artifact privately or deliberately regenerate below |
+| `data/raw/energydata_complete.csv` | Explicit ADMIN UCI reference import; research preparation | Download UCI dataset separately; ignored; not needed for manual/CSV application startup |
+| Processed cleaned/features/TRAIN/VALIDATION/TEST CSVs | Research reproduction, artifact reconstruction, optional development example and comprehensive research QA | Generated by documented preparation scripts; ignored; not normal runtime requirements |
+| `smartenergy.db` | Local account/building/history persistence | Generated empty by migrations; ignored; never copy an evaluator/developer DB into release |
+| `ml/results/generated/*` | Optional QA/plots/logs | Generated, ignored; not runtime inputs |
+| `.venv`, `node_modules` | Installed Python/frontend dependencies | Created locally, ignored |
+
+The native model is intentionally not committed. If missing, [ordered reproduction](docs/reproducibility.md) explains downloading raw data, generating matching processed splits and restoring the recorded environment. Then:
 
 ```powershell
 python ml/src/save_final_model.py
 ```
 
-This refits the locked development configuration, checks Phase 11 equivalence and refuses differing existing outputs. It is not a lightweight load operation. Do not force-add its output. Verify an existing artifact without fitting:
+This reconstructs the **locked** TRAIN + VALIDATION fit, checks original Phase 11 equivalence and refuses differing existing model/metadata/audit outputs. It is not tuning or routine startup. It accesses TEST only for historical equivalence. Phase 30 does not refit/re-evaluate the authoritative model. Do not force-add model/data or rewrite numerical records to accept a different environment.
+
+### Initialize and verify
 
 ```powershell
-python -c "from ml.src.model_inference import load_final_model; load_final_model(); print('Verified model loaded')"
+python tests/verify_demo_preflight.py
+python -m alembic upgrade head
+python -m alembic current
+python scripts/create_admin.py
 ```
 
-Start FastAPI in one terminal:
+Preflight checks imports, model/schema/checksum, migration head, parseable DB configuration, frontend scripts and critical docs **without connecting to DB, fitting, reading datasets or repairing anything**. It does not prove migrations were applied or an ADMIN exists; those are explicit steps. The bootstrap prompts for your own email/name and hidden password/confirmation; no default credentials or startup seed exists. Duplicate accounts are rejected without promotion/overwrite.
+
+`DATABASE_URL` defaults to `sqlite:///./smartenergy.db`, resolved relative to the project root. Keep connection secrets private. Existing populated data should be backed up before migrations. Current head is `0026_prediction_feature_snapshots`.
+
+### Start services
+
+Backend terminal:
 
 ```powershell
-.venv\Scripts\python.exe -m uvicorn backend.main:app --reload
+python -m uvicorn backend.main:app --host 127.0.0.1 --port 8000
 ```
 
-Swagger: [http://localhost:8000/docs](http://localhost:8000/docs); OpenAPI: `/openapi.json`. See [backend usage](backend/README.md).
-
-The existing frontend scripts are `dev: vite dev` and `build: vite build`. Phase 18 used installed dependencies and npm because Bun was unavailable. If `node_modules` is absent, `npm install --package-lock=false` is an npm fallback that resolves package ranges, not the Bun lock. It is not a claim of exact locked-tree reproduction. Preserve the existing package-management files; no install is needed for an existing dependency tree.
+Frontend terminal:
 
 ```powershell
 npm run dev -- --host localhost --port 5173 --strictPort
 ```
 
-Open [http://localhost:5173/dashboard](http://localhost:5173/dashboard). Public build-time `VITE_API_BASE_URL` defaults to `http://localhost:8000`; no environment file is required. See [frontend/API notes](src/lib/api/README.md).
+Use browser/API **localhost consistently**: [application](http://localhost:5173), [health](http://localhost:8000/health), [Swagger](http://localhost:8000/docs), [OpenAPI](http://localhost:8000/openapi.json). Binding the backend to IPv4 loopback does not change those browser URLs. `VITE_API_BASE_URL` defaults to `http://localhost:8000`; no environment file is needed. For other origins, deliberately configure the public build-time API URL and exact credentialed `SMARTENERGY_CORS_ORIGINS`; align HTTPS/Secure cookies. A development server is not a public production host.
 
-### API overview
+### Use the application
 
-| Method | Path | Purpose |
-| --- | --- | --- |
-| GET | `/` | API identity |
-| GET | `/health` | Resource availability without prediction |
-| GET | `/model/info` | Final model and original held-out metrics |
-| GET | `/recommendations/thresholds` | Development-only bands |
-| GET | `/analysis/model-comparison` | Saved validation metrics |
-| GET | `/analysis/feature-importance` | Saved predictive importance |
-| POST | `/forecast` | Engineered observation -> Wh forecast |
-| POST | `/forecast/recommendation` | Forecast and decision support |
+Signup/login, create/edit a building, enter one actual measurement or import compatible observed history, then inspect readiness. The latest continuous **1,009 ten-minute observations** produce all 42 features server-side. Click **Predict next 10 minutes**, inspect recommendation/dashboard/history, and repeat identical input to demonstrate reuse. New history requires an explicit new forecast; prior snapshots remain historical. Select another owned building to demonstrate isolation.
 
-POST body: `{"features": {...}}`, containing all 42 real engineered values. Missing history is rejected, not invented. JSON keys are ordered internally; direct inference DataFrames must already use the committed order.
+For an immediately ready historical ADMIN demo, with the local UCI source present:
 
-## Testing, QA and reproducibility
+```powershell
+python scripts/import_uci_reference_building.py --admin-email <your-admin-email>
+```
 
-[Phase 18 QA](ml/results/phase18_quality_assurance.json) records **66 Python and 20 frontend tests passed**, successful production build/TypeScript, and **19 routes** checked at **1440px/390px**. Live predictions/recommendations matched direct helpers. Offline, malformed input/response, model-unavailable and Retry states were verified.
+Replace the placeholder with your existing active ADMIN. Import is explicit/atomic and repeated populated-reference imports are rejected. ADMIN uses its ordinary dashboard for its own reference building and dedicated `/admin` views for cross-owner oversight. No silent fake data appears. See [CSV contract](docs/measurement-import.md), [readiness](docs/prediction-readiness.md), [forecast lifecycle](docs/building-predictions.md), [dashboard](docs/user-dashboard.md) and [admin](docs/admin-panel.md).
+
+## APIs, testing and final QA
+
+[Current route/API inventory](docs/final-endpoint-inventory.md) lists every documented method/path from OpenAPI and every reachable file route. Public research POSTs accept all 42 engineered values; private building forecasts instead construct them from owned stored history. These are distinct contracts.
 
 ```powershell
 python -m unittest discover -s tests -p "test_*.py" -v
-node --experimental-strip-types --test tests/frontend_api.test.mjs
-npm run build
+node --experimental-strip-types --test tests/frontend_*.test.mjs
 node node_modules/typescript/bin/tsc --noEmit
-python tests/verify_phase18.py
+npm run build
+git diff --check
 ```
 
-Optional Windows Edge route/browser QA: `python tests/verify_phase18.py --browser`; prerequisites are in the reproduction guide. Lint is **not perfectly clean**: Phase 18 recorded 956 targeted formatting findings. Semantic lint and `git diff --check` passed; no mass formatting was performed.
+The unittest command uses runtime requirements without a separate pytest install. Optional `python -m pytest -q` needs pytest installed separately. Comprehensive research tests also require local raw/processed datasets and model; do not mistake their prerequisites for normal runtime requirements. Native Node tests use the existing test files and runner. Targeted semantic lint disables only formatting enforcement; repository-wide formatting debt is not release work.
 
-## Limitations and research integrity
+`python tests/verify_final_application.py` is the Windows/installed-Edge release browser verifier. It uses a fresh disposable migrated DB, supported bootstrap and real UI/API journeys, blocks external page requests, and cleans its own processes/profile/DB. It requires the raw UCI CSV and `websocket-client` (included transitively by the current Jupyter installation); evidence stays ignored. Original feature/model/recommendation helpers provide separate parity gates. [Phase 29 security QA](docs/security-and-quality-assurance.md) and [Phase 30 final audit](ml/results/phase30_final_fullstack_audit.json) record actual results and warnings; historical audits describe their original phase snapshots.
 
-- One building and January-May, including partial months: no full-year/multi-building generalization claim.
-- No reliable occupancy input or operational sensor/history feed. Temperatures/humidity alone cannot provide valid engineered forecast inputs.
-- Decision support, not automatic control; no validated intervention savings or calibrated prediction intervals.
-- One later chronological test period; model/climate/building transfer requires further evidence. Importance is predictive and period-specific.
-- Real cookie-backed authentication is implemented; email/reset services, building-specific inference and account management remain unavailable. Explicit local-development CORS/loopback assumptions are not production-grade security.
-- Exact replay depends on input bytes, recorded libraries and serialization environment. Historical audits describe their phase snapshots, not immutable later application code.
+## Limitations and final demo
 
-Committed artifacts are the source of truth. Do not retune/select on TEST, rewrite results for a different environment, present research observations as live telemetry, or replace API failures with mock values. Preserve Lovable history and unrelated worktree changes.
+- One UCI building, January-May and one later TEST period; transfer to other buildings is experimental.
+- No true occupancy input or IoT streaming; measurements are manually entered/imported and require continuous ten-minute history. Observation timestamps are naive source-local; audit timestamps are naive UTC.
+- No automatic scheduler/actuator/control, verified intervention savings or calibrated prediction intervals. Predictive importance is not causality; R-squared is not percentage accuracy.
+- No MFA/rate limiting/email recovery delivery/central audit service or production-security certification. SQLite serializes writes; PostgreSQL driver/deployment/live concurrency remain unverified. Already-authorized requests can finish after revocation.
+- Dependencies are partly unpinned; exact numerical/model regeneration remains environment-sensitive. Keep original results/checksums authoritative.
 
-## Thesis defense preparation
-
-Use the [demo guide](docs/thesis-demo-guide.md), [technical reference](docs/defense-technical-reference.md) and [one-page fact sheet](docs/project-fact-sheet.md). Run `python tests/verify_demo_preflight.py` before starting the local servers. It verifies the existing model and a known development-data example without fitting or reading TEST. The final audit is recorded in [Phase 20](ml/results/phase20_final_audit.json).
+Use [demo guide](docs/thesis-demo-guide.md), [live checklist](docs/final-demo-checklist.md), [fact sheet](docs/project-fact-sheet.md), [defense answers](docs/defense-technical-reference.md), [architecture](docs/system-architecture.md) and [database schema](docs/database-architecture.md). The research and application are Bachelor-scope work; local demo readiness is distinct from commercial production readiness.
 
 ## Dataset reference
 
-UCI Machine Learning Repository. *Appliances Energy Prediction*. DOI: [10.24432/C5VC8G](https://doi.org/10.24432/C5VC8G). Retrieval date/version was not recorded locally. Saved [inspection](ml/notebooks/01_data_exploration.ipynb) and [EDA](ml/notebooks/02_exploratory_data_analysis.ipynb) provide local findings. No additional bibliographic fields are assumed.
-
-## Application database foundation (Phase 21)
-
-An independent SQLAlchemy/Alembic schema now supports users, owned buildings, raw measurements and prediction/recommendation snapshots. See [database architecture and initialization](docs/database-architecture.md). SQLite defaults to an ignored repository-local `smartenergy.db`; initialize an empty schema with `python -m alembic upgrade head`. This adds no authentication, import or CRUD/persistence endpoints. Existing research routes/dashboard remain database-independent. Earlier phase documents describe their verified historical scope.
-
-## Real authentication (Phase 22)
-
-Initialize/upgrade the database with `python -m alembic upgrade head`, optionally create the first administrator with `python scripts/create_admin.py` (hidden password prompt), then start FastAPI and the frontend as above. Use **localhost** consistently in browser/API URLs. Signup/login now establish persistent HttpOnly-cookie sessions; application pages require a session and admin routes require ADMIN. Public research APIs remain accessible without login. See [authentication configuration, security boundaries and verification](docs/authentication.md). Earlier phase demo/database documents describe historical scope; this authentication workflow supersedes their account-free application access.
-
-## Building management (Phase 23)
-
-Signed-in users can create, list, view, edit and delete their own building metadata at `/buildings`. ADMIN follows the same owner-only policy in this phase. Existing database schema/authentication are reused; run the normal migration/startup commands, then sign in. No measurements, reference building, building-specific forecasting or model validation are created by adding metadata. See [building management](docs/building-management.md) for endpoints, validation, deletion cascades and verification.
-
-## Building measurement history (Phase 24)
-
-Owned buildings now support raw manual measurements, paginated persisted history and atomic CSV uploads. The explicit active-ADMIN reference importer reads the existing local UCI source without changing it. Install updated requirements for `python-multipart`. See [measurement import](docs/measurement-import.md) for fields/units, timezone-naive timestamp policy, CSV header, commands, ownership and verification. Counts do not establish ML readiness; building-specific feature construction and forecasting remain deferred.
-
-## Automatic feature construction and readiness (Phase 25)
-
-Building detail now checks the latest required ten-minute history and constructs the exact 42-feature input internally using shared finalized research formulas. Readiness requires 1,009 observations, not a count-only threshold. The owner-only readiness API runs no model and stores no features or predictions. See [prediction readiness](docs/prediction-readiness.md) for continuity policy, parity evidence and verification. Building forecasts remain deferred.
-
-## Stored building forecasts (Phase 26)
-
-Run `python -m alembic upgrade head` for input-snapshot/idempotency fields. Owned buildings now support explicit ten-minute Appliances forecasts, authoritative recommendations and persisted paginated history. Features come from server-side stored history, never frontend feature payloads. Predictions for non-reference buildings remain experimental. See [building predictions](docs/building-predictions.md). No model retraining, new dependency, automatic scheduling or control is added.
-
-## User building dashboard (Phase 27)
-
-`/dashboard` now presents owned-building measurements, observed energy history, backend readiness and explicitly requested persisted forecasts/recommendations. Selection is carried in the URL; stale forecasts remain historical. Research metrics remain separately labeled in an expandable section. `/predictions` and `/recommendations` provide private building ledgers, and `/data` links to real measurement management. See [user dashboard](docs/user-dashboard.md) for API, timestamp semantics, limitations and verification. No new migration, dependency or automatic scheduling is introduced.
-
-## Administrator oversight (Phase 28)
-
-ADMIN can inspect real application-wide counts, paginated users/buildings and saved prediction activity through dedicated `/admin` APIs/pages. Account deactivation revokes sessions while retaining domain history, with self/final-admin protection. Ordinary building APIs remain owner-only for every role. No new migration or dependency; see [admin panel](docs/admin-panel.md) for filters, status behavior, privacy boundaries and verification.
-
-## Full-stack hardening (Phase 29)
-
-The security/reliability audit adds adversarial migration, authorization, transaction, concurrency and browser checks. It fixes a login/deactivation race, preserves request deadlines alongside query cancellation, labels the mobile navigation close action, and blocks development HTTP access to private SQLite/QA files. See [security and QA](docs/security-and-quality-assurance.md) for the authorization matrix, exact behavior, reproducible checks and remaining prototype limitations. No schema/dependency/model change is introduced.
+UCI Machine Learning Repository, *Appliances Energy Prediction*, DOI [10.24432/C5VC8G](https://doi.org/10.24432/C5VC8G). Source CSV is downloaded separately to `data/raw/energydata_complete.csv`; original retrieval timestamp/version was not recorded. [Provenance](data/raw/README.md) and recorded inspections preserve actual findings. No additional bibliographic fields are assumed.

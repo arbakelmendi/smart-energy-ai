@@ -16,8 +16,8 @@ function AboutPage() {
       <p>Chronological training and validation support model development. Final model selection precedes the selected model's held-out test evaluation. Preprocessing and feature timing avoid future observations in predictors.</p>
       <p>Persistence, Linear Regression, Random Forest and XGBoost were considered. The dashboard separates validation comparisons from final held-out test performance.</p>
     </div></Panel><Panel title="Prototype limitations"><div className="space-y-4 text-sm text-muted-foreground">
-      <p>No operational sensor stream is connected. Valid forecasts require already-engineered readings with genuine historical lag and rolling context.</p>
-      <p>No occupancy measurements, equipment-specific controls, calibrated prediction intervals, savings calculations or live building feeds are provided. Account authentication and owned building metadata use persistent database records.</p>
+      <p>No live sensor stream is connected. Owned buildings accept manual or CSV observations; the server constructs all 42 features from a continuous latest 1,009-observation ten-minute history.</p>
+      <p>No occupancy measurements, equipment-specific controls, calibrated prediction intervals, savings calculations or live building feeds are provided. Accounts, owned buildings, measurements and forecast/recommendation history use persistent database records. Other-building predictions remain experimental.</p>
       <p>Feature importance describes predictive behavior and does not establish causal effects or intervention savings.</p>
     </div></Panel></div><ModelPerformance /><FeatureImportance />
   </section></PublicLayout>;

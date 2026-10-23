@@ -57,10 +57,39 @@ The [typed API client](../src/lib/api/) uses native fetch. Query hooks wait unti
 | Saved feature gain | `/analysis/feature-importance` |
 | Development bands | `/recommendations/thresholds` |
 
-No browser time-series buffer exists. POST functions/mutations are available, but no hidden development/test row populates widgets. Live forecasts/recommendations await genuine history. Unsupported operational/account views and actions show explicit unavailable states; legacy mock implementation code is withheld rather than represented as working services.
+## Final full-stack application path
+
+```mermaid
+flowchart TD
+  Browser[React / TanStack Start SSR] --> API[FastAPI]
+  API --> Auth[Opaque session / active role / owner checks]
+  Auth --> ORM[SQLAlchemy request session]
+  ORM --> DB[(SQLite locally / PostgreSQL-compatible schema)]
+  User[USER] --> Buildings[Owned buildings]
+  Buildings --> Measurements[Raw timestamped measurements]
+  Measurements --> Ready[Continuous 1009-observation readiness]
+  Ready --> Features[Phase 25 ordered 42-feature construction]
+  Features --> Model[Verified native XGBoost model]
+  Model --> Rules[Phase 14 recommendation engine]
+  Rules --> Saved[Atomic prediction / recommendation / input snapshot]
+  Saved --> DB
+  DB --> Dashboard[Private dashboard and paginated history]
+  Dashboard --> Browser
+  Admin[ADMIN] --> Dedicated[Dedicated admin APIs]
+  Dedicated --> Auth
+  Results[Separate immutable research artifacts] --> API
+```
+
+Signup/login persist Argon2id password hashes and digest-only opaque sessions. The host-only HttpOnly cookie has SameSite=Lax and configurable Secure/absolute expiry. Private mutations require the existing non-simple CSRF header plus trusted Origin when supplied. Credentialed CORS lists exact frontend origins. Ordinary building resources are owner-only for both roles; dedicated ADMIN APIs provide cross-owner inspection and guarded activation changes. Logout clears private queries; identity/building/page/window keys isolate caches.
+
+`users` own `buildings`; buildings own `measurements` and `predictions`; `auth_sessions` belong to users. [Database architecture](database-architecture.md) lists current fields/constraints. Every request gets a short-lived session with explicit commit/rollback. CSV imports are atomic; DB uniqueness resolves races. No startup seed, fake account or model fit occurs.
+
+Measurement inputs are 26 raw finite values, not frontend-engineered features. The latest continuous 1,009-observation window supplies lags through t-1008; shared research formulas construct the exact 42 values. Explicit forecasting stores source time, Wh, ten-minute horizon, model checksum, canonical feature snapshot/hash and recommendation snapshot. Identity is building/source/model/features. Dashboard matching distinguishes stale history, including corrected historical input. See [forecast lifecycle](building-predictions.md) and [dashboard](user-dashboard.md).
 
 ## Runtime assumptions
 
-Run from the repository root with required ignored artifacts present. `VITE_API_BASE_URL` is public build-time configuration, defaulting to `http://127.0.0.1:8000`. Remote browsers need a reachable API, suitable HTTPS and explicit CORS. Local CORS uses listed origins without credentials. There is no database, authentication, account/email delivery, raw-history ingestion or automatic equipment-control service. This architecture is a research prototype, not a production-security claim.
+Use **localhost** consistently: frontend `http://localhost:5173`, default public build-time API base `http://localhost:8000`. Uvicorn can bind loopback while the browser uses localhost. Configure `SMARTENERGY_CORS_ORIGINS` explicitly for other frontend origins; credentials are enabled. Keep HTTPS/Secure-cookie policy coherent for deployment.
 
-See [backend usage](../backend/README.md), [model usage](../ml/models/README.md) and [frontend integration](../src/lib/api/README.md).
+The verified ignored native model is needed for forecasting/model health. Runtime inference does not read raw/processed CSVs. Raw UCI history is needed only for explicit reference import or research reproduction. Research endpoints remain separate from the operational database. The local DB is created through migrations, never committed. There is no IoT stream, scheduler, physical control or measured savings service. SQLite concurrency, experimental cross-building transfer and prototype security limits remain explicit.
+
+See [backend usage](../backend/README.md), [model usage](../ml/models/README.md), [authentication](authentication.md), [admin panel](admin-panel.md) and [frontend integration](../src/lib/api/README.md).

@@ -2,7 +2,7 @@
 
 [Overview](../README.md) | [Database foundation](database-architecture.md) | [Auth audit](../ml/results/phase22_authentication_roles.json)
 
-This phase adds actual signup/login and persistent opaque sessions to the application layer. Research methodology, numerical artifacts, model/inference/recommendation helpers and research endpoint payloads are unchanged. Public research APIs and Swagger remain available without login. Application routes require a verified session; admin routes require ADMIN but retain the honest unavailable management shell. No building CRUD, measurement/import, building-specific forecasting or admin management is implemented.
+This phase adds actual signup/login and persistent opaque sessions to the application layer. Research methodology, numerical artifacts, model/inference/recommendation helpers and research endpoint payloads are unchanged. Public research APIs and Swagger remain available without login. Application routes require a verified session. The final application also implements owned building CRUD, measurement import, stored-history forecasting and dedicated admin management; see [final overview](final-application-overview.md). This document retains the original authentication contract.
 
 ## Architecture and password handling
 
@@ -26,7 +26,7 @@ Email normalization trims surrounding whitespace, validates syntax with `email-v
 
 Public signup accepts **email/password/full_name only**, always creates active USER, hashes the password and establishes a session. Extra fields, including role/password_hash, are rejected. Duplicate email returns 409, intentionally revealing that an identity exists. ADMIN is provisioned only through the explicit local bootstrap command; frontend role values are never authorization evidence.
 
-`get_current_user` checks token format/digest, expiration, user existence and active status on every authenticated request. `require_admin` builds on that dependency and returns 403 for USER, 401 without valid authentication. It is tested using a test-only probe; no admin management API is mounted. Inactive login is rejected with the same safe error as unknown identity/wrong password. When inactivity is observed, all that user's sessions are deleted; an existing session stops authenticating on its next request.
+`get_current_user` checks token format/digest, expiration, user existence and active status on every authenticated request. `require_admin` builds on that dependency and returns 403 for USER, 401 without valid authentication. Dedicated admin management APIs now apply this dependency; ordinary building APIs remain owner-only. Inactive login is rejected with the same safe error as unknown identity/wrong password. When inactivity is observed, all that user's sessions are deleted; an existing session stops authenticating on its next request.
 
 ## Endpoints
 

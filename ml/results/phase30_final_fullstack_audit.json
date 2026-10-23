@@ -1,0 +1,1888 @@
+{
+  "phase": 30,
+  "title": "Final Full-Stack Bachelor Application Audit, Release Readiness and Thesis Demo Preparation",
+  "date": "2026-10-23",
+  "status": "passed_for_Bachelor_scope_and_documented_local_demo_with_limits",
+  "phase29_committed_before_changes": true,
+  "base_commit": "41ebd277914ab6e52103345154f616de2fa38475",
+  "scope": "Release audit, documentation/preflight corrections and concrete fresh-install defects only; no product feature/model/schema/dependency changes",
+  "research_model_facts": {
+    "model": "Tuned XGBoost",
+    "feature_count": 42,
+    "horizon_minutes": 10,
+    "unit": "Wh",
+    "target": "target_appliances_next",
+    "final_TEST_original_metrics": {
+      "mae": 25.891124725341797,
+      "r2": 0.5820133686065674,
+      "rmse": 59.11701146812037
+    },
+    "model_sha256": "6418bca4fd34b120928bdcc7c37c72e32f2cb6b8e5fd48d6164441aa1a9f7404",
+    "model_fit_or_tuning_in_phase30": false,
+    "new_held_out_evaluation": false,
+    "model_bootstrap_command": "python ml/src/save_final_model.py",
+    "bootstrap_execution": "Source/assumptions reviewed; generator not rerun because the original verified ignored artifact was explicitly supplied. No authoritative model overwrite/refit. Existing persistence/inference tests and parity gates pass."
+  },
+  "defects": [
+    {
+      "id": "R1",
+      "problem": "Root/fact/architecture/demo/database docs still claim real implemented services absent.",
+      "fix": "Unified current full-stack setup and demo/schema/defense docs; retained research method/results."
+    },
+    {
+      "id": "R2",
+      "problem": "Normal preflight requires processed TRAIN and omits DB/migration/auth prerequisites.",
+      "fix": "Default dataset-free read-only prerequisite check; TRAIN only optional development request; clear non-goals/failures; three regressions."
+    },
+    {
+      "id": "R3",
+      "problem": "Fresh Windows archive/checkouts with core.autocrlf=true convert LF scientific JSON to CRLF; verified loader rejects schema/lock hashes.",
+      "fix": "Scoped ml/results/*.json text eol=lf attributes. Corrected isolated archive critical JSON exactly matches authoritative LF bytes; checksum guards unchanged."
+    },
+    {
+      "id": "R4",
+      "problem": "Fresh dependency resolution exposes newer TanStack error prop unknown, rejecting Error-only root callback.",
+      "fix": "One type annotation widened to unknown; no layout/provider/middleware/error-runtime change."
+    },
+    {
+      "id": "R5",
+      "problem": "About/OpenAPI copy implies all forecasts require client-engineered42 features and understates persisted capabilities.",
+      "fix": "Accurately distinguish research feature-input endpoints and private stored-history forecast construction."
+    }
+  ],
+  "files": [
+    {
+      "path": ".gitattributes",
+      "change": "created",
+      "purpose": "Preserve LF for byte-checksummed research JSON across fresh Windows checkouts."
+    },
+    {
+      "path": "docs/final-application-overview.md",
+      "change": "created",
+      "purpose": "Concise evaluator architecture, workflows and scope."
+    },
+    {
+      "path": "docs/final-demo-checklist.md",
+      "change": "created",
+      "purpose": "Practical pre-defense, demo and recovery checkboxes."
+    },
+    {
+      "path": "docs/final-endpoint-inventory.md",
+      "change": "created",
+      "purpose": "Inspected route classification and exact OpenAPI operation inventory."
+    },
+    {
+      "path": "ml/results/phase30_final_fullstack_audit.json",
+      "change": "created",
+      "purpose": "Final facts, actual verification evidence, limitations, readiness and staging manifest."
+    },
+    {
+      "path": "tests/test_release_preflight.py",
+      "change": "created",
+      "purpose": "Three regressions for no writes, safe private configuration failures and missing prerequisites."
+    },
+    {
+      "path": "tests/verify_final_application.py",
+      "change": "created",
+      "purpose": "Supported-only release USER/ADMIN, persistence, routes, offline, responsive browser audit."
+    },
+    {
+      "path": "README.md",
+      "change": "modified",
+      "purpose": "Unified evaluator setup, artifact policy, full-stack workflow, tests and limitations."
+    },
+    {
+      "path": "backend/main.py",
+      "change": "modified",
+      "purpose": "Accurate OpenAPI description of research and stored-history contracts."
+    },
+    {
+      "path": "docs/authentication.md",
+      "change": "modified",
+      "purpose": "Correct outdated absence-of-management statements."
+    },
+    {
+      "path": "docs/database-architecture.md",
+      "change": "modified",
+      "purpose": "Document current five tables, snapshots, constraints and migration head."
+    },
+    {
+      "path": "docs/defense-technical-reference.md",
+      "change": "modified",
+      "purpose": "Add actual full-stack/security/lifecycle defense answers."
+    },
+    {
+      "path": "docs/project-fact-sheet.md",
+      "change": "modified",
+      "purpose": "Retain exact research facts and add current application facts."
+    },
+    {
+      "path": "docs/reproducibility.md",
+      "change": "modified",
+      "purpose": "Separate current operational startup from deliberate research reconstruction."
+    },
+    {
+      "path": "docs/security-and-quality-assurance.md",
+      "change": "modified",
+      "purpose": "Document final release corrections and unchanged security boundaries."
+    },
+    {
+      "path": "docs/system-architecture.md",
+      "change": "modified",
+      "purpose": "Preserve research diagram and add final auth/database/building/admin path."
+    },
+    {
+      "path": "docs/thesis-demo-guide.md",
+      "change": "modified",
+      "purpose": "Replace obsolete research-only demo with full USER/ADMIN sequence and recovery."
+    },
+    {
+      "path": "src/routes/__root.tsx",
+      "change": "modified",
+      "purpose": "Widen one error callback parameter to unknown for fresh TanStack types; preserve layout/behavior."
+    },
+    {
+      "path": "src/routes/about.tsx",
+      "change": "modified",
+      "purpose": "Correct outdated engineered-input/manual-history capability wording."
+    },
+    {
+      "path": "tests/verify_demo_preflight.py",
+      "change": "modified",
+      "purpose": "Read-only full-stack prerequisite checks without mandatory datasets or DB connection."
+    }
+  ],
+  "exact_new_files_to_stage": [
+    ".gitattributes",
+    "docs/final-application-overview.md",
+    "docs/final-demo-checklist.md",
+    "docs/final-endpoint-inventory.md",
+    "ml/results/phase30_final_fullstack_audit.json",
+    "tests/test_release_preflight.py",
+    "tests/verify_final_application.py"
+  ],
+  "exact_modified_files_to_stage": [
+    "README.md",
+    "backend/main.py",
+    "docs/authentication.md",
+    "docs/database-architecture.md",
+    "docs/defense-technical-reference.md",
+    "docs/project-fact-sheet.md",
+    "docs/reproducibility.md",
+    "docs/security-and-quality-assurance.md",
+    "docs/system-architecture.md",
+    "docs/thesis-demo-guide.md",
+    "src/routes/__root.tsx",
+    "src/routes/about.tsx",
+    "tests/verify_demo_preflight.py"
+  ],
+  "preexisting_route_tree": {
+    "classification": "B: retain the legitimate generated Start registration footer for consistency with current generator; no route path change",
+    "tracked_tree_without_footer_was_build_input": true,
+    "clean_build_regenerated_footer": true,
+    "typecheck_before_and_after_passed_after_independent_error_type_fix": true,
+    "runtime_route_changes": false,
+    "footer_is_not_needed_to_make_current_typecheck_pass": true,
+    "generator_source": "node_modules/@tanstack/start-plugin-core/src/start-router-plugin/route-tree-footer.ts",
+    "workspace_preexisting_bytes_preserved": true,
+    "recommendation": "Retain and explicitly stage the existing generated footer after reviewing git diff -- src/routeTree.gen.ts. Do not restore it merely to hide the diff; current Start builds recreate it.",
+    "manual_commands": [
+      "git diff -- src/routeTree.gen.ts",
+      "git add -- src/routeTree.gen.ts"
+    ],
+    "staged_automatically": false,
+    "fresh_dependency_version_footer_spacing_difference": "Newly resolved generator emits an extra blank line; workspace generated file is preserved, not reformatted."
+  },
+  "no_staging_commit_or_push": true,
+  "no_later_phase": true,
+  "final_architecture": "React/TanStack Start SSR -> typed fetch/Query -> FastAPI auth/ownership/admin -> SQLAlchemy/Alembic -> SQLite; raw owned history -> shared42 features -> verified XGBoost -> Phase14 rules -> persisted snapshot/history; research evidence separate.",
+  "full_stack_feature_inventory": [
+    "Real USER signup/login/session/logout",
+    "Owned building CRUD",
+    "Manual and atomic CSV measurements",
+    "Explicit active-ADMIN UCI reference import",
+    "Continuity readiness and shared42 features",
+    "Explicit persisted ten-minute forecast/recommendation and identical-input reuse",
+    "Selected-building dashboard and paginated ledgers",
+    "Dedicated ADMIN overview/users/buildings/activity and guarded status changes"
+  ],
+  "fresh_setup": {
+    "protected_file_count": 86,
+    "tracked_commit": "41ebd277914ab6e52103345154f616de2fa38475",
+    "initial_tracked_only": true,
+    "explicit_ignored_artifacts_supplied": [
+      "data/raw/energydata_complete.csv",
+      "ml/models/final_xgboost_model.json"
+    ],
+    "no_database_or_auth_state_copied": true,
+    "numeric_constraints": "numpy==2.5.4\npandas==3.0.6\nscikit-learn==1.9.1\nxgboost==3.4.1\n",
+    "python_install": {
+      "return_code": 0,
+      "passed": true,
+      "log": "ml/results/generated/phase30_python_install.log"
+    },
+    "frontend_install": {
+      "return_code": 0,
+      "passed": true,
+      "log": "ml/results/generated/phase30_frontend_install.log"
+    },
+    "line_ending_defect": {
+      "initial_archive_preflight_failed": true,
+      "cause": "core.autocrlf=true materialized checksummed JSON as CRLF",
+      "fix": ".gitattributes scoped ml/results/*.json text eol=lf",
+      "corrected_archive_critical_JSON_byte_identical": true,
+      "source_hashes_or_loader_checks_not_changed": true
+    },
+    "error_callback_defect": {
+      "fresh_resolved_router_version": "1.170.46",
+      "fix": "ErrorComponent error parameter widened from Error to unknown; no runtime/layout change"
+    },
+    "numeric_install_method": "New venv: pip install -r requirements.txt with constraints matching the four numerical versions already documented in final_model_metadata; no workspace dependency edits.",
+    "frontend_install_method": "New node_modules: npm install --package-lock=false --no-audit --no-fund; package ranges resolved; Bun lock unchanged; not claimed as exact original locked-tree replay.",
+    "processed_datasets_absent_during_preflight_build_browser": true,
+    "supplied_model_checksum_verified": true,
+    "model_bootstrap_not_executed_reason": "No need to reconstruct: matching original artifact explicitly supplied; task prohibits unnecessary model refit/evaluation.",
+    "temporary_release_copy_removed": true
+  },
+  "fresh_preflight": {
+    "passed": true,
+    "api": "SmartEnergyAI API",
+    "python": "3.13.14",
+    "packages": {
+      "pandas": "3.0.6",
+      "numpy": "2.5.4",
+      "scikit-learn": "1.9.1",
+      "xgboost": "3.4.1",
+      "joblib": "1.6.0",
+      "fastapi": "0.161.1",
+      "pydantic": "2.14.1",
+      "uvicorn": "0.54.0",
+      "SQLAlchemy": "2.1.6",
+      "alembic": "1.20.1",
+      "pwdlib": "0.3.1",
+      "argon2-cffi": "25.1.0",
+      "email-validator": "2.3.0",
+      "python-multipart": "0.0.32"
+    },
+    "model": "Tuned XGBoost",
+    "model_sha256": "6418bca4fd34b120928bdcc7c37c72e32f2cb6b8e5fd48d6164441aa1a9f7404",
+    "feature_count": 42,
+    "feature_order_matches": true,
+    "thresholds_loaded": true,
+    "migration_head": "0026_prediction_feature_snapshots",
+    "database_backend": "sqlite",
+    "database_connected": false,
+    "database_migration_applied_checked": false,
+    "admin_existence_checked": false,
+    "frontend_scripts": {
+      "dev": "vite dev",
+      "build": "vite build",
+      "build:dev": "vite build --mode development",
+      "preview": "vite preview",
+      "lint": "eslint .",
+      "format": "prettier --write ."
+    },
+    "openapi_operation_count": 32,
+    "raw_or_processed_data_required": false,
+    "research_writes": false,
+    "test_data_read": false,
+    "model_fit": false,
+    "next_step": "Explicitly migrate DB, bootstrap ADMIN, start services and verify sign-in."
+  },
+  "fresh_backend_tests": {
+    "tests": 59,
+    "suites": {
+      "test_database.py": {
+        "passed": true,
+        "return_code": 0
+      },
+      "test_auth.py": {
+        "passed": true,
+        "return_code": 0
+      },
+      "test_migration_hardening.py": {
+        "passed": true,
+        "return_code": 0
+      }
+    },
+    "passed": true,
+    "environment": "New isolated venv, independently installed requirements with recorded numerical constraints"
+  },
+  "migration_and_reference_command": {
+    "passed": true,
+    "empty_migration_no_seeds": true,
+    "schema": {
+      "alembic_version": {
+        "columns": [
+          "version_num"
+        ],
+        "foreign_keys": []
+      },
+      "auth_sessions": {
+        "columns": [
+          "id",
+          "user_id",
+          "token_hash",
+          "created_at",
+          "expires_at"
+        ],
+        "foreign_keys": [
+          {
+            "constrained_columns": [
+              "user_id"
+            ],
+            "referred_table": "users",
+            "referred_columns": [
+              "id"
+            ],
+            "options": {
+              "ondelete": "CASCADE"
+            }
+          }
+        ]
+      },
+      "buildings": {
+        "columns": [
+          "id",
+          "owner_id",
+          "name",
+          "building_type",
+          "floor_area_m2",
+          "city",
+          "description",
+          "created_at",
+          "updated_at"
+        ],
+        "foreign_keys": [
+          {
+            "constrained_columns": [
+              "owner_id"
+            ],
+            "referred_table": "users",
+            "referred_columns": [
+              "id"
+            ],
+            "options": {
+              "ondelete": "RESTRICT"
+            }
+          }
+        ]
+      },
+      "measurements": {
+        "columns": [
+          "id",
+          "building_id",
+          "timestamp",
+          "Appliances",
+          "lights",
+          "T1",
+          "RH_1",
+          "T2",
+          "RH_2",
+          "T3",
+          "RH_3",
+          "T4",
+          "RH_4",
+          "T5",
+          "RH_5",
+          "T6",
+          "RH_6",
+          "T7",
+          "RH_7",
+          "T8",
+          "RH_8",
+          "T9",
+          "RH_9",
+          "T_out",
+          "Press_mm_hg",
+          "RH_out",
+          "Windspeed",
+          "Visibility",
+          "Tdewpoint"
+        ],
+        "foreign_keys": [
+          {
+            "constrained_columns": [
+              "building_id"
+            ],
+            "referred_table": "buildings",
+            "referred_columns": [
+              "id"
+            ],
+            "options": {
+              "ondelete": "CASCADE"
+            }
+          }
+        ]
+      },
+      "predictions": {
+        "columns": [
+          "id",
+          "building_id",
+          "source_timestamp",
+          "prediction_wh",
+          "horizon_minutes",
+          "model_name",
+          "model_checksum",
+          "created_at",
+          "recommendation_level",
+          "recommendation_code",
+          "recommendation_priority",
+          "recommendation_text",
+          "feature_hash",
+          "feature_snapshot_json"
+        ],
+        "foreign_keys": [
+          {
+            "constrained_columns": [
+              "building_id"
+            ],
+            "referred_table": "buildings",
+            "referred_columns": [
+              "id"
+            ],
+            "options": {
+              "ondelete": "CASCADE"
+            }
+          }
+        ]
+      },
+      "users": {
+        "columns": [
+          "id",
+          "email",
+          "password_hash",
+          "full_name",
+          "role",
+          "is_active",
+          "created_at",
+          "updated_at"
+        ],
+        "foreign_keys": []
+      }
+    },
+    "reference_CLI_first_import_count": 19735,
+    "reference_CLI_repeat_rejected": true,
+    "reference_ready": true,
+    "name": "UCI Reference Building",
+    "temporary_database_cleaned": true
+  },
+  "release_journey": {
+    "fresh_empty_schema_no_seeds": true,
+    "admin_bootstrap_normalized_hidden_prompt_helper": true,
+    "duplicate_bootstrap_rejected": true,
+    "user_signup_logout_login_building_create_edit": true,
+    "manual_and_CSV_1009_persisted": true,
+    "invalid_import_atomic_duplicate_rejected": true,
+    "readiness_insufficient_ready_delete_restore": true,
+    "forecast_recommendation_Wh_10_minutes": true,
+    "identical_input_reused_and_new_origin_historical": true,
+    "second_owned_building_and_selector_isolated": true,
+    "USER_B_foreign_API_and_deep_link_denied": true,
+    "ADMIN_overview_users_buildings_predictions_and_status": true,
+    "deactivation_revokes_session_retains_data_reactivation_fresh_login": true,
+    "self_deactivation_denied": true,
+    "backend_restart_session_and_domain_persistence": true,
+    "admin_confirmation_desktop_mobile_accessibility_sanity": true,
+    "route_offline_responsive_accessibility_journey": {
+      "passed": true,
+      "pure_supported_UI_API_journey_no_manual_domain_DB_writes": true,
+      "manual_plus_CSV_1009_history": true,
+      "persisted_prediction_recommendation": true,
+      "second_building_isolated": true,
+      "backend_actually_stopped_and_restarted": true,
+      "offline_no_current_forecast_and_no_immediate_request_loop": true,
+      "Retry_restores_same_persisted_forecast": true,
+      "two_real_tabs_logout_next_action_denied": true,
+      "routes_by_actor": {
+        "ANONYMOUS": [
+          "/",
+          "/about",
+          "/contact",
+          "/login",
+          "/signup",
+          "/forgot-password",
+          "/reset-password",
+          "/verify-email",
+          "/onboarding",
+          "/dashboard",
+          "/buildings",
+          "/buildings/3",
+          "/data",
+          "/predictions?building=3",
+          "/recommendations?building=3",
+          "/settings",
+          "/admin",
+          "/admin/users",
+          "/admin/buildings"
+        ],
+        "USER": [
+          "/",
+          "/about",
+          "/contact",
+          "/login",
+          "/signup",
+          "/forgot-password",
+          "/reset-password",
+          "/verify-email",
+          "/onboarding",
+          "/dashboard",
+          "/buildings",
+          "/buildings/3",
+          "/data",
+          "/predictions?building=3",
+          "/recommendations?building=3",
+          "/settings",
+          "/admin",
+          "/admin/users",
+          "/admin/buildings"
+        ],
+        "ADMIN": [
+          "/",
+          "/about",
+          "/contact",
+          "/login",
+          "/signup",
+          "/forgot-password",
+          "/reset-password",
+          "/verify-email",
+          "/onboarding",
+          "/dashboard",
+          "/buildings",
+          "/buildings/3",
+          "/data",
+          "/predictions?building=3",
+          "/recommendations?building=3",
+          "/settings",
+          "/admin",
+          "/admin/users",
+          "/admin/buildings"
+        ]
+      },
+      "cross_user_and_admin_attack_denied": true,
+      "XSS_full_name_building_city_description_render_as_text": true,
+      "keyboard_Tab_form_labels_mobile_close_button": true,
+      "responsive_widths": [
+        1440,
+        390
+      ],
+      "admin_and_ledger_refresh_persistence": true,
+      "security_headers_observed": {
+        "API": {
+          "X-Content-Type-Options": null,
+          "Referrer-Policy": null,
+          "X-Frame-Options": null,
+          "Content-Security-Policy": null
+        },
+        "frontend_SSR": {
+          "X-Content-Type-Options": null,
+          "Referrer-Policy": null,
+          "X-Frame-Options": null,
+          "Content-Security-Policy": null
+        }
+      },
+      "runtime_password_and_sample_session_not_in_QA_logs": true
+    },
+    "passed": true,
+    "OpenAPI_live_operation_inventory": [
+      {
+        "method": "POST",
+        "path": "/auth/signup"
+      },
+      {
+        "method": "POST",
+        "path": "/auth/login"
+      },
+      {
+        "method": "GET",
+        "path": "/auth/me"
+      },
+      {
+        "method": "POST",
+        "path": "/auth/logout"
+      },
+      {
+        "method": "POST",
+        "path": "/buildings"
+      },
+      {
+        "method": "GET",
+        "path": "/buildings"
+      },
+      {
+        "method": "GET",
+        "path": "/buildings/{building_id}"
+      },
+      {
+        "method": "PATCH",
+        "path": "/buildings/{building_id}"
+      },
+      {
+        "method": "DELETE",
+        "path": "/buildings/{building_id}"
+      },
+      {
+        "method": "POST",
+        "path": "/buildings/{building_id}/measurements"
+      },
+      {
+        "method": "GET",
+        "path": "/buildings/{building_id}/measurements"
+      },
+      {
+        "method": "DELETE",
+        "path": "/buildings/{building_id}/measurements/{measurement_id}"
+      },
+      {
+        "method": "POST",
+        "path": "/buildings/{building_id}/measurements/import"
+      },
+      {
+        "method": "GET",
+        "path": "/buildings/{building_id}/prediction-readiness"
+      },
+      {
+        "method": "POST",
+        "path": "/buildings/{building_id}/predictions"
+      },
+      {
+        "method": "GET",
+        "path": "/buildings/{building_id}/predictions"
+      },
+      {
+        "method": "GET",
+        "path": "/buildings/{building_id}/dashboard-summary"
+      },
+      {
+        "method": "GET",
+        "path": "/admin/overview"
+      },
+      {
+        "method": "GET",
+        "path": "/admin/users"
+      },
+      {
+        "method": "GET",
+        "path": "/admin/users/{user_id}"
+      },
+      {
+        "method": "PATCH",
+        "path": "/admin/users/{user_id}/status"
+      },
+      {
+        "method": "GET",
+        "path": "/admin/buildings"
+      },
+      {
+        "method": "GET",
+        "path": "/admin/buildings/{building_id}"
+      },
+      {
+        "method": "GET",
+        "path": "/admin/predictions"
+      },
+      {
+        "method": "GET",
+        "path": "/"
+      },
+      {
+        "method": "GET",
+        "path": "/health"
+      },
+      {
+        "method": "GET",
+        "path": "/model/info"
+      },
+      {
+        "method": "POST",
+        "path": "/forecast"
+      },
+      {
+        "method": "POST",
+        "path": "/forecast/recommendation"
+      },
+      {
+        "method": "GET",
+        "path": "/recommendations/thresholds"
+      },
+      {
+        "method": "GET",
+        "path": "/analysis/model-comparison"
+      },
+      {
+        "method": "GET",
+        "path": "/analysis/feature-importance"
+      }
+    ],
+    "OpenAPI_sensitive_internal_fields_absent": true,
+    "Swagger_HTTP_200": true,
+    "runtime_errors": [],
+    "cors_errors": [],
+    "runtime_credentials_absent_from_QA_logs": true,
+    "temporary_DB_profile_processes_cleaned": true,
+    "no_domain_DB_manipulation_after_bootstrap": true
+  },
+  "route_API_inventory": {
+    "routes": {
+      "PUBLIC": [
+        "/",
+        "/about",
+        "/contact",
+        "/onboarding"
+      ],
+      "AUTH": [
+        "/login",
+        "/signup",
+        "/forgot-password",
+        "/reset-password",
+        "/verify-email"
+      ],
+      "USER": [
+        "/dashboard",
+        "/buildings",
+        "/buildings/$id",
+        "/data",
+        "/predictions",
+        "/recommendations",
+        "/settings"
+      ],
+      "ADMIN": [
+        "/admin",
+        "/admin/users",
+        "/admin/buildings"
+      ]
+    },
+    "operations": [
+      {
+        "group": "authentication",
+        "method": "POST",
+        "path": "/auth/signup",
+        "summary": "Signup"
+      },
+      {
+        "group": "authentication",
+        "method": "POST",
+        "path": "/auth/login",
+        "summary": "Login"
+      },
+      {
+        "group": "authentication",
+        "method": "GET",
+        "path": "/auth/me",
+        "summary": "Current User"
+      },
+      {
+        "group": "authentication",
+        "method": "POST",
+        "path": "/auth/logout",
+        "summary": "Logout"
+      },
+      {
+        "group": "buildings",
+        "method": "POST",
+        "path": "/buildings",
+        "summary": "Create"
+      },
+      {
+        "group": "buildings",
+        "method": "GET",
+        "path": "/buildings",
+        "summary": "Listing"
+      },
+      {
+        "group": "buildings",
+        "method": "GET",
+        "path": "/buildings/{building_id}",
+        "summary": "Detail"
+      },
+      {
+        "group": "buildings",
+        "method": "PATCH",
+        "path": "/buildings/{building_id}",
+        "summary": "Update"
+      },
+      {
+        "group": "buildings",
+        "method": "DELETE",
+        "path": "/buildings/{building_id}",
+        "summary": "Delete"
+      },
+      {
+        "group": "measurements",
+        "method": "POST",
+        "path": "/buildings/{building_id}/measurements",
+        "summary": "Create"
+      },
+      {
+        "group": "measurements",
+        "method": "GET",
+        "path": "/buildings/{building_id}/measurements",
+        "summary": "Listing"
+      },
+      {
+        "group": "measurements",
+        "method": "DELETE",
+        "path": "/buildings/{building_id}/measurements/{measurement_id}",
+        "summary": "Delete"
+      },
+      {
+        "group": "measurements",
+        "method": "POST",
+        "path": "/buildings/{building_id}/measurements/import",
+        "summary": "Import Csv"
+      },
+      {
+        "group": "readiness",
+        "method": "GET",
+        "path": "/buildings/{building_id}/prediction-readiness",
+        "summary": "Readiness"
+      },
+      {
+        "group": "predictions",
+        "method": "POST",
+        "path": "/buildings/{building_id}/predictions",
+        "summary": "Create"
+      },
+      {
+        "group": "predictions",
+        "method": "GET",
+        "path": "/buildings/{building_id}/predictions",
+        "summary": "Listing"
+      },
+      {
+        "group": "dashboard",
+        "method": "GET",
+        "path": "/buildings/{building_id}/dashboard-summary",
+        "summary": "Summary"
+      },
+      {
+        "group": "admin",
+        "method": "GET",
+        "path": "/admin/overview",
+        "summary": "Overview"
+      },
+      {
+        "group": "admin",
+        "method": "GET",
+        "path": "/admin/users",
+        "summary": "Users"
+      },
+      {
+        "group": "admin",
+        "method": "GET",
+        "path": "/admin/users/{user_id}",
+        "summary": "User Detail"
+      },
+      {
+        "group": "admin",
+        "method": "PATCH",
+        "path": "/admin/users/{user_id}/status",
+        "summary": "Status"
+      },
+      {
+        "group": "admin",
+        "method": "GET",
+        "path": "/admin/buildings",
+        "summary": "Buildings"
+      },
+      {
+        "group": "admin",
+        "method": "GET",
+        "path": "/admin/buildings/{building_id}",
+        "summary": "Building Detail"
+      },
+      {
+        "group": "admin",
+        "method": "GET",
+        "path": "/admin/predictions",
+        "summary": "Predictions"
+      },
+      {
+        "group": "public/research",
+        "method": "GET",
+        "path": "/",
+        "summary": "Root"
+      },
+      {
+        "group": "public/research",
+        "method": "GET",
+        "path": "/health",
+        "summary": "Health"
+      },
+      {
+        "group": "public/research",
+        "method": "GET",
+        "path": "/model/info",
+        "summary": "Model Info"
+      },
+      {
+        "group": "public/research",
+        "method": "POST",
+        "path": "/forecast",
+        "summary": "Forecast"
+      },
+      {
+        "group": "public/research",
+        "method": "POST",
+        "path": "/forecast/recommendation",
+        "summary": "Forecast Recommendation"
+      },
+      {
+        "group": "public/research",
+        "method": "GET",
+        "path": "/recommendations/thresholds",
+        "summary": "Recommendation Thresholds"
+      },
+      {
+        "group": "public/research",
+        "method": "GET",
+        "path": "/analysis/model-comparison",
+        "summary": "Model Comparison"
+      },
+      {
+        "group": "public/research",
+        "method": "GET",
+        "path": "/analysis/feature-importance",
+        "summary": "Feature Importance"
+      }
+    ]
+  },
+  "OpenAPI_status": {
+    "docs_HTTP": 200,
+    "openapi_JSON_live_checked": true,
+    "operations": 32,
+    "documentation_inventory_matches": true,
+    "sensitive_internal_fields_absent": true
+  },
+  "verification": {
+    "python_tests_final": {
+      "passed": true,
+      "return_code": 0,
+      "log": "ml/results/generated/phase30_python_tests_final.log",
+      "passed_count": 256,
+      "warning_count": 174,
+      "subtests": 211,
+      "failed": 0,
+      "skipped": 0
+    },
+    "workspace_typecheck": {
+      "passed": true,
+      "return_code": 0,
+      "log": "ml/results/generated/phase30_workspace_typecheck.log"
+    },
+    "workspace_build": {
+      "passed": true,
+      "return_code": 0,
+      "log": "ml/results/generated/phase30_workspace_build.log",
+      "nonblocking_warnings": [
+        "inlineDynamicImports ignored because codeSplitting specified; existing Lovable wrapper preserved."
+      ]
+    },
+    "semantic_lint": {
+      "passed": true,
+      "return_code": 0,
+      "log": "ml/results/generated/phase30_semantic_lint.log",
+      "targets": [
+        "src/components/admin-buildings.tsx",
+        "src/components/admin-common.tsx",
+        "src/components/admin-overview.tsx",
+        "src/components/admin-users.tsx",
+        "src/components/app-shell.tsx",
+        "src/components/auth-form.tsx",
+        "src/components/auth-guard.tsx",
+        "src/components/backend-status.tsx",
+        "src/components/building-form.tsx",
+        "src/components/building-history-explorer.tsx",
+        "src/components/building-management.tsx",
+        "src/components/building-measurements.tsx",
+        "src/components/building-predictions.tsx",
+        "src/components/building-selection.tsx",
+        "src/components/dashboard-forecast.tsx",
+        "src/components/energy-history-chart.tsx",
+        "src/components/prediction-readiness.tsx",
+        "src/components/research-dashboard.tsx",
+        "src/components/research-information.tsx",
+        "src/components/theme-toggle.tsx",
+        "src/components/user-dashboard.tsx",
+        "src/hooks/use-admin.ts",
+        "src/hooks/use-building-dashboard.ts",
+        "src/hooks/use-building-predictions.ts",
+        "src/hooks/use-buildings.ts",
+        "src/hooks/use-measurements.ts",
+        "src/hooks/use-prediction-readiness.ts",
+        "src/hooks/use-smart-energy-api.ts",
+        "src/lib/admin-view.ts",
+        "src/lib/api/admin.ts",
+        "src/lib/api/auth.ts",
+        "src/lib/api/building-predictions.ts",
+        "src/lib/api/buildings.ts",
+        "src/lib/api/client.ts",
+        "src/lib/api/dashboard.ts",
+        "src/lib/api/measurements.ts",
+        "src/lib/api/prediction-readiness.ts",
+        "src/lib/api/research-schemas.ts",
+        "src/lib/api/smartEnergyApi.ts",
+        "src/lib/api/types.ts",
+        "src/lib/auth-policy.ts",
+        "src/lib/auth.tsx",
+        "src/lib/dashboard-view.ts",
+        "src/lib/measurement-cache.ts",
+        "src/routes/__root.tsx",
+        "src/routes/about.tsx",
+        "src/routes/admin.buildings.tsx",
+        "src/routes/admin.index.tsx",
+        "src/routes/admin.users.tsx",
+        "src/routes/buildings.$id.tsx",
+        "src/routes/buildings.index.tsx",
+        "src/routes/dashboard.tsx",
+        "src/routes/data.tsx",
+        "src/routes/forgot-password.tsx",
+        "src/routes/login.tsx",
+        "src/routes/onboarding.tsx",
+        "src/routes/predictions.tsx",
+        "src/routes/recommendations.tsx",
+        "src/routes/settings.tsx",
+        "src/routes/signup.tsx",
+        "src/routes/verify-email.tsx",
+        "vite.config.ts"
+      ],
+      "nonblocking_warnings": [
+        "One pre-existing react-refresh/only-export-components warning in src/lib/auth.tsx:59; zero errors."
+      ]
+    },
+    "feature_parity": {
+      "passed": true,
+      "return_code": 0,
+      "log": "ml/results/generated/phase30_feature_parity.log"
+    },
+    "model_recommendation_parity": {
+      "passed": true,
+      "return_code": 0,
+      "log": "ml/results/generated/phase30_model_recommendation_parity.log"
+    },
+    "frontend_tests": {
+      "passed": true,
+      "return_code": 0,
+      "log": "ml/results/generated/phase30_frontend_tests.log",
+      "tests": 111,
+      "passed_count": 111,
+      "failed": 0,
+      "skipped": 0
+    },
+    "isolated_release": {
+      "fresh_preflight": {
+        "passed": true,
+        "return_code": 0,
+        "log": "ml/results/generated/phase30_fresh_preflight.log"
+      },
+      "fresh_typecheck_before_generation": {
+        "passed": true,
+        "return_code": 0,
+        "log": "ml/results/generated/phase30_fresh_typecheck_before_generation.log"
+      },
+      "fresh_build": {
+        "passed": true,
+        "return_code": 0,
+        "log": "ml/results/generated/phase30_fresh_build.log"
+      },
+      "fresh_typecheck_after_generation": {
+        "passed": true,
+        "return_code": 0,
+        "log": "ml/results/generated/phase30_fresh_typecheck_after_generation.log"
+      },
+      "release_browser": {
+        "passed": true,
+        "return_code": 0,
+        "log": "ml/results/generated/phase30_release_browser.log"
+      }
+    }
+  },
+  "initial_failures_and_resolution": {
+    "preflight_and_typecheck_initially_failed": true,
+    "corrected_before_final_verdict": true,
+    "line_ending_and_router_type_defects_recorded": "R3 and R4",
+    "browser_harness_origin_issue": "First attempt made initial logout fetch from about:blank (null origin) and correctly failed CORS. Harness corrected to visit trusted frontend login before API calls; not an application bypass."
+  },
+  "feature_parity": {
+    "passed": true,
+    "source_rows_imported": 19735,
+    "feature_count": 42,
+    "feature_order": [
+      "Appliances",
+      "lights",
+      "T1",
+      "RH_1",
+      "T2",
+      "RH_2",
+      "T3",
+      "RH_3",
+      "T4",
+      "RH_4",
+      "T5",
+      "RH_5",
+      "T6",
+      "RH_6",
+      "T7",
+      "RH_7",
+      "T8",
+      "RH_8",
+      "T9",
+      "RH_9",
+      "T_out",
+      "Press_mm_hg",
+      "RH_out",
+      "Windspeed",
+      "Visibility",
+      "Tdewpoint",
+      "hour",
+      "day_of_week",
+      "month",
+      "is_weekend",
+      "hour_sin",
+      "hour_cos",
+      "dow_sin",
+      "dow_cos",
+      "appliances_lag_1",
+      "appliances_lag_6",
+      "appliances_lag_144",
+      "appliances_lag_1008",
+      "appliances_roll_mean_1h",
+      "appliances_roll_std_1h",
+      "appliances_roll_mean_24h",
+      "appliances_roll_std_24h"
+    ],
+    "first_inference_ready_timestamp": "2016-01-18T17:00:00",
+    "minimum_observations": 1009,
+    "parity_points": [
+      {
+        "timestamp": "2016-01-18T17:00:00",
+        "features_compared": 42,
+        "max_absolute_difference": 7.105427357601002e-15,
+        "mismatches_above_tolerance": 0,
+        "exactly_enforced_features": [
+          "Appliances",
+          "lights",
+          "hour",
+          "day_of_week",
+          "month",
+          "is_weekend",
+          "hour_sin",
+          "hour_cos",
+          "dow_sin",
+          "dow_cos",
+          "appliances_lag_1",
+          "appliances_lag_6",
+          "appliances_lag_144",
+          "appliances_lag_1008",
+          "appliances_roll_mean_1h",
+          "appliances_roll_mean_24h"
+        ],
+        "features_exactly_equal": 40,
+        "differing_features": [
+          "T2",
+          "T7"
+        ]
+      },
+      {
+        "timestamp": "2016-02-29T09:00:00",
+        "features_compared": 42,
+        "max_absolute_difference": 1.4495071809506044e-12,
+        "mismatches_above_tolerance": 0,
+        "exactly_enforced_features": [
+          "Appliances",
+          "lights",
+          "hour",
+          "day_of_week",
+          "month",
+          "is_weekend",
+          "hour_sin",
+          "hour_cos",
+          "dow_sin",
+          "dow_cos",
+          "appliances_lag_1",
+          "appliances_lag_6",
+          "appliances_lag_144",
+          "appliances_lag_1008",
+          "appliances_roll_mean_1h",
+          "appliances_roll_mean_24h"
+        ],
+        "features_exactly_equal": 39,
+        "differing_features": [
+          "T6",
+          "appliances_roll_std_1h",
+          "appliances_roll_std_24h"
+        ]
+      },
+      {
+        "timestamp": "2016-05-01T21:00:00",
+        "features_compared": 42,
+        "max_absolute_difference": 1.0800249583553523e-12,
+        "mismatches_above_tolerance": 0,
+        "exactly_enforced_features": [
+          "Appliances",
+          "lights",
+          "hour",
+          "day_of_week",
+          "month",
+          "is_weekend",
+          "hour_sin",
+          "hour_cos",
+          "dow_sin",
+          "dow_cos",
+          "appliances_lag_1",
+          "appliances_lag_6",
+          "appliances_lag_144",
+          "appliances_lag_1008",
+          "appliances_roll_mean_1h",
+          "appliances_roll_mean_24h"
+        ],
+        "features_exactly_equal": 41,
+        "differing_features": [
+          "appliances_roll_std_24h"
+        ]
+      }
+    ],
+    "absolute_tolerance": 1e-10,
+    "relative_tolerance": 0,
+    "tolerance_reason": "Float64 CSV parsing/serialization and pandas rolling reduction initialization on bounded versus full prefixes; no feature approximation",
+    "maximum_absolute_difference": 1.4495071809506044e-12,
+    "full_UCI_latest_ready": true,
+    "latest_without_future_target": "2016-05-27T18:00:00",
+    "latest_prefix_rolling_max_difference": 9.521272659185342e-13,
+    "research_export_byte_identical": true,
+    "research_export_sha256": "f69480c282e32601920f0820cdf9d2530ecfc5b053c4cefa4de2d15c73c2077f",
+    "alignment_checks_passed": true,
+    "source_sha256_unchanged": "2820bf712ad0275cb18b85a05250926100d8e65ebb9f4d2d016ca91ea152a25d",
+    "no_model_loaded_or_predictions_created": true,
+    "temporary_database_removed": true
+  },
+  "model_recommendation_parity": {
+    "passed": true,
+    "TRAIN_observation": {
+      "source_timestamp": "2016-01-18T17:00:00",
+      "forecast_timestamp": "2016-01-18T17:10:00",
+      "prediction_wh": 55.505409240722656,
+      "absolute_inference_difference": 0.0,
+      "recommendation_exact_match": true,
+      "feature_count": 42,
+      "model_checksum": "6418bca4fd34b120928bdcc7c37c72e32f2cb6b8e5fd48d6164441aa1a9f7404",
+      "snapshot_persisted": true
+    },
+    "UCI_reference": {
+      "source_timestamp": "2016-05-27T18:00:00",
+      "forecast_timestamp": "2016-05-27T18:10:00",
+      "prediction_wh": 339.7279052734375,
+      "absolute_inference_difference": 0.0,
+      "recommendation_exact_match": true,
+      "feature_count": 42,
+      "model_checksum": "6418bca4fd34b120928bdcc7c37c72e32f2cb6b8e5fd48d6164441aa1a9f7404",
+      "snapshot_persisted": true
+    },
+    "UCI_rows_imported": 19735,
+    "reference_ready": true,
+    "idempotent_repeat_one_history_row": true,
+    "reference_owner_isolation": true,
+    "history_persisted": true,
+    "nonreference_validation_notice": "The forecasting model was validated on the UCI reference building. Predictions for other buildings are experimental.",
+    "unit": "Wh",
+    "horizon_minutes": 10,
+    "temporary_database_removed": true
+  },
+  "repository_privacy_integrity_scan": {
+    "passed": true,
+    "source_paths_enumerated": 312,
+    "text_files_scanned": 435,
+    "binary_skipped": [
+      "public/favicon.ico",
+      "src/assets/hero-control-room.jpg"
+    ],
+    "public_built_JS_files_scanned": 52,
+    "application_SSR_bundles_scanned": 73,
+    "credential_findings": [],
+    "intentional_test_fixture_matches": [
+      {
+        "path": "tests/frontend_api.test.mjs",
+        "kind": "credential_URL",
+        "classification": "Intentional example.invalid rejected URL fixture; no real credential"
+      }
+    ],
+    "legacy_absolute_paths_preserved": [
+      {
+        "path": "ml/notebooks/06_baseline_linear_regression.ipynb",
+        "count": 1
+      },
+      {
+        "path": "ml/results/phase7_validation_metrics.json",
+        "count": 1
+      },
+      {
+        "path": "ml/results/phase8_random_forest_validation_metrics.json",
+        "count": 1
+      },
+      {
+        "path": "ml/results/phase9_xgboost_validation_metrics.json",
+        "count": 1
+      }
+    ],
+    "generated_SSR_absolute_source_paths_disclosed": [
+      {
+        "path": ".output/server/_tanstack-start-manifest_v-Be-AVgM2.mjs",
+        "count": 20,
+        "classification": "Ignored generated server-only route manifest filePath provenance; absent public client bundles; no new source/docs path; production packaging limitation disclosed."
+      }
+    ],
+    "new_phase30_source_document_absolute_paths": [],
+    "public_JS_absolute_paths": [],
+    "local_document_links_valid": true,
+    "private_paths_ignored": [
+      "smartenergy.db",
+      "smartenergy.db-wal",
+      "local.sqlite3",
+      "data/raw/qa.csv",
+      "data/processed/qa.csv",
+      "ml/models/qa.json",
+      "ml/results/generated/qa.log",
+      ".env"
+    ],
+    "tracked_private_operational_files": [],
+    "unused_mock_code": "Legacy mock values/demo-session are not operational route data; charts import only a mock-data type. Unused legacy confidence export has no consuming route and no95% confidence string in public client bundles. No unrelated cleanup.",
+    "protected_baseline_count": 86,
+    "unchanged_count": 85,
+    "intended_baseline_change": "Only root error parameter Error -> unknown; no layout/provider/runtime rewrite.",
+    "protected_baseline_sha256": {
+      "backend/building_prediction_service.py": "d0c2ee11a49ac4ae665b0b24228d8d102d5d9f93bcf15eee1e1cafb5d220e6cc",
+      "backend/migrations/env.py": "45be7d17e33dc8d8f6c261209fa6b7dcd838382d375fb09be220f25f0c3b2faa",
+      "backend/migrations/script.py.mako": "29a33ca0495490f045b3846836347ae894dcba95533d59a7aa100e9e5cba6510",
+      "backend/migrations/versions/0021_database_foundation.py": "ef7e0fbae582f0fe02cacc4e7efe7a29522503264d83882e5018562d3907b3cd",
+      "backend/migrations/versions/0022_authentication_sessions.py": "b270b9e83fc585ad17265adbfa9ad30ce79a2d271e625a923922e7ae97312d90",
+      "backend/migrations/versions/0026_prediction_feature_snapshots.py": "71fca62331e2390446d5c7a9462fd6d3b6d0f10b4079729ab6c543e214fef62d",
+      "backend/prediction_features.py": "39fa9234d1b3b4f5ae08a7bcd494eae70cf478d01779aa4c1ce3e445c789d51a",
+      "bun.lock": "7183239bf3c5721bc5908924f24695adbd24d9109e2127eaa0e7d0b72527b24a",
+      "data/processed/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "data/processed/README.md": "0cf63db83709d25e2db9f8200aa48bf73f2b289c96d8cb3ed904255e419d17db",
+      "data/processed/energy_test.csv": "227efb785588e32e297acdbbb7595102c210b25b30492e8acef5effddc520600",
+      "data/processed/energy_train.csv": "b4e74536ad61bce5a75b044066f9012348a12cbd69095a0e5a801642fc7ebbe4",
+      "data/processed/energy_validation.csv": "5b93ccdb622696544eb3abb7d59b59445bf37c5ff6dfe2f8449b4b1282e41533",
+      "data/processed/energydata_cleaned.csv": "d4d5964a61a5a6ddfc1148012abb77f14f826dfa0ebd6f9b5e52d93a6c705a19",
+      "data/processed/energydata_features.csv": "f69480c282e32601920f0820cdf9d2530ecfc5b053c4cefa4de2d15c73c2077f",
+      "data/raw/README.md": "dcf82702ced3149e8a8bba0c97550553e5c5b3279b204fed008d2fd49cf61173",
+      "data/raw/energydata_complete.csv": "2820bf712ad0275cb18b85a05250926100d8e65ebb9f4d2d016ca91ea152a25d",
+      "ml/models/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "ml/models/README.md": "d2f9f28f27957117b8991b06c362b9539596bb11fde360c7a43630f0e1703fb4",
+      "ml/models/final_xgboost_model.json": "6418bca4fd34b120928bdcc7c37c72e32f2cb6b8e5fd48d6164441aa1a9f7404",
+      "ml/notebooks/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "ml/notebooks/01_data_exploration.ipynb": "6d60155ce7151d6719baa3ea644e50601a53c2055ce9af40ca6f150e6f12e711",
+      "ml/notebooks/02_exploratory_data_analysis.ipynb": "d0087a1f8060d319804560439c110d43934d0fe79758b8889d4cb54ffcc1477f",
+      "ml/notebooks/03_preprocessing.ipynb": "c72529c84d2e7900c2b6e68242dde1316a498059be530ba3d1d47de7b705f747",
+      "ml/notebooks/04_feature_engineering.ipynb": "a611599109d625a08898de38c8d26d828dba098bd8b453bdc92e9d2abdf4da70",
+      "ml/notebooks/05_train_validation_test_split.ipynb": "35371b82d8d386c40473d696ba1d92dec2445414044e709544b5a6dba57fca60",
+      "ml/notebooks/06_baseline_linear_regression.ipynb": "29915d5e41e8439f8575fa61c8b901c77905792e3b55c557d2e11c633249e45a",
+      "ml/notebooks/07_random_forest.ipynb": "940d03f07b4f73f623c5fedd94f32e7d178ff69f6294c13b8eae1a9dfa2cf791",
+      "ml/notebooks/08_xgboost.ipynb": "f034d7b109401d42f52dba1d824d68f00e53c8a1e346f5fe6c28de2a2167a811",
+      "ml/notebooks/09_hyperparameter_tuning.ipynb": "abbfcac4392ed513cb674b163e5d1b18cf2958573bb9d419051e058c4d5143e1",
+      "ml/notebooks/10_final_model_evaluation.ipynb": "a59e5d1f31c35eca9dca174e576b8e7fda9af4c06102313faa4447efe7942527",
+      "ml/notebooks/11_model_explainability.ipynb": "9a80fb5603aa0ae415a98567f6e96eb9a7877efe47d6cbce1a15d68d731ddd1b",
+      "ml/notebooks/12_model_persistence.ipynb": "872f58307059715be63b9d834571c3420746d6fc9b2ebc7324f0ec7b56b64c47",
+      "ml/notebooks/13_recommendation_engine.ipynb": "6e2021325037ecaa0e1e9162fa5f7154a5d504fa61614a64bd027b9d19a23197",
+      "ml/results/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "ml/results/feature_schema.json": "0b1038f2d41ddff90921867bfc4d6ea5bbe0195e122e1d7cf96a05eaef2fcdff",
+      "ml/results/final_model_metadata.json": "c712ab6d3823ee40750bc0ad8a30f31901fe3b98862b844177df8d993ec7da3a",
+      "ml/results/phase10_tuning_cv_results.json": "0fe9df7e4887dacb64ca03b1723efe1710f44e26ea06bdf08890bda01a9f01af",
+      "ml/results/phase10_tuning_summary.json": "7c9b87bd663f5045ecdb94f12f23529a7339c8c91091d2736a376069fa559a7f",
+      "ml/results/phase11_final_test_evaluation.json": "00af469b8ee4270ba85c92c77832e89929715acdfe802efe7df84dcb1ac534d9",
+      "ml/results/phase11_reproducibility.json": "e2b9b0eb588121df5382e61a919bbf29af6ad168b71eef51e1085b9ea1ec1b96",
+      "ml/results/phase11_selection_lock.json": "d184f3034c2952a0befafe69bea70f5977db39256d43380f681c752ab6e1e9f2",
+      "ml/results/phase12_feature_importance.json": "f1c0ce2cb196accd00c78ce6a0d1158716dc03967ff7e963a11a4e207101a5b0",
+      "ml/results/phase12_reproducibility.json": "95a6d57ddb0613b75df72b06fe98b5d1be219d6c7b84272f07ac0ee5e65a31cf",
+      "ml/results/phase13_model_persistence.json": "d66f097e23b2e06ef70f85fb412924025cef0a9093760ff9f72eb49d6764b41d",
+      "ml/results/phase14_recommendation_engine.json": "16c2fb20c9fee04e9606f6a120b6356ecbe38fa94f5e0a62b5d03dfba4cd99d2",
+      "ml/results/phase14_recommendation_thresholds.json": "673707f8ec93d8599d1dac25990d876cec751efd955a941d25e307d8c7ceab86",
+      "ml/results/phase15_api_backend.json": "a1a0c9b8a9b3cf262d7f82c3ea2c9efaf4234b02890271f11c37a558eea0cf82",
+      "ml/results/phase16_frontend_api_integration.json": "d318dfac7e32c8746918f754d3b185641df211ed751025046e9bba7b49083360",
+      "ml/results/phase17_dashboard_real_data_integration.json": "7a985d324f06a2247f78f6d9335ce65b611cac727ba858478589fe79346e7e33",
+      "ml/results/phase18_quality_assurance.json": "9d1cf8f60bcf9fb26d4bf015bcb8a4fd1491a6cd18927c4305905e540716cb73",
+      "ml/results/phase19_documentation_audit.json": "f8517f6533b88802d7ab29dd170357d52146596d7063d6fd761824e1d7438596",
+      "ml/results/phase20_final_audit.json": "8fa6f2d1cf6a87901644799fd281f0bb135cbf2c5fd26cb65ec8348f92704429",
+      "ml/results/phase21_database_foundation.json": "b4b8502bf9443ab423fab3685ab9c2cbee851527e391ea35d93cc9536c3b34b5",
+      "ml/results/phase22_authentication_roles.json": "3deba18b0c30d0a3587c5975a37bbe5d4273f779285264f3d6e5cd7c97ece3bf",
+      "ml/results/phase23_building_management.json": "476437c1555030dc4e1606c5e3123e9736675c533df8adc5599f215ef56269d0",
+      "ml/results/phase24_measurements_import.json": "bb46b9c60a0516ae45b6f88e9d7bbd9b1b3e34a226022d63e33824a91c0340c6",
+      "ml/results/phase25_feature_construction_readiness.json": "b7d509709f1e3eb9d255c1106dab6c729980b3c8fa10b3b08786785ffed2557d",
+      "ml/results/phase26_building_predictions.json": "aa4d937360116d02797348d2221cef0723d3443783c1304c7b17a2f5f7967df2",
+      "ml/results/phase27_user_dashboard.json": "76c230915ff99a86a2482f0a6a132ba1511553626ea2dcc25b52bef24d50bf8e",
+      "ml/results/phase28_admin_panel.json": "1afe3cda0a6a633219bf696c2142f6be62dabe56107b0f504fd93bc457aeeaef",
+      "ml/results/phase29_fullstack_hardening.json": "7920494158fcc0d4a62d8c87f9c6eead3b74c1487f1fb24471508ec46743ad16",
+      "ml/results/phase7_validation_metrics.json": "35a6fdb36a52cff7873d0fe20969d564cdc23add94816aec720cbde11d7bc9b8",
+      "ml/results/phase8_random_forest_validation_metrics.json": "9ab2cb0717baa0cd95813ecc582377c8f431640ac3c658f7def889e84810156f",
+      "ml/results/phase9_xgboost_validation_metrics.json": "d523cd81ef67c71d7f28fc88f1f1e683b9f50e11c5db816221eccfc351d0584a",
+      "ml/results/split_metadata.json": "0bd0caa2ab2d159969e3e1744492ce47c6d6778ba488ed5bb816c209525b395f",
+      "ml/src/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "ml/src/check_dataset.py": "0a076dea43edc068a6481ac2ba330e5fb2654be32ccf0d6610b8270c4bf90ec3",
+      "ml/src/evaluate_final_model.py": "20e09ae37bc4c45c6b562d1ab14c38b2db6dccb2b8a91e2ef4c1d9f701e66731",
+      "ml/src/explain_final_model.py": "936b99da17fdb720dada7cc13ac0ac5674480643fd0b2d2c2d2a02aab2950076",
+      "ml/src/feature_engineering.py": "46945622b1f8f5bc9a7a3874bfd7b96659be125620c04d48801c7c2ae7072193",
+      "ml/src/model_inference.py": "4b01eda9c7d13b27d935ec0a4ccd988fd951bed8ea8091035743b546bbc880ef",
+      "ml/src/preprocess.py": "b9a863b2b7d31d0e285db5778e420f1a79abcfa70bb1d86e6222b34df1fb2c6d",
+      "ml/src/recommendation_engine.py": "5c284e98a411a0fd7675109cf9586e2c8615bb92862d2905f9f34337a9be4c17",
+      "ml/src/save_final_model.py": "04a912f544f774a931cc8d247dce675faa693d1a220bf46382b61f4aa2661b94",
+      "ml/src/split_data.py": "d01284831ba55a07fc9f4186a44db845fce2a0855917678837c9f787bed93a03",
+      "ml/src/train_baselines.py": "20d3106c5165ffb2e7530da3f1376684c475302d4bcbaee447dbb7c62e4d16d5",
+      "ml/src/train_random_forest.py": "38b02d666e781c98175ab9d2605cfd3fde286b8fe75cfe8ed2f30caad868400c",
+      "ml/src/train_xgboost.py": "06345dc878da7775b754aaa496da2ebff1e78009c2f5860d6903c9b8bb5178c8",
+      "ml/src/tune_models.py": "34d451bac2de7abe52cd83ffddd0f91877715aed0c437c292d67dec3987eb47d",
+      "package.json": "da6d358a8fb396f0ac1578b167d7e7432746a195ad68c54c352262c14b3e779b",
+      "requirements.txt": "3044a58eea5c7d0392fadfe716ca40e19e259ba1642103541df95a3c19361127",
+      "src/routeTree.gen.ts": "c5f7acf36348efb97cf18ba381d1dcf1b5beed16cce7c3f4c3ea549725d518af",
+      "src/routes/__root.tsx": "90b266535fb01d3e26b7fda367c749cdacb8e50e143109f667384815ba9747fc",
+      "src/server.ts": "4200dda605d3af5b6ba95e79022fdd40d3075cb39ee0d8bacd769ec2312baa92",
+      "src/start.ts": "9d3a00e7f89d1596407c269e9df54f163f36ca5edc2e9d2b180af640ccf4622e"
+    },
+    "git_diff_check_passed": true,
+    "staged_files": 0
+  },
+  "dependency_snapshot": {
+    "frontend": {
+      "@hookform/resolvers": {
+        "declared": "^5.2.2",
+        "isolated_installed": "5.9.2",
+        "existing_installed": "5.9.1"
+      },
+      "@radix-ui/react-accordion": {
+        "declared": "^1.2.12",
+        "isolated_installed": "1.3.1",
+        "existing_installed": "1.2.20"
+      },
+      "@radix-ui/react-alert-dialog": {
+        "declared": "^1.1.15",
+        "isolated_installed": "1.2.1",
+        "existing_installed": "1.1.23"
+      },
+      "@radix-ui/react-aspect-ratio": {
+        "declared": "^1.1.8",
+        "isolated_installed": "1.2.0",
+        "existing_installed": "1.1.15"
+      },
+      "@radix-ui/react-avatar": {
+        "declared": "^1.1.11",
+        "isolated_installed": "1.3.1",
+        "existing_installed": "1.2.6"
+      },
+      "@radix-ui/react-checkbox": {
+        "declared": "^1.3.3",
+        "isolated_installed": "1.4.1",
+        "existing_installed": "1.3.11"
+      },
+      "@radix-ui/react-collapsible": {
+        "declared": "^1.1.12",
+        "isolated_installed": "1.2.1",
+        "existing_installed": "1.1.20"
+      },
+      "@radix-ui/react-context-menu": {
+        "declared": "^2.2.16",
+        "isolated_installed": "2.4.1",
+        "existing_installed": "2.3.7"
+      },
+      "@radix-ui/react-dialog": {
+        "declared": "^1.1.15",
+        "isolated_installed": "1.3.1",
+        "existing_installed": "1.1.23"
+      },
+      "@radix-ui/react-dropdown-menu": {
+        "declared": "^2.1.16",
+        "isolated_installed": "2.2.1",
+        "existing_installed": "2.1.24"
+      },
+      "@radix-ui/react-hover-card": {
+        "declared": "^1.1.15",
+        "isolated_installed": "1.2.1",
+        "existing_installed": "1.1.23"
+      },
+      "@radix-ui/react-label": {
+        "declared": "^2.1.8",
+        "isolated_installed": "2.1.17",
+        "existing_installed": "2.1.15"
+      },
+      "@radix-ui/react-menubar": {
+        "declared": "^1.1.16",
+        "isolated_installed": "1.2.1",
+        "existing_installed": "1.1.24"
+      },
+      "@radix-ui/react-navigation-menu": {
+        "declared": "^1.2.14",
+        "isolated_installed": "1.4.1",
+        "existing_installed": "1.2.22"
+      },
+      "@radix-ui/react-popover": {
+        "declared": "^1.1.15",
+        "isolated_installed": "1.3.1",
+        "existing_installed": "1.1.23"
+      },
+      "@radix-ui/react-progress": {
+        "declared": "^1.1.8",
+        "isolated_installed": "1.2.1",
+        "existing_installed": "1.1.16"
+      },
+      "@radix-ui/react-radio-group": {
+        "declared": "^1.3.8",
+        "isolated_installed": "1.5.1",
+        "existing_installed": "1.4.7"
+      },
+      "@radix-ui/react-scroll-area": {
+        "declared": "^1.2.10",
+        "isolated_installed": "1.4.0",
+        "existing_installed": "1.2.18"
+      },
+      "@radix-ui/react-select": {
+        "declared": "^2.2.6",
+        "isolated_installed": "2.4.1",
+        "existing_installed": "2.3.7"
+      },
+      "@radix-ui/react-separator": {
+        "declared": "^1.1.8",
+        "isolated_installed": "1.2.0",
+        "existing_installed": "1.1.15"
+      },
+      "@radix-ui/react-slider": {
+        "declared": "^1.3.6",
+        "isolated_installed": "1.6.1",
+        "existing_installed": "1.4.7"
+      },
+      "@radix-ui/react-slot": {
+        "declared": "^1.2.4",
+        "isolated_installed": "1.5.0",
+        "existing_installed": "1.3.3"
+      },
+      "@radix-ui/react-switch": {
+        "declared": "^1.2.6",
+        "isolated_installed": "1.4.1",
+        "existing_installed": "1.3.7"
+      },
+      "@radix-ui/react-tabs": {
+        "declared": "^1.1.13",
+        "isolated_installed": "1.2.1",
+        "existing_installed": "1.1.21"
+      },
+      "@radix-ui/react-toggle": {
+        "declared": "^1.1.10",
+        "isolated_installed": "1.2.1",
+        "existing_installed": "1.1.18"
+      },
+      "@radix-ui/react-toggle-group": {
+        "declared": "^1.1.11",
+        "isolated_installed": "1.2.1",
+        "existing_installed": "1.1.19"
+      },
+      "@radix-ui/react-tooltip": {
+        "declared": "^1.2.8",
+        "isolated_installed": "1.4.1",
+        "existing_installed": "1.2.16"
+      },
+      "@tailwindcss/vite": {
+        "declared": "^4.2.1",
+        "isolated_installed": "4.3.3",
+        "existing_installed": "4.3.3"
+      },
+      "@tanstack/react-query": {
+        "declared": "^5.101.1",
+        "isolated_installed": "5.104.5",
+        "existing_installed": "5.101.4"
+      },
+      "@tanstack/react-router": {
+        "declared": "^1.170.18",
+        "isolated_installed": "1.170.46",
+        "existing_installed": "1.170.31"
+      },
+      "@tanstack/react-start": {
+        "declared": "^1.168.32",
+        "isolated_installed": "1.169.4",
+        "existing_installed": "1.168.48"
+      },
+      "@tanstack/router-plugin": {
+        "declared": "^1.168.23",
+        "isolated_installed": "1.168.48",
+        "existing_installed": "1.168.34"
+      },
+      "class-variance-authority": {
+        "declared": "^0.7.1",
+        "isolated_installed": "0.7.1",
+        "existing_installed": "0.7.1"
+      },
+      "clsx": {
+        "declared": "^2.1.1",
+        "isolated_installed": "2.1.1",
+        "existing_installed": "2.1.1"
+      },
+      "cmdk": {
+        "declared": "^1.1.1",
+        "isolated_installed": "1.1.1",
+        "existing_installed": "1.1.1"
+      },
+      "date-fns": {
+        "declared": "^4.1.0",
+        "isolated_installed": "4.4.0",
+        "existing_installed": "4.4.0"
+      },
+      "embla-carousel-react": {
+        "declared": "^8.6.0",
+        "isolated_installed": "8.6.0",
+        "existing_installed": "8.6.0"
+      },
+      "input-otp": {
+        "declared": "^1.4.2",
+        "isolated_installed": "1.5.0",
+        "existing_installed": "1.5.0"
+      },
+      "lucide-react": {
+        "declared": "^0.575.0",
+        "isolated_installed": "0.575.0",
+        "existing_installed": "0.575.0"
+      },
+      "react": {
+        "declared": "^19.2.0",
+        "isolated_installed": "19.3.1",
+        "existing_installed": "19.2.8"
+      },
+      "react-day-picker": {
+        "declared": "^9.14.0",
+        "isolated_installed": "9.14.0",
+        "existing_installed": "9.14.0"
+      },
+      "react-dom": {
+        "declared": "^19.2.0",
+        "isolated_installed": "19.3.1",
+        "existing_installed": "19.2.8"
+      },
+      "react-hook-form": {
+        "declared": "^7.71.2",
+        "isolated_installed": "7.90.0",
+        "existing_installed": "7.85.0"
+      },
+      "react-resizable-panels": {
+        "declared": "^4.6.5",
+        "isolated_installed": "4.14.8",
+        "existing_installed": "4.12.3"
+      },
+      "recharts": {
+        "declared": "^2.15.4",
+        "isolated_installed": "2.15.4",
+        "existing_installed": "2.15.4"
+      },
+      "sonner": {
+        "declared": "^2.0.7",
+        "isolated_installed": "2.0.8",
+        "existing_installed": "2.0.8"
+      },
+      "tailwind-merge": {
+        "declared": "^3.5.0",
+        "isolated_installed": "3.7.0",
+        "existing_installed": "3.6.0"
+      },
+      "tailwindcss": {
+        "declared": "^4.2.1",
+        "isolated_installed": "4.3.3",
+        "existing_installed": "4.3.3"
+      },
+      "tw-animate-css": {
+        "declared": "^1.3.4",
+        "isolated_installed": "1.4.0",
+        "existing_installed": "1.4.0"
+      },
+      "vaul": {
+        "declared": "^1.1.2",
+        "isolated_installed": "1.1.2",
+        "existing_installed": "1.1.2"
+      },
+      "vite-tsconfig-paths": {
+        "declared": "^6.0.2",
+        "isolated_installed": "6.1.1",
+        "existing_installed": "6.1.1"
+      },
+      "zod": {
+        "declared": "^3.24.2",
+        "isolated_installed": "3.25.76",
+        "existing_installed": "3.25.76"
+      },
+      "@eslint/js": {
+        "declared": "^9.32.0",
+        "isolated_installed": "9.39.5",
+        "existing_installed": "9.39.5"
+      },
+      "@lovable.dev/vite-tanstack-config": {
+        "declared": "^2.9.0",
+        "isolated_installed": "2.26.7",
+        "existing_installed": "2.15.1"
+      },
+      "@types/node": {
+        "declared": "^22.16.5",
+        "isolated_installed": "22.20.5",
+        "existing_installed": "22.20.1"
+      },
+      "@types/react": {
+        "declared": "^19.2.0",
+        "isolated_installed": "19.3.0",
+        "existing_installed": "19.2.18"
+      },
+      "@types/react-dom": {
+        "declared": "^19.2.0",
+        "isolated_installed": "19.3.0",
+        "existing_installed": "19.2.4"
+      },
+      "@vitejs/plugin-react": {
+        "declared": "^5.2.0",
+        "isolated_installed": "5.2.0",
+        "existing_installed": "5.2.0"
+      },
+      "eslint": {
+        "declared": "^9.32.0",
+        "isolated_installed": "9.39.5",
+        "existing_installed": "9.39.5"
+      },
+      "eslint-config-prettier": {
+        "declared": "^10.1.1",
+        "isolated_installed": "10.1.8",
+        "existing_installed": "10.1.8"
+      },
+      "eslint-plugin-prettier": {
+        "declared": "^5.2.6",
+        "isolated_installed": "5.5.7",
+        "existing_installed": "5.5.6"
+      },
+      "eslint-plugin-react-hooks": {
+        "declared": "^5.2.0",
+        "isolated_installed": "5.2.0",
+        "existing_installed": "5.2.0"
+      },
+      "eslint-plugin-react-refresh": {
+        "declared": "^0.4.20",
+        "isolated_installed": "0.4.26",
+        "existing_installed": "0.4.26"
+      },
+      "globals": {
+        "declared": "^15.15.0",
+        "isolated_installed": "15.15.0",
+        "existing_installed": "15.15.0"
+      },
+      "nitro": {
+        "declared": "3.0.260603-beta",
+        "isolated_installed": "3.0.260603-beta",
+        "existing_installed": "3.0.260603-beta"
+      },
+      "prettier": {
+        "declared": "^3.7.3",
+        "isolated_installed": "3.9.10",
+        "existing_installed": "3.9.6"
+      },
+      "typescript": {
+        "declared": "^5.8.3",
+        "isolated_installed": "5.9.3",
+        "existing_installed": "5.9.3"
+      },
+      "typescript-eslint": {
+        "declared": "^8.56.1",
+        "isolated_installed": "8.72.0",
+        "existing_installed": "8.67.0"
+      },
+      "vite": {
+        "declared": "^8.2.0",
+        "isolated_installed": "8.3.5",
+        "existing_installed": "8.2.1"
+      }
+    },
+    "python": {
+      "pandas": "3.0.6",
+      "numpy": "2.5.4",
+      "scikit-learn": "1.9.1",
+      "xgboost": "3.4.1",
+      "joblib": "1.6.0",
+      "fastapi": "0.161.1",
+      "pydantic": "2.14.1",
+      "uvicorn": "0.54.0",
+      "SQLAlchemy": "2.1.6",
+      "alembic": "1.20.1",
+      "pwdlib": "0.3.1",
+      "argon2-cffi": "25.1.0",
+      "email-validator": "2.3.0",
+      "python-multipart": "0.0.32"
+    }
+  },
+  "documentation_status": {
+    "current_README_and_architecture_schema_fact_sheet_defense_demo_reproduction_security_updated": true,
+    "new_overview_checklist_endpoint_inventory": true,
+    "local_links_valid": true,
+    "new_machine_specific_paths": false,
+    "optional_start_demo_helper": "Omitted: two explicit terminal commands plus preflight add less complexity.",
+    "artifact_policy": "Model required for forecast/healthy resources; raw only reference/research; processed only reproduction/optional examples/comprehensive research QA; DB generated empty by migrations; none committed."
+  },
+  "remaining_limitations": [
+    "ML validated on one UCI building and January-May source period; transfer to user-created buildings experimental.",
+    "No true occupancy input; manual/CSV observations, no IoT stream.",
+    "Latest continuous ten-minute history required; naive source-local observation timestamps without inferred timezone/DST conversion.",
+    "No automatic forecast scheduler/actuator/control or verified intervention savings/calibrated prediction intervals.",
+    "No MFA/rate limiting/email recovery delivery/central audit or production security certification.",
+    "SQLite write serialization; live PostgreSQL deployment/driver/concurrency unverified.",
+    "Already-authorized work may finish after revocation; idle clients learn session changes next request/revalidation.",
+    "Upload byte limit after multipart parsing; no reverse-proxy total-body/rate limit in repository.",
+    "Partly unpinned requirements/package ranges; exact model reconstruction remains environment-sensitive. Fresh npm installation emitted deprecation notices for tsconfck/Recharts/ESLint; no broad upgrades.",
+    "Four historical research absolute output paths preserved; ignored generated server route manifest includes20 absolute source filePath values, absent client JS/new Phase30 docs. Production packaging/path exposure is not certified.",
+    "Accessibility checks are practical sanity checks, not formal WCAG/screen-reader certification.",
+    "Lightweight source/build pattern scan is not proof of no vulnerabilities or a penetration test."
+  ],
+  "release_verdict": {
+    "A_research_methodology_and_results_finalized": true,
+    "B_full_stack_functionally_complete_for_Bachelor_scope": true,
+    "C_documented_local_defense_demo_ready": true,
+    "D_commercial_production_ready": false,
+    "basis": "Fresh installs and empty-DB supported journeys passed; all final tests/build/type/lint/parity/privacy/integrity checks passed with explicitly recorded limitations.",
+    "no_new_phase_proposed_or_started": true
+  },
+  "remaining_manual_actions": [
+    "Review and stage only the exact release manifest; no staging/commit/push performed.",
+    "Retain/stage existing generated route-tree footer separately as justified; inspect diff first.",
+    "For an evaluator/demo machine, follow README to install dependencies and supply matching ignored model; download UCI CSV only if using reference import/research.",
+    "Run explicit migrations, bootstrap your own ADMIN with hidden password, start localhost backend/frontend and rehearse checklist. No developer/evaluator operational DB is included."
+  ],
+  "final_hygiene": {
+    "git_diff_check_passed": true,
+    "phase30_created_files": 7,
+    "phase30_modified_files": 13,
+    "preexisting_route_tree_diff_unchanged": true,
+    "protected_research_data_model_results_and_thresholds_unchanged": true,
+    "all_protected_baseline_files_unchanged_except_explicit_root_parameter_type_fix": true,
+    "new_migrations": false,
+    "dependency_or_lockfile_changes": false,
+    "package_lock_created": false,
+    "default_developer_DB_created": false,
+    "staged_files": 0,
+    "isolated_release_copy_removal": "Removed verified OS temporary release directory after collecting evidence; DB/profile/process cleanup independently passed."
+  },
+  "exact_release_staging_recommendation": {
+    "new_files": [
+      ".gitattributes",
+      "docs/final-application-overview.md",
+      "docs/final-demo-checklist.md",
+      "docs/final-endpoint-inventory.md",
+      "ml/results/phase30_final_fullstack_audit.json",
+      "tests/test_release_preflight.py",
+      "tests/verify_final_application.py"
+    ],
+    "modified_files": [
+      "README.md",
+      "backend/main.py",
+      "docs/authentication.md",
+      "docs/database-architecture.md",
+      "docs/defense-technical-reference.md",
+      "docs/project-fact-sheet.md",
+      "docs/reproducibility.md",
+      "docs/security-and-quality-assurance.md",
+      "docs/system-architecture.md",
+      "docs/thesis-demo-guide.md",
+      "src/routes/__root.tsx",
+      "src/routes/about.tsx",
+      "tests/verify_demo_preflight.py"
+    ],
+    "separate_reviewed_preexisting_generated_file": [
+      "src/routeTree.gen.ts"
+    ],
+    "not_staged_automatically": true
+  }
+}

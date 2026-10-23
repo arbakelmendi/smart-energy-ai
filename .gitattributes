@@ -1,0 +1,2 @@
+# Research contracts are byte-checksummed; preserve committed LF on every platform.
+ml/results/*.json text eol=lf
