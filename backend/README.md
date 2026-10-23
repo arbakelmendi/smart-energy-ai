@@ -79,3 +79,7 @@ After `python -m alembic upgrade head`, owner-only `POST /buildings/{id}/predict
 ## User dashboard summary (Phase 27)
 
 Owner-only `GET /buildings/{id}/dashboard-summary?limit=144` (maximum500) returns bounded stored observations, counts, shared readiness and exact matching persisted forecast context. This is read-only and invokes no model or recommendation engine. Shared Phase26 fingerprint semantics distinguish current from historical results. No new migration/dependency. See [user dashboard](../docs/user-dashboard.md).
+
+## Dedicated administration (Phase 28)
+
+The `/admin/overview`, `/admin/users`, `/admin/users/{id}`, `/admin/users/{id}/status`, `/admin/buildings`, `/admin/buildings/{id}` and `/admin/predictions` APIs enforce existing active ADMIN authentication. Status PATCH requires CSRF, revokes all deactivated account sessions and protects self/final-admin access. Lists are server-paginated and safe schemas exclude authentication/feature internals. Ordinary owner APIs are unchanged. See [admin panel](../docs/admin-panel.md).

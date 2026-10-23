@@ -14,6 +14,7 @@ from .measurements import router as measurements_router
 from .prediction_readiness import router as readiness_router
 from .building_predictions import router as building_predictions_router
 from .dashboard import router as dashboard_router
+from .admin import router as admin_router
 from sqlalchemy.exc import SQLAlchemyError
 
 API_VERSION = "1.0.0"
@@ -27,12 +28,13 @@ app.include_router(measurements_router)
 app.include_router(readiness_router)
 app.include_router(building_predictions_router)
 app.include_router(dashboard_router)
+app.include_router(admin_router)
 
 
 @app.middleware("http")
 async def auth_cache_policy(request: Request, call_next):
     response = await call_next(request)
-    if request.url.path.startswith("/auth/") or request.url.path == "/buildings" or request.url.path.startswith("/buildings/"):
+    if request.url.path.startswith("/admin/") or request.url.path.startswith("/auth/") or request.url.path == "/buildings" or request.url.path.startswith("/buildings/"):
         response.headers["Cache-Control"] = "no-store"
     return response
 

@@ -1,0 +1,601 @@
+{
+  "phase": 28,
+  "title": "Full Administrator Management Panel and Cross-Owner Administration",
+  "date": "2026-10-23",
+  "status": "complete",
+  "endpoints": {
+    "GET /admin/overview": "Eight factual application-wide SQL counts",
+    "GET /admin/users": "Paginated safe users; email/name search, role and active filters",
+    "GET /admin/users/{user_id}": "Safe account and owned domain counts",
+    "PATCH /admin/users/{user_id}/status": "Strict boolean, self/final-admin protection, transactional all-session revocation",
+    "GET /admin/buildings": "Paginated cross-owner metadata, owner and measurement/prediction counts; search/owner/type filters",
+    "GET /admin/buildings/{building_id}": "Safe read-only metadata, owner, measurement range and latest saved forecast summary",
+    "GET /admin/predictions": "Paginated newest-saved-first forecast activity with owner/building context"
+  },
+  "authorization": "Every dedicated admin endpoint enforces existing active-session require_admin: anonymous401, USER403. Ordinary owner-only APIs unchanged, including ADMIN; PATCH retains CSRF/trusted-origin guard. Private admin responses no-store.",
+  "overview_fields": [
+    "total_users",
+    "active_users",
+    "inactive_users",
+    "admin_users",
+    "regular_users",
+    "total_buildings",
+    "total_measurements",
+    "total_predictions"
+  ],
+  "status_policy": {
+    "request": "Strict is_active boolean only",
+    "deactivation": "Explicit UI confirmation; server transaction updates target and deletes all AuthSession rows; domain data retained",
+    "reactivation": "Allows new login, never restores old sessions",
+    "self_deactivation": "409 rejection; own UI action disabled",
+    "final_active_admin": "409 rejection; row locks where supported and atomic conditional UPDATE; concurrent SQLite test preserves >=1 active administrator",
+    "role_editing": "Omitted; existing create_admin.py provisions ADMIN",
+    "user_deletion": "Unsupported",
+    "password_reset": "Unsupported"
+  },
+  "data_access": {
+    "aggregation": "SQL counts/grouped joins/subqueries; no list-row N+1 child queries; bounded page queries",
+    "pagination": "Default50, maximum200, nonnegative signed64-bit offset",
+    "ordering": "Users/buildings ID ASC; predictions created_at DESC then ID DESC",
+    "search": "Whitespace normalization, literal escaped substring search; SQLite comparison/Unicode behavior documented",
+    "safe_exclusions": [
+      "password_hash",
+      "token_hash",
+      "auth_sessions",
+      "feature_snapshot_json",
+      "feature_hash",
+      "model_checksum",
+      "raw_cookies",
+      "environment_secrets"
+    ],
+    "reference_building": "Ownership unchanged; stored name/description displayed in cross-owner admin view only"
+  },
+  "frontend": {
+    "routes": {
+      "/admin": "Factual overview + paginated saved prediction activity",
+      "/admin/users": "Filtered list and ?user=ID detail/status/paginated owned buildings",
+      "/admin/buildings": "Filtered inventory and ?building=ID read-only detail"
+    },
+    "navigation": "Existing Administration group shown only for ADMIN; original role guard retained",
+    "queries": "admin/acting-user-ID/area/filter/page/detail keys; separate from ordinary owner caches",
+    "mutation_coherence": "Server-confirmed status changes invalidate acting-admin user lists/details and overview only",
+    "states": [
+      "loading",
+      "empty",
+      "safe backend/malformed-response error",
+      "Retry",
+      "success"
+    ],
+    "routeTree": "No new routes; preserve byte-identical pre-existing user state"
+  },
+  "known_limitations": [
+    "SQLite development prototype; live PostgreSQL concurrency not verified",
+    "No server push: existing client learns revocation on next request/navigation/focus or60-second auth revalidation; backend session rows removed immediately",
+    "A request already authorized before concurrent revocation can finish",
+    "Offset pages can move under concurrent database changes",
+    "SQLite default Unicode case-folding limits apply to search",
+    "No enterprise audit log, login history, cross-owner raw-history mutation, role-editing UI, user deletion or password reset",
+    "No scheduler, IoT, savings, confidence intervals, payments, email, MFA or physical control"
+  ],
+  "migration_dependency_status": "No migration, schema, dependency or lockfile change; existing Phase26 head reused",
+  "files": [
+    {
+      "path": "README.md",
+      "change": "modified",
+      "purpose": "Link current administrator workflow and scope."
+    },
+    {
+      "path": "backend/README.md",
+      "change": "modified",
+      "purpose": "Document dedicated administration APIs and security boundary."
+    },
+    {
+      "path": "backend/admin.py",
+      "change": "created",
+      "purpose": "Dedicated ADMIN-only router for seven oversight/status APIs."
+    },
+    {
+      "path": "backend/admin_schemas.py",
+      "change": "created",
+      "purpose": "Explicit safe bounded request/response contracts."
+    },
+    {
+      "path": "backend/admin_service.py",
+      "change": "created",
+      "purpose": "Cross-owner SQL summaries/filtering and protected atomic status/session mutation."
+    },
+    {
+      "path": "backend/main.py",
+      "change": "modified",
+      "purpose": "Register admin router and private no-store policy."
+    },
+    {
+      "path": "docs/admin-panel.md",
+      "change": "created",
+      "purpose": "Role boundaries, API inventory, revocation/protections, UI semantics and verification."
+    },
+    {
+      "path": "ml/results/phase28_admin_panel.json",
+      "change": "created",
+      "purpose": "Final implementation/verification/integrity audit and exact staging manifest."
+    },
+    {
+      "path": "src/components/admin-buildings.tsx",
+      "change": "created",
+      "purpose": "Cross-owner filtered inventory and read-only building/prediction detail."
+    },
+    {
+      "path": "src/components/admin-common.tsx",
+      "change": "created",
+      "purpose": "Shared loading/error/pagination and safe building table."
+    },
+    {
+      "path": "src/components/admin-overview.tsx",
+      "change": "created",
+      "purpose": "Actual database counts and paginated persisted prediction activity."
+    },
+    {
+      "path": "src/components/admin-users.tsx",
+      "change": "created",
+      "purpose": "Filtered users, safe URL details, confirmation-based status and owned buildings."
+    },
+    {
+      "path": "src/components/app-shell.tsx",
+      "change": "modified",
+      "purpose": "Expose functional existing admin pages behind preserved role guard/navigation."
+    },
+    {
+      "path": "src/hooks/use-admin.ts",
+      "change": "created",
+      "purpose": "Acting-admin-scoped queries/mutations separate from owner caches."
+    },
+    {
+      "path": "src/lib/admin-view.ts",
+      "change": "created",
+      "purpose": "URL detail selection and confirmation/self-action helpers."
+    },
+    {
+      "path": "src/lib/api/README.md",
+      "change": "modified",
+      "purpose": "Document safe clients and separate admin query keys."
+    },
+    {
+      "path": "src/lib/api/admin.ts",
+      "change": "created",
+      "purpose": "Strict typed credentialed client and scoped invalidation helpers."
+    },
+    {
+      "path": "src/routes/admin.buildings.tsx",
+      "change": "modified",
+      "purpose": "Use real cross-owner inventory with URL-selected detail."
+    },
+    {
+      "path": "src/routes/admin.index.tsx",
+      "change": "modified",
+      "purpose": "Use real admin overview/activity in existing route."
+    },
+    {
+      "path": "src/routes/admin.users.tsx",
+      "change": "modified",
+      "purpose": "Use real account oversight with URL-selected detail."
+    },
+    {
+      "path": "tests/frontend_admin.test.mjs",
+      "change": "created",
+      "purpose": "Fourteen native admin client/schema/isolation/confirmation contract tests."
+    },
+    {
+      "path": "tests/test_admin.py",
+      "change": "created",
+      "purpose": "Thirteen isolated backend security/count/filter/status/concurrency tests."
+    },
+    {
+      "path": "tests/verify_admin_browser.py",
+      "change": "created",
+      "purpose": "Live disposable admin and normal-user regression workflow."
+    },
+    {
+      "path": "tests/verify_auth_browser.py",
+      "change": "modified",
+      "purpose": "Adapt shared harness to real admin pages and add optional admin verification."
+    },
+    {
+      "path": "tests/verify_buildings_browser.py",
+      "change": "modified",
+      "purpose": "Replace obsolete unavailable-admin expectation while retaining ordinary owner-isolation checks."
+    }
+  ],
+  "exact_files_to_stage": [
+    "README.md",
+    "backend/README.md",
+    "backend/admin.py",
+    "backend/admin_schemas.py",
+    "backend/admin_service.py",
+    "backend/main.py",
+    "docs/admin-panel.md",
+    "ml/results/phase28_admin_panel.json",
+    "src/components/admin-buildings.tsx",
+    "src/components/admin-common.tsx",
+    "src/components/admin-overview.tsx",
+    "src/components/admin-users.tsx",
+    "src/components/app-shell.tsx",
+    "src/hooks/use-admin.ts",
+    "src/lib/admin-view.ts",
+    "src/lib/api/README.md",
+    "src/lib/api/admin.ts",
+    "src/routes/admin.buildings.tsx",
+    "src/routes/admin.index.tsx",
+    "src/routes/admin.users.tsx",
+    "tests/frontend_admin.test.mjs",
+    "tests/test_admin.py",
+    "tests/verify_admin_browser.py",
+    "tests/verify_auth_browser.py",
+    "tests/verify_buildings_browser.py"
+  ],
+  "staged_committed_pushed": false,
+  "phase29_started": false,
+  "phase29_readiness": "Administrator oversight foundation implemented; hardening requires a separate authorized phase.",
+  "file_counts": {
+    "created": 15,
+    "modified": 10
+  },
+  "verification": {
+    "automated_gates": {
+      "python_tests": {
+        "passed": true,
+        "return_code": 0,
+        "log": "ml/results/generated/phase28_python_tests.log",
+        "tests": 240,
+        "warnings": 159,
+        "subtests": 152
+      },
+      "frontend_tests": {
+        "passed": true,
+        "return_code": 0,
+        "log": "ml/results/generated/phase28_frontend_tests.log",
+        "tests": 108,
+        "pass": 108,
+        "fail": 0,
+        "skipped": 0
+      },
+      "typecheck": {
+        "passed": true,
+        "return_code": 0,
+        "log": "ml/results/generated/phase28_typecheck.log"
+      },
+      "semantic_lint": {
+        "passed": true,
+        "return_code": 0,
+        "log": "ml/results/generated/phase28_semantic_lint.log"
+      },
+      "build": {
+        "passed": true,
+        "return_code": 0,
+        "log": "ml/results/generated/phase28_build.log",
+        "warnings": [
+          "The plugin \"vite-tsconfig-paths\" is detected. Vite now supports tsconfig paths resolution natively via the resolve.tsconfigPaths option. You can remove the plugin and set resolve.tsconfigPaths: true in your Vite config instead.",
+          " WARN  inlineDynamicImports option is ignored because the codeSplitting option is specified."
+        ]
+      }
+    },
+    "new_backend_tests": 13,
+    "new_frontend_tests": 14,
+    "concurrent_deactivation_test_passed": true,
+    "browser_command": ".venv/Scripts/python.exe tests/verify_admin_browser.py",
+    "browser_evidence": {
+      "passed": true,
+      "browser": "Installed Edge/CDP",
+      "frontend_origin": "http://localhost:61159",
+      "backend_origin": "http://localhost:61158",
+      "database": "Disposable migrated SQLite; no developer DB used",
+      "credentials": "Generated only in runtime memory; never emitted or committed",
+      "SSR_does_not_render_authenticated_content": true,
+      "unauthenticated_protected_routes": [
+        "/dashboard",
+        "/predictions",
+        "/recommendations",
+        "/data",
+        "/settings",
+        "/buildings/",
+        "/buildings/ubt-campus-a",
+        "/admin/",
+        "/admin/users",
+        "/admin/buildings"
+      ],
+      "forged_localstorage_ignored": true,
+      "signup_form_password_confirmation": true,
+      "signup_USER": true,
+      "cookie_flags": {
+        "name": "smartenergy_session",
+        "httpOnly": true,
+        "sameSite": "Lax",
+        "secure": false
+      },
+      "cookie_hidden_from_document_cookie": true,
+      "token_hash_only_in_database": true,
+      "refresh_persists_session": true,
+      "backend_restart_persists_session": true,
+      "logout_and_refresh_unauthenticated": true,
+      "invalid_login_error": true,
+      "normalized_login": true,
+      "intended_destination_settings": true,
+      "inactive_login_and_session_blocked": true,
+      "expired_session_blocked": true,
+      "USER_admin_routes_forbidden": true,
+      "bootstrap_ADMIN_admin_shell_allowed": true,
+      "admin_management_implemented": true,
+      "credentialed_CORS_passed": true,
+      "cors_errors": [],
+      "runtime_errors": [],
+      "responsive_widths": [
+        1440,
+        390
+      ],
+      "public_research_GET_statuses": {
+        "/": 200,
+        "/health": 200,
+        "/model/info": 200,
+        "/recommendations/thresholds": 200,
+        "/analysis/model-comparison": 200,
+        "/analysis/feature-importance": 200,
+        "/docs": 200,
+        "/openapi.json": 200
+      },
+      "public_forecast_helper_equivalence": true,
+      "public_recommendation_helper_equivalence": true,
+      "dashboard_real_research_charts": true,
+      "verification_processes_stopped": true,
+      "building_management": {
+        "passed": true,
+        "USER_A_create_list_view_edit": true,
+        "refresh_and_backend_restart_persistence": true,
+        "edit_form_survives_background_auth_revalidation": true,
+        "USER_B_direct_url_and_API_isolation": true,
+        "owner_injection_rejected": true,
+        "USER_B_create_and_own_list_only": true,
+        "USER_A_confirm_and_cancel_delete": true,
+        "USER_B_building_preserved": true,
+        "ADMIN_owner_only_policy": true,
+        "actual_DELETE_204_handled": true,
+        "no_fake_operational_metrics": true,
+        "responsive_widths": [
+          1440,
+          390
+        ],
+        "cache_updates_after_server_confirmation": true
+      },
+      "measurements": {
+        "passed": true,
+        "manual_entry_all_raw_fields": true,
+        "refresh_and_restart_persistence": true,
+        "actual_FormData_upload": true,
+        "confirmed_count_and_history": true,
+        "invalid_csv_no_partial_insert": true,
+        "structured_row_error_rendered": true,
+        "csv_and_manual_duplicates_rejected": true,
+        "delete_and_cancel": true,
+        "cross_owner_read_create_import_delete_denied": true,
+        "responsive_widths": [
+          1440,
+          390
+        ],
+        "no_fake_readiness_or_metrics": true
+      },
+      "prediction_readiness": {
+        "passed": true,
+        "states": [
+          "NO_MEASUREMENTS",
+          "INSUFFICIENT_HISTORY",
+          "READY",
+          "LATEST_WINDOW_HAS_GAPS",
+          "READY"
+        ],
+        "manual_create_updates_readiness_without_refresh": true,
+        "CSV_import_updates_readiness_without_refresh": true,
+        "delete_required_history_updates_readiness_without_refresh": true,
+        "restore_returns_ready": true,
+        "new_latest_gap_does_not_fall_back": true,
+        "actual_measurement_history_pagination": true,
+        "second_USER_and_ADMIN_owner_policy": true,
+        "user_building_cache_isolation": true,
+        "full_reference_building_ready": true,
+        "reference_measurements": 19735,
+        "no_forecast_requests_during_readiness_flow": true,
+        "responsive_widths": [
+          1440,
+          390
+        ],
+        "no_prediction_records_created": true
+      },
+      "building_predictions": {
+        "passed": true,
+        "insufficient_history_button_disabled": true,
+        "server_not_ready409": true,
+        "explicit_forecast_and_recommendation": true,
+        "current_vs_predicted_labels": true,
+        "experimental_warning": true,
+        "refresh_restart_persistence": true,
+        "same_inputs_reused_one_row": true,
+        "new_latest_old_snapshot_marked_historical": true,
+        "new_latest_creates_second_forecast": true,
+        "history_newest_first": true,
+        "USER_B_and_ADMIN_owner_isolation": true,
+        "full_reference_UI_forecast": true,
+        "responsive_widths": [
+          1440,
+          390
+        ],
+        "no_savings_confidence_actuation_UI": true
+      },
+      "user_dashboard": {
+        "passed": true,
+        "initial_signup_no_buildings_verified_by_auth_harness": true,
+        "UI_building_creation_and_dashboard_link": true,
+        "insufficient_and_ready_history": true,
+        "real_count_latest_and_chart": true,
+        "explicit_persisted_forecast_recommendation": true,
+        "refresh_and_restart": true,
+        "new_measurement_old_forecast_not_current": true,
+        "second_forecast_history": true,
+        "prediction_and_recommendation_routes": true,
+        "multiple_buildings_URL_selection": true,
+        "building_edit_delete_invalidation": true,
+        "malformed_backend_hides_values_retry": true,
+        "second_account_and_foreign_URL_isolation": true,
+        "responsive_widths": [
+          1440,
+          390
+        ],
+        "no_fake_operational_claims": true
+      },
+      "administration": {
+        "passed": true,
+        "overview_matches_SQL_counts": true,
+        "cross_owner_users_buildings_predictions": true,
+        "user_and_building_details": true,
+        "normal_owner_API_remains_404": true,
+        "USER_HTTP403_and_page_denial": true,
+        "deactivation_confirmation_and_cancel": true,
+        "all_sessions_revoked_immediately": true,
+        "revoked_cookie_browser_redirect": true,
+        "inactive_login_blocked": true,
+        "domain_history_retained": true,
+        "reactivation_new_login_succeeds": true,
+        "self_and_final_admin_protected": true,
+        "server_search_and_empty_results": true,
+        "pagination_users_UI_buildings_predictions_API": true,
+        "malformed_response_Retry": true,
+        "responsive_widths": [
+          1440,
+          390
+        ],
+        "runtime_fixtures_only_temporary_DB": true
+      },
+      "temporary_database_and_profile_removed": true
+    },
+    "screenshots": [
+      "ml/results/generated/phase28_admin_overview_1440.png",
+      "ml/results/generated/phase28_admin_users_1440.png",
+      "ml/results/generated/phase28_admin_buildings_1440.png",
+      "ml/results/generated/phase28_admin_overview_390.png",
+      "ml/results/generated/phase28_admin_users_390.png",
+      "ml/results/generated/phase28_admin_buildings_390.png"
+    ],
+    "desktop_and_mobile_screenshots_visually_reviewed": true,
+    "temporary_database_profile_and_processes_cleaned": true,
+    "browser_artifacts_ignored": true,
+    "python_syntax_passed": true,
+    "git_diff_check_passed": true,
+    "documentation_links_passed": true,
+    "source_and_built_JS_pattern_scan": {
+      "files": 77,
+      "findings": [],
+      "scope": "Lightweight obvious-secret patterns, not a penetration test or proof of absence of every possible secret."
+    },
+    "known_warnings": [
+      "159 SQLite expression-index reflection/autogeneration and Starlette TestClient/httpx warnings; all240 tests and152 subtests passed.",
+      "Existing Vite tsconfig-paths advisory and Nitro inlineDynamicImports/codeSplitting warning; build succeeds.",
+      "Git LF/CRLF conversion notices; whitespace check passes."
+    ],
+    "verifier_adaptations": "Updated historical unavailable-admin expectations in the shared/building verifiers; final complete rerun passed."
+  },
+  "protected_integrity": {
+    "verified_files": 88,
+    "all_unchanged": true,
+    "sha256": {
+      "backend/auth.py": "0375a9dfcaad320b9dac1b56aec95d60c11f1ed07f6310d0f803d8304af5877e",
+      "backend/building_prediction_service.py": "d0c2ee11a49ac4ae665b0b24228d8d102d5d9f93bcf15eee1e1cafb5d220e6cc",
+      "backend/building_service.py": "5a1e91b19cca8d5a6f896207ee80271f69a363d4d4aaa282a933b7495c8be81b",
+      "backend/db_models.py": "9d5a5d7ce4313ec7318be6b1ffbddaef06134e2fa83eed9ee9676472f0bcd6d4",
+      "backend/migrations/env.py": "45be7d17e33dc8d8f6c261209fa6b7dcd838382d375fb09be220f25f0c3b2faa",
+      "backend/migrations/script.py.mako": "29a33ca0495490f045b3846836347ae894dcba95533d59a7aa100e9e5cba6510",
+      "backend/migrations/versions/0021_database_foundation.py": "ef7e0fbae582f0fe02cacc4e7efe7a29522503264d83882e5018562d3907b3cd",
+      "backend/migrations/versions/0022_authentication_sessions.py": "b270b9e83fc585ad17265adbfa9ad30ce79a2d271e625a923922e7ae97312d90",
+      "backend/migrations/versions/0026_prediction_feature_snapshots.py": "71fca62331e2390446d5c7a9462fd6d3b6d0f10b4079729ab6c543e214fef62d",
+      "backend/prediction_features.py": "39fa9234d1b3b4f5ae08a7bcd494eae70cf478d01779aa4c1ce3e445c789d51a",
+      "bun.lock": "7183239bf3c5721bc5908924f24695adbd24d9109e2127eaa0e7d0b72527b24a",
+      "data/processed/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "data/processed/energy_test.csv": "227efb785588e32e297acdbbb7595102c210b25b30492e8acef5effddc520600",
+      "data/processed/energy_train.csv": "b4e74536ad61bce5a75b044066f9012348a12cbd69095a0e5a801642fc7ebbe4",
+      "data/processed/energy_validation.csv": "5b93ccdb622696544eb3abb7d59b59445bf37c5ff6dfe2f8449b4b1282e41533",
+      "data/processed/energydata_cleaned.csv": "d4d5964a61a5a6ddfc1148012abb77f14f826dfa0ebd6f9b5e52d93a6c705a19",
+      "data/processed/energydata_features.csv": "f69480c282e32601920f0820cdf9d2530ecfc5b053c4cefa4de2d15c73c2077f",
+      "data/processed/README.md": "0cf63db83709d25e2db9f8200aa48bf73f2b289c96d8cb3ed904255e419d17db",
+      "data/raw/energydata_complete.csv": "2820bf712ad0275cb18b85a05250926100d8e65ebb9f4d2d016ca91ea152a25d",
+      "data/raw/README.md": "dcf82702ced3149e8a8bba0c97550553e5c5b3279b204fed008d2fd49cf61173",
+      "ml/models/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "ml/models/final_xgboost_model.json": "6418bca4fd34b120928bdcc7c37c72e32f2cb6b8e5fd48d6164441aa1a9f7404",
+      "ml/models/README.md": "d2f9f28f27957117b8991b06c362b9539596bb11fde360c7a43630f0e1703fb4",
+      "ml/notebooks/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "ml/notebooks/01_data_exploration.ipynb": "6d60155ce7151d6719baa3ea644e50601a53c2055ce9af40ca6f150e6f12e711",
+      "ml/notebooks/02_exploratory_data_analysis.ipynb": "d0087a1f8060d319804560439c110d43934d0fe79758b8889d4cb54ffcc1477f",
+      "ml/notebooks/03_preprocessing.ipynb": "c72529c84d2e7900c2b6e68242dde1316a498059be530ba3d1d47de7b705f747",
+      "ml/notebooks/04_feature_engineering.ipynb": "a611599109d625a08898de38c8d26d828dba098bd8b453bdc92e9d2abdf4da70",
+      "ml/notebooks/05_train_validation_test_split.ipynb": "35371b82d8d386c40473d696ba1d92dec2445414044e709544b5a6dba57fca60",
+      "ml/notebooks/06_baseline_linear_regression.ipynb": "29915d5e41e8439f8575fa61c8b901c77905792e3b55c557d2e11c633249e45a",
+      "ml/notebooks/07_random_forest.ipynb": "940d03f07b4f73f623c5fedd94f32e7d178ff69f6294c13b8eae1a9dfa2cf791",
+      "ml/notebooks/08_xgboost.ipynb": "f034d7b109401d42f52dba1d824d68f00e53c8a1e346f5fe6c28de2a2167a811",
+      "ml/notebooks/09_hyperparameter_tuning.ipynb": "abbfcac4392ed513cb674b163e5d1b18cf2958573bb9d419051e058c4d5143e1",
+      "ml/notebooks/10_final_model_evaluation.ipynb": "a59e5d1f31c35eca9dca174e576b8e7fda9af4c06102313faa4447efe7942527",
+      "ml/notebooks/11_model_explainability.ipynb": "9a80fb5603aa0ae415a98567f6e96eb9a7877efe47d6cbce1a15d68d731ddd1b",
+      "ml/notebooks/12_model_persistence.ipynb": "872f58307059715be63b9d834571c3420746d6fc9b2ebc7324f0ec7b56b64c47",
+      "ml/notebooks/13_recommendation_engine.ipynb": "6e2021325037ecaa0e1e9162fa5f7154a5d504fa61614a64bd027b9d19a23197",
+      "ml/results/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "ml/results/feature_schema.json": "0b1038f2d41ddff90921867bfc4d6ea5bbe0195e122e1d7cf96a05eaef2fcdff",
+      "ml/results/final_model_metadata.json": "c712ab6d3823ee40750bc0ad8a30f31901fe3b98862b844177df8d993ec7da3a",
+      "ml/results/phase10_tuning_cv_results.json": "0fe9df7e4887dacb64ca03b1723efe1710f44e26ea06bdf08890bda01a9f01af",
+      "ml/results/phase10_tuning_summary.json": "7c9b87bd663f5045ecdb94f12f23529a7339c8c91091d2736a376069fa559a7f",
+      "ml/results/phase11_final_test_evaluation.json": "00af469b8ee4270ba85c92c77832e89929715acdfe802efe7df84dcb1ac534d9",
+      "ml/results/phase11_reproducibility.json": "e2b9b0eb588121df5382e61a919bbf29af6ad168b71eef51e1085b9ea1ec1b96",
+      "ml/results/phase11_selection_lock.json": "d184f3034c2952a0befafe69bea70f5977db39256d43380f681c752ab6e1e9f2",
+      "ml/results/phase12_feature_importance.json": "f1c0ce2cb196accd00c78ce6a0d1158716dc03967ff7e963a11a4e207101a5b0",
+      "ml/results/phase12_reproducibility.json": "95a6d57ddb0613b75df72b06fe98b5d1be219d6c7b84272f07ac0ee5e65a31cf",
+      "ml/results/phase13_model_persistence.json": "d66f097e23b2e06ef70f85fb412924025cef0a9093760ff9f72eb49d6764b41d",
+      "ml/results/phase14_recommendation_engine.json": "16c2fb20c9fee04e9606f6a120b6356ecbe38fa94f5e0a62b5d03dfba4cd99d2",
+      "ml/results/phase14_recommendation_thresholds.json": "673707f8ec93d8599d1dac25990d876cec751efd955a941d25e307d8c7ceab86",
+      "ml/results/phase15_api_backend.json": "a1a0c9b8a9b3cf262d7f82c3ea2c9efaf4234b02890271f11c37a558eea0cf82",
+      "ml/results/phase16_frontend_api_integration.json": "d318dfac7e32c8746918f754d3b185641df211ed751025046e9bba7b49083360",
+      "ml/results/phase17_dashboard_real_data_integration.json": "7a985d324f06a2247f78f6d9335ce65b611cac727ba858478589fe79346e7e33",
+      "ml/results/phase18_quality_assurance.json": "9d1cf8f60bcf9fb26d4bf015bcb8a4fd1491a6cd18927c4305905e540716cb73",
+      "ml/results/phase19_documentation_audit.json": "f8517f6533b88802d7ab29dd170357d52146596d7063d6fd761824e1d7438596",
+      "ml/results/phase20_final_audit.json": "8fa6f2d1cf6a87901644799fd281f0bb135cbf2c5fd26cb65ec8348f92704429",
+      "ml/results/phase21_database_foundation.json": "b4b8502bf9443ab423fab3685ab9c2cbee851527e391ea35d93cc9536c3b34b5",
+      "ml/results/phase22_authentication_roles.json": "3deba18b0c30d0a3587c5975a37bbe5d4273f779285264f3d6e5cd7c97ece3bf",
+      "ml/results/phase23_building_management.json": "476437c1555030dc4e1606c5e3123e9736675c533df8adc5599f215ef56269d0",
+      "ml/results/phase24_measurements_import.json": "bb46b9c60a0516ae45b6f88e9d7bbd9b1b3e34a226022d63e33824a91c0340c6",
+      "ml/results/phase25_feature_construction_readiness.json": "b7d509709f1e3eb9d255c1106dab6c729980b3c8fa10b3b08786785ffed2557d",
+      "ml/results/phase26_building_predictions.json": "aa4d937360116d02797348d2221cef0723d3443783c1304c7b17a2f5f7967df2",
+      "ml/results/phase27_user_dashboard.json": "76c230915ff99a86a2482f0a6a132ba1511553626ea2dcc25b52bef24d50bf8e",
+      "ml/results/phase7_validation_metrics.json": "35a6fdb36a52cff7873d0fe20969d564cdc23add94816aec720cbde11d7bc9b8",
+      "ml/results/phase8_random_forest_validation_metrics.json": "9ab2cb0717baa0cd95813ecc582377c8f431640ac3c658f7def889e84810156f",
+      "ml/results/phase9_xgboost_validation_metrics.json": "d523cd81ef67c71d7f28fc88f1f1e683b9f50e11c5db816221eccfc351d0584a",
+      "ml/results/split_metadata.json": "0bd0caa2ab2d159969e3e1744492ce47c6d6778ba488ed5bb816c209525b395f",
+      "ml/src/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "ml/src/check_dataset.py": "0a076dea43edc068a6481ac2ba330e5fb2654be32ccf0d6610b8270c4bf90ec3",
+      "ml/src/evaluate_final_model.py": "20e09ae37bc4c45c6b562d1ab14c38b2db6dccb2b8a91e2ef4c1d9f701e66731",
+      "ml/src/explain_final_model.py": "936b99da17fdb720dada7cc13ac0ac5674480643fd0b2d2c2d2a02aab2950076",
+      "ml/src/feature_engineering.py": "46945622b1f8f5bc9a7a3874bfd7b96659be125620c04d48801c7c2ae7072193",
+      "ml/src/model_inference.py": "4b01eda9c7d13b27d935ec0a4ccd988fd951bed8ea8091035743b546bbc880ef",
+      "ml/src/preprocess.py": "b9a863b2b7d31d0e285db5778e420f1a79abcfa70bb1d86e6222b34df1fb2c6d",
+      "ml/src/recommendation_engine.py": "5c284e98a411a0fd7675109cf9586e2c8615bb92862d2905f9f34337a9be4c17",
+      "ml/src/save_final_model.py": "04a912f544f774a931cc8d247dce675faa693d1a220bf46382b61f4aa2661b94",
+      "ml/src/split_data.py": "d01284831ba55a07fc9f4186a44db845fce2a0855917678837c9f787bed93a03",
+      "ml/src/train_baselines.py": "20d3106c5165ffb2e7530da3f1376684c475302d4bcbaee447dbb7c62e4d16d5",
+      "ml/src/train_random_forest.py": "38b02d666e781c98175ab9d2605cfd3fde286b8fe75cfe8ed2f30caad868400c",
+      "ml/src/train_xgboost.py": "06345dc878da7775b754aaa496da2ebff1e78009c2f5860d6903c9b8bb5178c8",
+      "ml/src/tune_models.py": "34d451bac2de7abe52cd83ffddd0f91877715aed0c437c292d67dec3987eb47d",
+      "package.json": "da6d358a8fb396f0ac1578b167d7e7432746a195ad68c54c352262c14b3e779b",
+      "requirements.txt": "3044a58eea5c7d0392fadfe716ca40e19e259ba1642103541df95a3c19361127",
+      "src/components/research-dashboard.tsx": "24054ec50e15df525e38330ebbaae56c7a851ba5c51435815501e1fdcff93080",
+      "src/routes/__root.tsx": "90b266535fb01d3e26b7fda367c749cdacb8e50e143109f667384815ba9747fc",
+      "src/routeTree.gen.ts": "c5f7acf36348efb97cf18ba381d1dcf1b5beed16cce7c3f4c3ea549725d518af",
+      "src/server.ts": "4200dda605d3af5b6ba95e79022fdd40d3075cb39ee0d8bacd769ec2312baa92",
+      "src/start.ts": "9d3a00e7f89d1596407c269e9df54f163f36ca5edc2e9d2b180af640ccf4622e"
+    },
+    "model_sha256": "6418bca4fd34b120928bdcc7c37c72e32f2cb6b8e5fd48d6164441aa1a9f7404",
+    "no_fit_tune_or_test_reevaluation": true,
+    "routeTree_preexisting_diff_preserved": true,
+    "new_package_lock": false,
+    "developer_database_created": false
+  }
+}

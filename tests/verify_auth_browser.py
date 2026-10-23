@@ -29,7 +29,7 @@ def main():
     api = f'http://localhost:{backend_port}'
     frontend = f'http://localhost:{frontend_port}'
     original = (root / 'tests/verify_dashboard_browser.py').read_text(encoding='utf-8')
-    original = original.replace('8000',str(backend_port)).replace('5173',str(frontend_port)).replace('phase17_', 'phase27_' if '--dashboard' in sys.argv else 'phase26_' if '--predictions' in sys.argv else 'phase25_' if '--readiness' in sys.argv else 'phase24_' if '--measurements' in sys.argv else ('phase23_' if '--buildings' in sys.argv else 'phase22_'))
+    original = original.replace('8000',str(backend_port)).replace('5173',str(frontend_port)).replace('phase17_', 'phase28_' if '--admin' in sys.argv else 'phase27_' if '--dashboard' in sys.argv else 'phase26_' if '--predictions' in sys.argv else 'phase25_' if '--readiness' in sys.argv else 'phase24_' if '--measurements' in sys.argv else ('phase23_' if '--buildings' in sys.argv else 'phase22_'))
     original = original.replace(f'127.0.0.1:{backend_port}', f'localhost:{backend_port}')
     tree = ast.parse(original)
     helpers = [node for node in tree.body if isinstance(node, (ast.ClassDef, ast.FunctionDef)) and node.name in ('CDP','spawn','stop','ready')]
@@ -170,7 +170,7 @@ def main():
                     submit({'email':admin_email,'password':admin_password})
                     c.wait('location.pathname === "/settings" && document.body.textContent.includes("Bootstrap verification admin")')
                     for path in ('/admin/','/admin/users','/admin/buildings'):
-                        visit(path);c.wait('document.querySelector("main")?.textContent.includes("No verified operational readings")')
+                        visit(path);c.wait('!!document.querySelector("main h3") || !!document.querySelector("[data-admin-overview]")')
                         assert c.evaluate('Array.from(document.links).some(a => a.getAttribute("href") === "/admin/users")')
                     visit('/dashboard');signed_in()
                     print('Auth QA: expiry and bootstrap ADMIN shell passed',flush=True)
@@ -217,6 +217,12 @@ def main():
                         from verify_user_dashboard_browser import scenario as dashboard_scenario
                         dashboard_verification = dashboard_scenario(c=c,visit=visit,submit=submit,signed_out=signed_out,
                             signed_in=signed_in,api=api,user_email=email,user_password=password,reload=reload,restart=restart_for_buildings)
+                    admin_verification = None
+                    if '--admin' in sys.argv:
+                        from verify_admin_browser import scenario as admin_scenario
+                        admin_verification = admin_scenario(c=c,visit=visit,submit=submit,signed_out=signed_out,
+                            signed_in=signed_in,api=api,user_email=email,user_password=password,
+                            admin_email=admin_email,admin_password=admin_password,factory=factory)
                     # Preserved research information is explicitly opened and verified, not treated as KPIs.
                     visit('/dashboard');signed_in()
                     c.evaluate('document.querySelector("[data-research-information] summary").click()')
@@ -252,7 +258,7 @@ def main():
                         'token_hash_only_in_database':True,'refresh_persists_session':True,'backend_restart_persists_session':True,
                         'logout_and_refresh_unauthenticated':True,'invalid_login_error':True,'normalized_login':True,'intended_destination_settings':True,
                         'inactive_login_and_session_blocked':True,'expired_session_blocked':True,'USER_admin_routes_forbidden':True,
-                        'bootstrap_ADMIN_admin_shell_allowed':True,'no_admin_management_implemented':True,
+                        'bootstrap_ADMIN_admin_shell_allowed':True,'admin_management_implemented':True,
                         'credentialed_CORS_passed':True,'cors_errors':c.cors,'runtime_errors':c.errors,
                         'responsive_widths':[1440,390],'public_research_GET_statuses':statuses,'public_forecast_helper_equivalence':True,
                         'public_recommendation_helper_equivalence':True,'dashboard_real_research_charts':True,'verification_processes_stopped':False}
@@ -266,6 +272,8 @@ def main():
                         evidence['building_predictions'] = prediction_verification
                     if dashboard_verification is not None:
                         evidence['user_dashboard'] = dashboard_verification
+                    if admin_verification is not None:
+                        evidence['administration'] = admin_verification
                     c.ws.close()
                 finally:
                     for process in reversed(processes):stop(process)
@@ -273,7 +281,7 @@ def main():
                     engine.dispose()
             evidence['verification_processes_stopped']=True
         evidence['temporary_database_and_profile_removed']=True
-    (g/('phase27_browser_evidence.json' if '--dashboard' in sys.argv else 'phase26_browser_evidence.json' if '--predictions' in sys.argv else 'phase25_browser_evidence.json' if '--readiness' in sys.argv else 'phase24_browser_evidence.json' if '--measurements' in sys.argv else ('phase23_browser_evidence.json' if '--buildings' in sys.argv else 'phase22_browser_evidence.json'))).write_text(json.dumps(evidence,indent=2)+'\n',encoding='utf-8')
+    (g/('phase28_browser_evidence.json' if '--admin' in sys.argv else 'phase27_browser_evidence.json' if '--dashboard' in sys.argv else 'phase26_browser_evidence.json' if '--predictions' in sys.argv else 'phase25_browser_evidence.json' if '--readiness' in sys.argv else 'phase24_browser_evidence.json' if '--measurements' in sys.argv else ('phase23_browser_evidence.json' if '--buildings' in sys.argv else 'phase22_browser_evidence.json'))).write_text(json.dumps(evidence,indent=2)+'\n',encoding='utf-8')
     print(json.dumps(evidence,indent=2))
 
 

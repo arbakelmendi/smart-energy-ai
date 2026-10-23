@@ -57,3 +57,7 @@ Phase 26 adds `createBuildingPrediction`/`getBuildingPredictions` and private qu
 ## Current user dashboard (Phase 27)
 
 `dashboard.ts` validates the owner-scoped summary over the existing credentialed transport. `useBuildingDashboard` partitions requests by user/building/window. Confirmed measurement, prediction and building mutations invalidate affected summaries; errors hide operational values. `/dashboard` selects only owned buildings through its URL and preserves research panels separately; `/predictions` and `/recommendations` are persisted building ledgers and `/data` is measurement guidance. This supersedes the historical Phase17 presentation above. See [user dashboard](../../../docs/user-dashboard.md).
+
+## Administration (Phase 28)
+
+`admin.ts` adds strictly validated, credentialed native-fetch functions for admin counts, filtered paginated lists, details and explicit status changes. `use-admin.ts` uses acting-user-scoped admin keys separate from owner caches; confirmed status changes invalidate admin user/overview data. Existing admin routes now show real data and URL-selected details, superseding the historical unavailable shell. See [admin panel](../../../docs/admin-panel.md).

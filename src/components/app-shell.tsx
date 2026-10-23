@@ -20,7 +20,6 @@ import { ThemeToggle } from "@/components/theme-toggle";
 import { BackendStatus } from "@/components/backend-status";
 import { Logo } from "@/components/public-layout";
 import { useAuth } from "@/lib/auth";
-import { Panel } from "@/components/ui-kit";
 import { AuthGuard } from "@/components/auth-guard";
 import { cn } from "@/lib/utils";
 
@@ -61,7 +60,6 @@ function AuthenticatedShell({
 
   useEffect(() => setMobileOpen(false), [pathname]);
 
-  const operationalUnavailable = pathname.startsWith("/admin");
 
   const isAdmin = user?.role === "ADMIN";
   const [logoutError, setLogoutError] = useState("");
@@ -165,9 +163,9 @@ function AuthenticatedShell({
                 <LayoutGrid className="size-4" />
               </Button>
               <div className="min-w-0">
-                <h1 className="truncate text-lg font-semibold sm:text-xl">{operationalUnavailable ? "Operational data not connected" : title}</h1>
+                <h1 className="truncate text-lg font-semibold sm:text-xl">{title}</h1>
                 {subtitle ? (
-                  <p className="truncate text-xs text-muted-foreground">{operationalUnavailable ? "No verified building feed or operational service is available" : subtitle}</p>
+                  <p className="truncate text-xs text-muted-foreground">{subtitle}</p>
                 ) : null}
               </div>
             </div>
@@ -206,7 +204,7 @@ function AuthenticatedShell({
               </Button>
             </div>
           </div>
-          {actions && !operationalUnavailable ? (
+          {actions ? (
             <div className="flex flex-wrap items-center gap-2 border-t border-border/60 px-4 py-2.5 sm:px-6">
               {actions}
             </div>
@@ -214,10 +212,7 @@ function AuthenticatedShell({
         </header>
         <main key={pathname} className="rise-in min-w-0 flex-1 px-4 py-6 sm:px-6 lg:py-8">
           {logoutError ? <p role="alert" className="mb-4 text-sm text-destructive">{logoutError}</p> : null}
-          {operationalUnavailable ? <Panel title="Not connected" subtitle="Operational capability unavailable">
-            <p className="text-sm text-muted-foreground">No verified operational readings or administrative management service is available on this page. Building metadata is managed separately in Buildings. This prototype does not provide live measurements or equipment control.</p>
-            <Link to="/dashboard" className="mt-4 inline-block text-sm text-efficiency underline">View verified research results</Link>
-          </Panel> : children}
+          {children}
         </main>
       </div>
     </div>

@@ -208,3 +208,7 @@ Run `python -m alembic upgrade head` for input-snapshot/idempotency fields. Owne
 ## User building dashboard (Phase 27)
 
 `/dashboard` now presents owned-building measurements, observed energy history, backend readiness and explicitly requested persisted forecasts/recommendations. Selection is carried in the URL; stale forecasts remain historical. Research metrics remain separately labeled in an expandable section. `/predictions` and `/recommendations` provide private building ledgers, and `/data` links to real measurement management. See [user dashboard](docs/user-dashboard.md) for API, timestamp semantics, limitations and verification. No new migration, dependency or automatic scheduling is introduced.
+
+## Administrator oversight (Phase 28)
+
+ADMIN can inspect real application-wide counts, paginated users/buildings and saved prediction activity through dedicated `/admin` APIs/pages. Account deactivation revokes sessions while retaining domain history, with self/final-admin protection. Ordinary building APIs remain owner-only for every role. No new migration or dependency; see [admin panel](docs/admin-panel.md) for filters, status behavior, privacy boundaries and verification.

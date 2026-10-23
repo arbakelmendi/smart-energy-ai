@@ -89,7 +89,7 @@ def scenario(*, c, visit, submit, signed_out, signed_in, api, user_email, user_p
     assert call('PATCH',f'/buildings/{own_id}',{'name':'Admin edit'})['status']==200
     assert call('DELETE',f'/buildings/{own_id}')['status']==204
     assert call('GET','/buildings')['data']['buildings']==[]
-    visit('/admin/users');listed('No verified operational readings')
+    visit('/admin/users');listed('Accounts');c.wait('document.querySelectorAll("[data-admin-user]").length>0')
     print('Building QA: confirmed deletion, other-owner preservation and owner-only ADMIN policy passed',flush=True)
     return {'passed':True,'USER_A_create_list_view_edit':True,'refresh_and_backend_restart_persistence':True,
         'edit_form_survives_background_auth_revalidation':True,'USER_B_direct_url_and_API_isolation':True,
